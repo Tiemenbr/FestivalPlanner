@@ -11,18 +11,18 @@ public class Attraction {
     private int prijs;
 
 
-    public Attraction(String name, LocalTime startTime, LocalTime endTime, Location location, int popularity) {
+    public Attraction(String name, String startTime, String endTime, Location location, int popularity) {
         this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = LocalTime.parse(startTime);
+        this.startTime = LocalTime.parse(endTime);
         this.location = location;
         this.popularity = popularity;
     }
 
-    public Attraction(String name, LocalTime startTime, int duration, Location location, int popularity) {
+    public Attraction(String name, String startTime, int duration, Location location, int popularity) {
         this.name = name;
-        this.startTime = startTime;
-        this.endTime = startTime.plusMinutes(duration);
+        this.startTime = LocalTime.parse(startTime);
+        this.endTime = this.startTime.plusMinutes(duration);
         this.location = location;
         this.popularity = popularity;
     }
