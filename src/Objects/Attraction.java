@@ -1,46 +1,26 @@
 package Objects;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public class Attraction {
-    private LocalTime startTime, endTime;
+public class Attraction implements CRUD, Serializable {
+    private int id;
     private String name;
-    private Location location;
     private int popularity = 1;
-    private int prijs;
+    private int price;
 
 
-    public Attraction(String name, String startTime, String endTime, Location location, int popularity) {
+    public Attraction(int id, String name,int popularity, int price) {
+        this.id = id; //todo add proper dynamic id assignment
         this.name = name;
-        this.startTime = LocalTime.parse(startTime);
-        this.startTime = LocalTime.parse(endTime);
-        this.location = location;
         this.popularity = popularity;
+
+        this.update();
     }
 
-    public Attraction(String name, String startTime, int duration, Location location, int popularity) {
-        this.name = name;
-        this.startTime = LocalTime.parse(startTime);
-        this.endTime = this.startTime.plusMinutes(duration);
-        this.location = location;
-        this.popularity = popularity;
-    }
-
-    public LocalTime getStartTime() {
-        return this.startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return this.endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
+    public Integer getId() {
+        return this.id;
     }
 
     public String getName() {
@@ -51,14 +31,6 @@ public class Attraction {
         this.name = name;
     }
 
-    public Location getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public int getPopularity() {
         return this.popularity;
     }
@@ -67,25 +39,35 @@ public class Attraction {
         this.popularity = popularity;
     }
 
-    public int getPrijs() {
-        return prijs;
+    public int getPrice() {
+        return price;
     }
 
-    public void setPrijs(int prijs) {
-        this.prijs = prijs;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
-    public LocalTime getDurration() {
-        LocalTime returnTime = LocalTime.MIDNIGHT;
-        return returnTime.plusMinutes(this.startTime.until(this.endTime, ChronoUnit.MINUTES));
-    }
 
     @Override
     public String toString() {
         return "Attraction{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", popularity=" + popularity +
+                ", price=" + price +
                 '}';
     }
+
+    @Override
+    public void update() {
+        IOController.update(this.id, this, IOController.ObjectType.ATTRACTION);
+    }
+
+    @Override
+    public void delete(Schedule schedule) {
+        //todo idk if it's right to pass the schedule... but it needs to access it somewhere I think
+        schedule.deleteAttraction(this.getId());
+        IOController.delete(this.id, IOController.ObjectType.ATTRACTION);
+    }
+
+
 }
