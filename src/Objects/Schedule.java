@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Schedule {
     private ArrayList<Attraction> attractions = new ArrayList<>();
     private ArrayList<Location> locations = new ArrayList<>();
-    private ArrayList<Visitor> visitors = new ArrayList<>();
+    private ArrayList<AttractionLocationTime> items = new ArrayList<>();
 
     public ArrayList<Attraction> getAttractions() {
         return attractions;
@@ -23,11 +23,11 @@ public class Schedule {
         this.locations = locations;
     }
 
-    public ArrayList<Visitor> getVisitors() {
-        return visitors;
+    public ArrayList<AttractionLocationTime> getItems() {
+        return items;
     }
 
-    public void setVisitors(ArrayList<Visitor> visitors) {
-        this.visitors = visitors;
+    public void setItems(ArrayList<AttractionLocationTime> items) {
+        this.items = items;
     }
 }
