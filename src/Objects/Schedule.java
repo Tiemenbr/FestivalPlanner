@@ -1,33 +1,61 @@
 package Objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Schedule {
-    private ArrayList<Attraction> attractions = new ArrayList<>();
-    private ArrayList<Location> locations = new ArrayList<>();
-    private ArrayList<Visitor> visitors = new ArrayList<>();
 
-    public ArrayList<Attraction> getAttractions() {
-        return attractions;
+    private HashMap<Integer, ScheduleItem> scheduleItems = new HashMap<>();
+    private HashMap<Integer, Attraction> attractions = new HashMap<>();
+    private HashMap<Integer, Location> locations = new HashMap<>();
+    //todo schedule doesn't need to have the visitors?
+    //private ArrayList<Visitor> visitors = new ArrayList<>();
+
+    public ScheduleItem getScheduleItem(int id) {
+        return scheduleItems.get(id);
     }
 
-    public void setAttractions(ArrayList<Attraction> attractions) {
-        this.attractions = attractions;
+    public void addScheduleItem(ScheduleItem scheduleItem) {
+        this.scheduleItems.put(scheduleItem.getId(), scheduleItem);
     }
 
-    public ArrayList<Location> getLocations() {
-        return locations;
+    public void deleteScheduleItem(int id){
+        this.scheduleItems.remove(id);
     }
 
-    public void setLocations(ArrayList<Location> locations) {
-        this.locations = locations;
+    public Attraction getAttraction(int id) {
+        return attractions.get(id);
     }
 
-    public ArrayList<Visitor> getVisitors() {
-        return visitors;
+    public void addAttraction(Attraction attraction) {
+        this.attractions.put(attraction.getId(), attraction);
     }
 
-    public void setVisitors(ArrayList<Visitor> visitors) {
-        this.visitors = visitors;
+    public void deleteAttraction(int id){
+        this.attractions.remove(id);
     }
+
+    public Location getLocation(int id) {
+        return locations.get(id);
+    }
+
+    public void addLocation(Location location) {
+        this.locations.put(location.getId(), location);
+    }
+
+    public void deleteLocation(int id){
+        this.locations.remove(id);
+    }
+
+
+    //todo schedule doesn't need to have the visitors does it?
+//    public ArrayList<Visitor> getVisitors() {
+//        return visitors;
+//    }
+//
+//    public void setVisitors(ArrayList<Visitor> visitors) {
+//        this.visitors = visitors;
+//    }
+
+
 }
