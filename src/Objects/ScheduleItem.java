@@ -6,39 +6,30 @@ import java.time.temporal.ChronoUnit;
 
 public class ScheduleItem implements CRUD, Serializable {
     private int id;
-    private Location location;  //todo replace with locationId
-    private Attraction attraction;  //replace with attractionId
+    private int locationId;  //todo replace with locationId
+    private int attractionId;  //replace with attractionId
     private LocalTime startTime, endTime;
 
     public ScheduleItem(int id, Location location, Attraction attraction, String startTime, String endTime) {
         this.id = id; //todo add proper dynamic id assignment
-        this.location = location;
-        this.attraction = attraction;
+        this.locationId = location.getId();
+        this.attractionId = attraction.getId();
         this.startTime = LocalTime.parse(startTime);
         this.endTime = LocalTime.parse(endTime);
-    }
 
-    public ScheduleItem(int id, Location location, Attraction attraction, String startTime, int minuteDuration) {
-        this(id,
-                location,
-                attraction,
-                startTime,
-                LocalTime.parse(startTime).plusMinutes(minuteDuration).toString()
-        );
+        this.update();
     }
 
     public Integer getId() {
         return this.id;
     }
 
-    public Location getLocation() {
-        //return Schedule.getLocation(id); //todo
-        return this.location;
+    public Location getLocation(Schedule schedule) {
+        return schedule.getLocation(this.locationId);
     }
 
-    public Attraction getAttraction() {
-        //return Schedule.getAttraction(id); //todo
-        return this.attraction;
+    public Attraction getAttraction(Schedule schedule) {
+        return schedule.getAttraction(this.attractionId);
     }
 
     public LocalTime getStartTime() {

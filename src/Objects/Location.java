@@ -22,6 +22,10 @@ public class Location implements CRUD, Serializable {
         return this.id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public ArrayList<Visitor> getVisitors() {
         return visitors;
     }

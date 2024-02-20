@@ -13,11 +13,15 @@ public class Planner {
         schedule.addAttraction(new Attraction(2,"botsautos", 5, 7));
 
         schedule.addScheduleItem(new ScheduleItem(1, schedule.getLocation(1), schedule.getAttraction(1),"10:10", "10:30"));
-        schedule.addScheduleItem(new ScheduleItem(2, schedule.getLocation(2), schedule.getAttraction(2),"10:30", "11:00"));
+        schedule.addScheduleItem(new ScheduleItem(2, schedule.getLocation(2), schedule.getAttraction(2),"10:30", "13:00"));
 
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
     }
 }

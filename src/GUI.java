@@ -1,15 +1,14 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
+    private static Planner planner;
     public static void main(String[] args) {
-        Planner planner = new Planner();
+        planner = new Planner();
         planner.init();
         launch(GUI.class);
     }
@@ -20,15 +19,18 @@ public class GUI extends Application {
 
         TabPane tabpane = new TabPane();
 
-        Tab planner = new Tab("Planner");
+        Tab plannerTab = new Tab("Planner");
         Label plannerLabel = new Label("planner page");
-        planner.setContent(plannerLabel);
+        plannerTab.setContent(plannerLabel);
 
         Tab schedule = new Tab("Schedule");
         Label scheduleLabel = new Label("page with visualization of the schedule");
         schedule.setContent(scheduleLabel);
 
-        tabpane.getTabs().addAll(planner, schedule);
+        Tab createScheduleItem = new Tab("Create ScheduleItem");
+        createScheduleItem.setContent(CreateScheduleItem.getComponent(planner));
+
+        tabpane.getTabs().addAll(plannerTab, schedule, createScheduleItem);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
