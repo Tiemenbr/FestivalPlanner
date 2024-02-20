@@ -3,12 +3,12 @@ package Objects;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public class AttractionLocationTime {
+public class ScheduleItem {
     Location location;
     Attraction attraction;
     LocalTime startTime, endTime;
 
-    public AttractionLocationTime(Attraction attraction, Location location, String startTime, String endTime) {
+    public ScheduleItem(Attraction attraction, Location location, String startTime, String endTime) {
         this.attraction = attraction;
         this.location = location;
         this.startTime = LocalTime.parse(startTime);

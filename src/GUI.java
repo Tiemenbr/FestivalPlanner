@@ -1,5 +1,5 @@
 import Objects.Attraction;
-import Objects.AttractionLocationTime;
+import Objects.ScheduleItem;
 import Objects.Location;
 import Objects.Schedule;
 import javafx.application.Application;
@@ -26,11 +26,11 @@ public class GUI extends Application {
         };
         schedule.getAttractions().addAll(Arrays.asList(attractions));
 
-        schedule.getItems().add(new AttractionLocationTime(draaimolen, P1, "10:15", "11:45"));
-        schedule.getItems().add(new AttractionLocationTime(draaimolen, P2, "11:45", "12:00"));
-        schedule.getItems().add(new AttractionLocationTime(draaimolen, P1, "07:00", "10:10"));
+        schedule.getItems().add(new ScheduleItem(draaimolen, P1, "10:15", "11:45"));
+        schedule.getItems().add(new ScheduleItem(draaimolen, P2, "11:45", "12:00"));
+        schedule.getItems().add(new ScheduleItem(draaimolen, P1, "07:00", "10:10"));
 
-        for (AttractionLocationTime item : schedule.getItems()) {
+        for (ScheduleItem item : schedule.getItems()) {
             System.out.println(item.getDurration(ChronoUnit.MINUTES));
             System.out.println(item.getAttraction().getName());
             System.out.println(item.getLocation().getName());
