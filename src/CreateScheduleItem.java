@@ -1,6 +1,7 @@
 import Objects.Attraction;
 import Objects.Location;
 import Objects.ScheduleItem;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -11,11 +12,19 @@ import java.util.HashMap;
 public class CreateScheduleItem{
 
     public static VBox getComponent(Planner planner){
-        VBox mainCreateScheduleBox = new VBox(20);
+        VBox mainCreateScheduleItemBox = new VBox(20);
+        mainCreateScheduleItemBox.setPadding(new Insets(20));
+
+        HBox contentRowBox = new HBox(10);
+        VBox labelColumnBox = new VBox(22);
+        VBox inputsColumnBox = new VBox(10);
+
+        contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox);
 
         //#region Location combobox
-        HBox locationInputBox = new HBox(10);
         Label locationInputLabel = new Label("Locatie: ");
+        labelColumnBox.getChildren().add(locationInputLabel);
+
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
         HashMap<Integer, Location> locations = planner.getSchedule().getLocations();
         for (int i = 1; i <= locations.size(); i++) {
@@ -33,12 +42,13 @@ public class CreateScheduleItem{
             }
         });
 
-        locationInputBox.getChildren().addAll(locationInputLabel,locationOptionsComboBox);
+        inputsColumnBox.getChildren().add(locationOptionsComboBox);
         //#endregion
 
         //#region Attraction combobox
-        HBox attractionInputBox = new HBox(10);
         Label attractionInputLabel = new Label("Attractie: ");
+        labelColumnBox.getChildren().add(attractionInputLabel);
+
         ComboBox<Attraction> attractionOptionsComboBox = new ComboBox<>();
         HashMap<Integer, Attraction> attractions = planner.getSchedule().getAttractions();
         for (int i = 1; i <= attractions.size(); i++) {
@@ -56,14 +66,16 @@ public class CreateScheduleItem{
             }
         });
 
-        attractionInputBox.getChildren().addAll(attractionInputLabel,attractionOptionsComboBox);
+        inputsColumnBox.getChildren().add(attractionOptionsComboBox);
         //#endregion
 
         //#region Duration/Time
-        HBox durationInputBox = new HBox(10);
         //#region Time Start
         HBox durationStartInputBox = new HBox(10);
+
         Label startTimeLabel = new Label("Van: ");
+        labelColumnBox.getChildren().add(startTimeLabel);
+
         ComboBox<String> startHourComboBox = new ComboBox<>();
         for (int i = 1; i <= 24; i++) {
             String j = Integer.toString(i);
@@ -71,7 +83,9 @@ public class CreateScheduleItem{
             startHourComboBox.getItems().add(j);
         }
         //startHourComboBox.getSelectionModel().selectFirst();
+
         Label inbetweenStartStyling = new Label(":");
+
         // Minute ComboBox
         ComboBox<String> startMinuteComboBox = new ComboBox<>();
         for (int i = 0; i < 60; i+=5) {
@@ -80,11 +94,17 @@ public class CreateScheduleItem{
             startMinuteComboBox.getItems().add(j);
         }
         //startMinuteComboBox.getSelectionModel().selectFirst();
-        durationStartInputBox.getChildren().addAll(startTimeLabel,startHourComboBox,inbetweenStartStyling, startMinuteComboBox);
+
+        durationStartInputBox.getChildren().addAll(startHourComboBox,inbetweenStartStyling, startMinuteComboBox);
+
+        inputsColumnBox.getChildren().add(durationStartInputBox);
         //#endregion
         //#region Time End
         HBox durationEndInputBox = new HBox(10);
+
         Label endTimeLabel = new Label("Tot: ");
+        labelColumnBox.getChildren().add(endTimeLabel);
+
         ComboBox<String> endHourComboBox = new ComboBox<>();
         for (int i = 1; i <= 24; i++) {
             String j = Integer.toString(i);
@@ -92,7 +112,9 @@ public class CreateScheduleItem{
             endHourComboBox.getItems().add(j);
         }
         //endHourComboBox.getSelectionModel().selectFirst();
+
         Label inbetweenEndStyling = new Label(":");
+
         // Minute ComboBox
         ComboBox<String> endMinuteComboBox = new ComboBox<>();
         for (int i = 0; i < 60; i+=5) {
@@ -101,14 +123,15 @@ public class CreateScheduleItem{
             endMinuteComboBox.getItems().add(j);
         }
         //endMinuteComboBox.getSelectionModel().selectFirst();
-        durationEndInputBox.getChildren().addAll(endTimeLabel,endHourComboBox,inbetweenEndStyling, endMinuteComboBox);
+
+        durationEndInputBox.getChildren().addAll(endHourComboBox,inbetweenEndStyling, endMinuteComboBox);
+
+        inputsColumnBox.getChildren().add(durationEndInputBox);
         //#endregion
-        durationInputBox.getChildren().addAll(durationStartInputBox, durationEndInputBox);
         //#endregion
 
         //#region Submit Button
-        HBox createButtonBox = new HBox();
-        Button createAttractionButton = new Button("Create Attraction");
+        Button createAttractionButton = new Button("Create Schedule Item");
         createAttractionButton.setOnAction(e ->{
             int newId = planner.getSchedule().getScheduleItems().size()+1; //todo proper id assignment in scheduleItem Class
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
@@ -119,12 +142,13 @@ public class CreateScheduleItem{
             planner.getSchedule().addScheduleItem(newItem);
             System.out.println("created new scheduleItem: " + newItem);
         });
-        createButtonBox.getChildren().add(createAttractionButton);
+
+        inputsColumnBox.getChildren().add(createAttractionButton);
         //#endregion
 
-        mainCreateScheduleBox.getChildren().addAll(locationInputBox,attractionInputBox,durationInputBox,createButtonBox);
+        mainCreateScheduleItemBox.getChildren().add(contentRowBox);
 
-        return mainCreateScheduleBox;
+        return mainCreateScheduleItemBox;
     }
 
 }
