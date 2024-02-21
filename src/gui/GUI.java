@@ -1,3 +1,5 @@
+package gui;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -7,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+import planner.Planner;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
@@ -23,7 +26,7 @@ public class GUI extends Application {
 
         TabPane tabpane = new TabPane();
 
-        Tab planner = new Tab("Planner");
+        Tab planner = new Tab("planner.Planner");
         Label plannerLabel = new Label("planner page");
         planner.setContent(plannerLabel);
 
