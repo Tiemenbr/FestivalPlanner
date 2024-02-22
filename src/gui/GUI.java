@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -11,9 +12,13 @@ import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
 import planner.Planner;
 
+import java.awt.geom.Rectangle2D;
+
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
+    private ResizableCanvas canvas;
+
     public static void main(String[] args) {
         Planner planner = new Planner();
         planner.init();
@@ -32,19 +37,24 @@ public class GUI extends Application {
 
         Tab schedule = new Tab("Schedule");
         BorderPane borderPane = new BorderPane();
-        ResizableCanvas canvas = new ResizableCanvas(g -> draw(g), borderPane);
-        borderPane.getChildren().addAll(canvas);
+        this.canvas = new ResizableCanvas(g -> draw(g), borderPane);
+        borderPane.getChildren().addAll(this.canvas);
         schedule.setContent(borderPane);
 
         tabpane.getTabs().addAll(planner, schedule);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
-        Scene scene = new Scene(tabpane, 1200, 600);
+        Scene scene = new Scene(tabpane);
         stage.setScene(scene);
+        stage.setMinHeight(600);
+        stage.setMinWidth(600);
         stage.show();
     }
 
     private void draw(FXGraphics2D graphics) {
-
+        graphics.draw(new Rectangle2D.Double(0,0,canvas.getWidth(),50));
+        graphics.draw(new Rectangle2D.Double(0,50,canvas.getWidth(),25));
+        graphics.draw(new Rectangle2D.Double(0,75,75,canvas.getHeight()));
+        graphics.draw(new Rectangle2D.Double(75,75,canvas.getWidth(),canvas.getHeight()-75));
     }
 }
