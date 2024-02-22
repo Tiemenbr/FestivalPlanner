@@ -15,7 +15,6 @@ public class GUI extends Application {
 
     private static Planner planner;
     private FXMLLoader fxmlLoader;
-    private Objects.CalendarController calendarController;
     public static void main(String[] args) {
         // On startup
         planner = new Planner();
@@ -26,8 +25,6 @@ public class GUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.fxmlLoader = new FXMLLoader(GUI.class.getResource("/Calendar.fxml"));
-        this.calendarController = new Objects.CalendarController();
-        //this.calendarController.addCalendarActivity(1,)
 
         stage.setTitle("Kermis planner");
 

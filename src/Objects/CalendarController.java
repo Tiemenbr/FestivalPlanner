@@ -1,6 +1,5 @@
 package Objects;
 
-import Objects.ScheduleItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -180,7 +179,7 @@ public class CalendarController implements Initializable {
     }
 
     // Self-made methods: Adding an activity to the calendar
-    public Map<Integer, List<ScheduleItem>> addCalendarActivity(int idNumber, Location location, Attraction attraction, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime dateFocus){
+    public Map<Integer, List<ScheduleItem>> addCalendarActivity(int idNumber, Location location, Attraction attraction, ZonedDateTime startTime, ZonedDateTime endTime){
         try{
             this.calendarActivities.isEmpty();
         } catch (NullPointerException e){
