@@ -2,8 +2,8 @@ import Objects.*;
 
 
 public class Planner {
-    private Schedule schedule = new Schedule();
     public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
+    private static Schedule schedule = new Schedule();
 
     public void init() {
         schedule.addLocation(new Location(1,10, 10, "P1"));
@@ -22,7 +22,7 @@ public class Planner {
 //        schedule.getVisitors().add(new Visitor());
     }
 
-    public Schedule getSchedule() {
+    public static Schedule getSchedule() {
         return schedule;
     }
 }
