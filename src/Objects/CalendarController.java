@@ -124,10 +124,18 @@ public class CalendarController implements Initializable {
                 });
                 break;
             }
-            Text text = new Text(calendarActivities.get(k).getAttraction() + ", " + calendarActivities.get(k).getStartTime().toLocalTime()); //.getDate().toLocalTime());
+//            Text text = new Text(calendarActivities.get(k).getAttraction().getName() + ", " + calendarActivities.get(k).getStartTime().toLocalTime()); //.getDate().toLocalTime());
+//            // Cut off the text if the activity name is too long
+//            if (calendarActivities.get(k).getAttraction().getName().toString().length() > 15){ //.getClientName().length() > 15){
+//                text = new Text(calendarActivities.get(k).getAttraction().getName().substring(0, 15).trim() + "..., " + calendarActivities.get(k).getStartTime());//.getClientName().substring(0, 15).trim() + "..., " + calendarActivities.get(k).getDate().toLocalTime());
+//            }
+            Text text = new Text(calendarActivities.get(k).toString()); //.getDate().toLocalTime());
             // Cut off the text if the activity name is too long
-            if (calendarActivities.get(k).getAttraction().toString().length() > 15){ //.getClientName().length() > 15){
-                text = new Text(calendarActivities.get(k).getAttraction().toString().substring(0, 15).trim() + "..., " + calendarActivities.get(k).getStartTime());//.getClientName().substring(0, 15).trim() + "..., " + calendarActivities.get(k).getDate().toLocalTime());
+            if (calendarActivities.get(k).toString().length() > 8){ //.getClientName().length() > 15){
+                text = new Text(calendarActivities.get(k).getAttraction().getName().substring(0, 8).trim() + "..., " +
+                        calendarActivities.get(k).getLocation().getName() + ", " + calendarActivities.get(k).getStartTime().getHour() +
+                        ":" + calendarActivities.get(k).getStartTime().getMinute() + "-" + calendarActivities.get(k).getEndTime().getHour() +
+                        ":" + calendarActivities.get(k).getEndTime().getMinute());//.getClientName().substring(0, 15).trim() + "..., " + calendarActivities.get(k).getDate().toLocalTime());
             }
             calendarActivityBox.getChildren().add(text);
 

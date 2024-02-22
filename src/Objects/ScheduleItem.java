@@ -58,11 +58,9 @@ public class ScheduleItem implements CRUD, Serializable {
 
     @Override
     public String toString(){
-        return "ID: " + this.id +
-                ", location: " + this.location +
-                ", attraction: " + this.attraction +
-                ", startTime: " + this.startTime +
-                ", endTime: " + this.endTime;
+        return "(" + this.id + ")" + " attraction: " + this.attraction.getName() + ", at: " + this.location.getName() +
+                ", time: " + this.startTime.getHour() + ":" + this.startTime.getMinute() + "-" + this.endTime.getHour() +
+                ":" + this.endTime.getMinute();
     }
 
     @Override
