@@ -8,12 +8,15 @@ public class ScheduleItem implements CRUD, Serializable {
     private int id;
     private int locationId;  //todo replace with locationId
     private int attractionId;  //replace with attractionId
+    public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
+    private day day;
     private LocalTime startTime, endTime;
 
-    public ScheduleItem(int id, Location location, Attraction attraction, String startTime, String endTime) {
+    public ScheduleItem(int id, Location location, Attraction attraction, day day, String startTime, String endTime) {
         this.id = id; //todo add proper dynamic id assignment
         this.locationId = location.getId();
         this.attractionId = attraction.getId();
+        this.day = day;
         this.startTime = LocalTime.parse(startTime);
         this.endTime = LocalTime.parse(endTime);
 

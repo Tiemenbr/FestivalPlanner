@@ -3,6 +3,7 @@ import Objects.*;
 
 public class Planner {
     private Schedule schedule = new Schedule();
+    public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
 
     public void init() {
         schedule.addLocation(new Location(1,10, 10, "P1"));
@@ -12,8 +13,8 @@ public class Planner {
         schedule.addAttraction(new Attraction(1,"draaimolen", 4, 5));
         schedule.addAttraction(new Attraction(2,"botsautos", 5, 7));
 
-        schedule.addScheduleItem(new ScheduleItem(1, schedule.getLocation(1), schedule.getAttraction(1),"10:10", "10:30"));
-        schedule.addScheduleItem(new ScheduleItem(2, schedule.getLocation(2), schedule.getAttraction(2),"10:30", "13:00"));
+        schedule.addScheduleItem(new ScheduleItem(1, schedule.getLocation(1), schedule.getAttraction(1), ScheduleItem.day.MONDAY, "10:10", "10:30"));
+        schedule.addScheduleItem(new ScheduleItem(2, schedule.getLocation(2), schedule.getAttraction(2), ScheduleItem.day.MONDAY,"10:30", "13:00"));
 
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
