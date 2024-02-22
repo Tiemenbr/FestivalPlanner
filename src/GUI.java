@@ -1,28 +1,34 @@
+import Objects.CalendarController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
 
-    private Planner planner;
+    private static Planner planner;
     private FXMLLoader fxmlLoader;
-    private CalendarController calendarController;
+    private Objects.CalendarController calendarController;
     public static void main(String[] args) {
         // On startup
-        this.planner = new Planner();
+        planner = new Planner();
         planner.init();
-        this.fxmlLoader = new FXMLLoader(program.Main.class.getResource("/Calendar.fxml"));
-        this.calendarController = new CalendarController();
         launch(GUI.class);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.fxmlLoader = new FXMLLoader(GUI.class.getResource("/Calendar.fxml"));
+        this.calendarController = new Objects.CalendarController();
+        //this.calendarController.addCalendarActivity(1,)
+
         stage.setTitle("Kermis planner");
 
         TabPane tabpane = new TabPane();
@@ -32,8 +38,10 @@ public class GUI extends Application {
         planner.setContent(plannerLabel);
 
         Tab schedule = new Tab("Schedule");
-        Label scheduleLabel = new Label("page with visualization of the schedule");
-        schedule.setContent(scheduleLabel);
+        HBox agendaOverviewBox = new HBox();
+        agendaOverviewBox.alignmentProperty().set(Pos.CENTER);
+        agendaOverviewBox.getChildren().add(fxmlLoader.load());
+        schedule.setContent(agendaOverviewBox);
 
         tabpane.getTabs().addAll(planner, schedule);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
