@@ -51,7 +51,7 @@ public class Attraction implements CRUD, Serializable {
     @Override
     public String toString() {
         return "Attraction{" +
-                "name='" + this.name + '\'' +
+                "name='" + name + '\'' +
                 ", popularity=" + popularity +
                 ", price=" + price +
                 '}';

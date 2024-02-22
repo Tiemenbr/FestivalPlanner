@@ -2,31 +2,30 @@ package Objects;
 
 import java.io.Serializable;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class ScheduleItem implements CRUD, Serializable {
     private int id;
     private Location location;  //todo replace with locationId
     private Attraction attraction;  //replace with attractionId
-    private ZonedDateTime startTime, endTime;
+    private LocalTime startTime, endTime;
 
-    public ScheduleItem(int id, Location location, Attraction attraction, ZonedDateTime startTime, ZonedDateTime endTime) {
+    public ScheduleItem(int id, Location location, Attraction attraction, String startTime, String endTime) {
         this.id = id; //todo add proper dynamic id assignment
         this.location = location;
         this.attraction = attraction;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = LocalTime.parse(startTime);
+        this.endTime = LocalTime.parse(endTime);
     }
 
-//    public ScheduleItem(int id, Location location, Attraction attraction, String startTime, int minuteDuration) {
-//        this(id,
-//                location,
-//                attraction,
-//                startTime,
-//                LocalTime.parse(startTime).plusMinutes(minuteDuration).toString()
-//        );
-//    }
+    public ScheduleItem(int id, Location location, Attraction attraction, String startTime, int minuteDuration) {
+        this(id,
+                location,
+                attraction,
+                startTime,
+                LocalTime.parse(startTime).plusMinutes(minuteDuration).toString()
+        );
+    }
 
     public Integer getId() {
         return this.id;
@@ -42,11 +41,11 @@ public class ScheduleItem implements CRUD, Serializable {
         return this.attraction;
     }
 
-    public ZonedDateTime getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public ZonedDateTime getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
@@ -54,13 +53,6 @@ public class ScheduleItem implements CRUD, Serializable {
     public LocalTime getDurration() {
         LocalTime returnTime = LocalTime.MIDNIGHT;
         return returnTime.plusMinutes(this.startTime.until(this.endTime, ChronoUnit.MINUTES));
-    }
-
-    @Override
-    public String toString(){
-        return "(" + this.id + ")" + " attraction: " + this.attraction.getName() + ", at: " + this.location.getName() +
-                ", time: " + this.startTime.getHour() + ":" + this.startTime.getMinute() + "-" + this.endTime.getHour() +
-                ":" + this.endTime.getMinute();
     }
 
     @Override
@@ -74,5 +66,6 @@ public class ScheduleItem implements CRUD, Serializable {
         schedule.deleteScheduleItem(this.getId());
         IOController.delete(this.id, IOController.ObjectType.SCHEDULE_ITEM);
     }
+
 
 }

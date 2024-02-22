@@ -30,9 +30,6 @@ public class Location implements CRUD, Serializable {
         this.visitors = visitors;
     }
 
-    public String getName(){
-        return this.name;
-    }
 
     @Override
     public void update() {
