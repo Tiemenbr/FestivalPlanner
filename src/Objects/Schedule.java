@@ -11,6 +11,11 @@ public class Schedule {
     //todo schedule doesn't need to have the visitors?
     //private ArrayList<Visitor> visitors = new ArrayList<>();
 
+
+    public HashMap<Integer, ScheduleItem> getScheduleItems() {
+        return scheduleItems;
+    }
+
     public ScheduleItem getScheduleItem(int id) {
         return scheduleItems.get(id);
     }
@@ -23,6 +28,10 @@ public class Schedule {
         this.scheduleItems.remove(id);
     }
 
+    public HashMap<Integer, Attraction> getAttractions() {
+        return attractions;
+    }
+
     public Attraction getAttraction(int id) {
         return attractions.get(id);
     }
@@ -33,6 +42,10 @@ public class Schedule {
 
     public void deleteAttraction(int id){
         this.attractions.remove(id);
+    }
+
+    public HashMap<Integer, Location> getLocations() {
+        return locations;
     }
 
     public Location getLocation(int id) {

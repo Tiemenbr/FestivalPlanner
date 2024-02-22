@@ -19,7 +19,7 @@ public class Attraction implements CRUD, Serializable {
         this.update();
     }
 
-    public Integer getId() {
+    public int getId() {
         return this.id;
     }
 
