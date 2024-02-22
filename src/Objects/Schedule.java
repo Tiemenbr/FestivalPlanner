@@ -23,6 +23,10 @@ public class Schedule {
         this.scheduleItems.remove(id);
     }
 
+    public HashMap<Integer, Attraction> getAttractions() {
+        return attractions;
+    }
+
     public Attraction getAttraction(int id) {
         return attractions.get(id);
     }

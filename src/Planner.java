@@ -2,7 +2,7 @@ import Objects.*;
 
 
 public class Planner {
-    private Schedule schedule = new Schedule();
+    private static Schedule schedule = new Schedule();
 
     public void init() {
         schedule.addLocation(new Location(1,10, 10, "P1"));
@@ -19,5 +19,9 @@ public class Planner {
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
 //        schedule.getVisitors().add(new Visitor());
+    }
+
+    public static Schedule getSchedule() {
+        return schedule;
     }
 }

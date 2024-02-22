@@ -28,6 +28,10 @@ public class GUI extends Application {
         Label scheduleLabel = new Label("page with visualization of the schedule");
         schedule.setContent(scheduleLabel);
 
+        Tab attractionRead = new Tab("Attractions");
+
+        schedule.setContent(AttractionsOverview.getElements());
+
         tabpane.getTabs().addAll(planner, schedule);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
