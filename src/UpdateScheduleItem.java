@@ -25,6 +25,38 @@ public class UpdateScheduleItem {
 
         contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox);
 
+        //#region ScheduleItem
+        Label scheduleItemInputLabel = new Label("Schedule Item: ");
+        labelColumnBox.getChildren().add(scheduleItemInputLabel);
+
+        ComboBox<ScheduleItem> scheduleItemOptionsComboBox = new ComboBox<>();
+        HashMap<Integer, ScheduleItem> scheduleItems = schedule.getScheduleItems();
+        for (int i = 1; i <= scheduleItems.size(); i++) {
+            scheduleItemOptionsComboBox.getItems().add(scheduleItems.get(i));
+        }
+        scheduleItemOptionsComboBox.setConverter(new StringConverter<ScheduleItem>() {
+            @Override
+            public String toString(ScheduleItem scheduleItem) {
+                StringBuilder scheduleData = new StringBuilder();
+                scheduleData.append(scheduleItem.getDay().toString().substring(0, 1).toUpperCase() + scheduleItem.getDay().toString().substring(1).toLowerCase());
+                scheduleData.append(" ");
+                scheduleData.append(scheduleItem.getStartTime()+"-"+scheduleItem.getEndTime());
+                scheduleData.append(", ");
+                scheduleData.append(scheduleItem.getAttraction(Planner.getSchedule()).getName());
+                scheduleData.append(" ");
+                scheduleData.append(scheduleItem.getLocation(Planner.getSchedule()).getName());
+                return scheduleData.toString();
+            }
+
+            @Override
+            public ScheduleItem fromString(String string) {
+                return null;
+            }
+        });
+
+        inputsColumnBox.getChildren().add(scheduleItemOptionsComboBox);
+        //#endregion
+
         //#region Location combobox
         Label locationInputLabel = new Label("Location: ");
         labelColumnBox.getChildren().add(locationInputLabel);
@@ -158,35 +190,53 @@ public class UpdateScheduleItem {
         //#endregion
         //#endregion
 
-        //#region Submit Button
-        Button createAttractionButton = new Button("Create Schedule Item");
-        createAttractionButton.setOnAction(e ->{
-            int newId = schedule.getScheduleItems().size()+1; //todo proper id assignment in scheduleItem Class
-
-            String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
-            String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
-            System.out.println(startTime+" "+endTime);
-            System.out.println(locationOptionsComboBox.getValue().getId()+" "+ attractionOptionsComboBox.getValue().getId());
-            ScheduleItem newItem = new ScheduleItem(newId,locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(),dayOptionComboBox.getValue(), startTime, endTime);
-            schedule.addScheduleItem(newItem);
-            System.out.println("created new scheduleItem: " + newItem);
+        //on selection of the Schedule Item ComboBox set all the other ComboBoxes to the matching values
+        scheduleItemOptionsComboBox.setOnAction(e ->{
+            //get the scheduleItem that was selected
+            ScheduleItem selectedScheduleItem = scheduleItemOptionsComboBox.getValue();
+            //clear and select the location
+            locationOptionsComboBox.getSelectionModel().clearAndSelect(locationOptionsComboBox.getItems().indexOf(selectedScheduleItem.getLocation(schedule)));
+            //clear and select the attraction
+            attractionOptionsComboBox.getSelectionModel().clearAndSelect(attractionOptionsComboBox.getItems().indexOf(selectedScheduleItem.getAttraction(schedule)));
+            //clear and select the day
+            dayOptionComboBox.getSelectionModel().clearAndSelect(dayOptionComboBox.getItems().indexOf(selectedScheduleItem.getDay()));
+            //clear and select the start time hour
+            String startHour = selectedScheduleItem.getStartTime().toString().substring(0,2);
+            startHourComboBox.getSelectionModel().clearAndSelect(startHourComboBox.getItems().indexOf(startHour));
+            //clear and select the start time minute
+            String startMinute = selectedScheduleItem.getStartTime().toString().substring(3);
+            startMinuteComboBox.getSelectionModel().clearAndSelect(startMinuteComboBox.getItems().indexOf(startMinute));
+            //clear and select the end time hour
+            String endHour = selectedScheduleItem.getEndTime().toString().substring(0,2);
+            endHourComboBox.getSelectionModel().clearAndSelect(endHourComboBox.getItems().indexOf(endHour));
+            //clear and select the end time minute
+            String endMinute = selectedScheduleItem.getEndTime().toString().substring(3);
+            endMinuteComboBox.getSelectionModel().clearAndSelect(endMinuteComboBox.getItems().indexOf(endMinute));
         });
 
-        inputsColumnBox.getChildren().add(createAttractionButton);
-        //#endregion
+        //#region update button
         Button updateAttractionButton = new Button("Update Schedule Item");
         updateAttractionButton.setOnAction(event -> {
-            int newId = schedule.getScheduleItems().size()+1;
+            ScheduleItem scheduleItem = scheduleItemOptionsComboBox.getValue();
 
+            System.out.println("updating scheduleItem "+scheduleItem.getId()+":");
+            System.out.println("from:");
+            System.out.println(scheduleItem);
+
+            Location location = locationOptionsComboBox.getValue();
+            Attraction attraction = attractionOptionsComboBox.getValue();
+            ScheduleItem.day day = dayOptionComboBox.getValue();
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
-            System.out.println(startTime+" "+endTime);
-            System.out.println(locationOptionsComboBox.getValue().getId()+" "+ attractionOptionsComboBox.getValue().getId());
-            ScheduleItem newItem = new ScheduleItem(newId,locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(),dayOptionComboBox.getValue(), startTime, endTime);
-            schedule.addScheduleItem(newItem);
-            System.out.println("created new scheduleItem: " + newItem);
+            scheduleItem.setAll(location,attraction,day,startTime,endTime);
+            System.out.println("To:");
+            System.out.println(scheduleItem
+            );
         });
         inputsColumnBox.getChildren().add(updateAttractionButton);
+        //#endregion
+
+
 
         mainCreateScheduleItemBox.getChildren().add(contentRowBox);
 
