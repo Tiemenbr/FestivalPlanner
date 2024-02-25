@@ -1,5 +1,6 @@
 import Objects.Attraction;
 import Objects.Location;
+import Objects.Schedule;
 import Objects.Visitor;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -15,6 +16,7 @@ public class LocationsOverview{
     private static HashMap<Integer, Location> locations;
     private static ComboBox locationComboBox = new ComboBox();
     public static VBox getComponent(){
+        Schedule schedule = Planner.getSchedule();
 
         VBox mainBox = new VBox();
 
@@ -35,7 +37,7 @@ public class LocationsOverview{
         listsContainerBox.getChildren().addAll(collumnIds, collumnHeights, collumnWidths, collumnNames, collumnVisitors);
 
         // Fill list
-        locations = Planner.getSchedule().getLocations();
+        locations = schedule.getLocations();
         for (int i = 0; i < locations.size(); i++) {
             collumnIds.getItems().add(String.valueOf(locations.get(i+1).getId()));
             collumnHeights.getItems().add(String.valueOf(locations.get(i+1).getHeight()));
@@ -78,11 +80,12 @@ public class LocationsOverview{
                         add = false;
                     }
                 }
+                // Adding an item
                 if (add){
                     // Add location to lists and schedule
                     Location location = new Location(Integer.valueOf(textLocationId.getText()), Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
                     locations.put(Integer.valueOf(textLocationId.getText()), location);
-                    Planner.schedule.addLocation(location);
+                    schedule.addLocation(location);
                     locationAdded.setText("Location added!");
 
                     // Update list
@@ -95,21 +98,28 @@ public class LocationsOverview{
                     // Update combobox
                     locationComboBox.getItems().add(location.getName());
                 }
+                // Updating an item
                 if (!add){
                     int index = 0;
-                    for (Map.Entry<Integer, Location> entry : locations.entrySet()){
+                    int theIndex = 0;
+                    for (String str : collumnIds.getItems()){
+                        if (str.equalsIgnoreCase(textLocationId.getText())){
+                            theIndex = index;
+                        }
                         index++;
+                    }
+                    for (Map.Entry<Integer, Location> entry : locations.entrySet()){
                         if (String.valueOf(entry.getValue().getId()).equalsIgnoreCase(textLocationId.getText())){
                             // Delete location from lists and schedule
-                            Planner.schedule.deleteLocation(entry.getValue().getId());
+                            schedule.deleteLocation(entry.getValue().getId());
                             locations.remove(entry.getKey(), entry.getValue());
 
                             // Update list
-                            collumnIds.getItems().remove(index);
-                            collumnHeights.getItems().remove(index);
-                            collumnWidths.getItems().remove(index);
-                            collumnNames.getItems().remove(index);
-                            collumnVisitors.getItems().remove(index);
+                            collumnIds.getItems().remove(theIndex);
+                            collumnHeights.getItems().remove(theIndex);
+                            collumnWidths.getItems().remove(theIndex);
+                            collumnNames.getItems().remove(theIndex);
+                            collumnVisitors.getItems().remove(theIndex);
 
                             // Update combobox
                             locationComboBox.getItems().remove(entry.getValue().getName());
@@ -117,7 +127,7 @@ public class LocationsOverview{
                             // Add location to lists and schedule
                             Location location = new Location(Integer.valueOf(textLocationId.getText()), Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
                             locations.put(Integer.valueOf(textLocationId.getText()), location);
-                            Planner.schedule.addLocation(location);
+                            schedule.addLocation(location);
                             locationAdded.setText("Location updated!");
 
                             // Update list
@@ -140,7 +150,7 @@ public class LocationsOverview{
 
         // Delete location
         VBox locationUpdateDeleteBox = new VBox();
-        HashMap<Integer, Location> locationMap = Planner.getSchedule().getLocations();
+        HashMap<Integer, Location> locationMap = schedule.getLocations();
         for(Map.Entry<Integer, Location> e : locationMap.entrySet()){
             String name = String.valueOf(locationComboBox.getItems().add(e.getValue().getName()));
             locationComboBox.setValue(name);
@@ -154,7 +164,7 @@ public class LocationsOverview{
                     index++;
                     if (entry.getValue().getName() == locationComboBox.getValue()){
                         // Delete location from lists and schedule
-                        Planner.schedule.deleteLocation(entry.getValue().getId());
+                        schedule.deleteLocation(entry.getValue().getId());
                         locations.remove(entry.getKey(), entry.getValue());
 
                         // Update list
@@ -176,7 +186,7 @@ public class LocationsOverview{
         locationUpdateDeleteBox.getChildren().addAll(locationComboBox, buttonLocationDelete, locationDeleted);
 
         mainBox.getChildren().addAll(listsContainerBox, locationAddBox, locationUpdateDeleteBox);
-        Planner.getSchedule().getLocations();
+        //schedule.getLocations();
 
         return mainBox;
     }
