@@ -5,12 +5,18 @@ import java.util.HashMap;
 
 public class Schedule {
 
-    private HashMap<Integer, ScheduleItem> scheduleItems = new HashMap<>();
-    private HashMap<Integer, Attraction> attractions = new HashMap<>();
-    private HashMap<Integer, Location> locations = new HashMap<>();
+    private HashMap<Integer, ScheduleItem> scheduleItems;
+    private HashMap<Integer, Attraction> attractions;
+    private HashMap<Integer, Location> locations;
     //todo schedule doesn't need to have the visitors?
     //private ArrayList<Visitor> visitors = new ArrayList<>();
 
+
+    public Schedule() {
+        this.scheduleItems = new HashMap<>();
+        this.attractions = new HashMap<>();
+        this.locations = new HashMap<>();
+    }
 
     public HashMap<Integer, ScheduleItem> getScheduleItems() {
         return scheduleItems;
