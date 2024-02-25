@@ -1,12 +1,10 @@
+package gui;
+
 import Objects.Attraction;
-import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public class AttractionsOverview {
@@ -33,7 +31,7 @@ public class AttractionsOverview {
         }
 
         mainBox.getChildren().add(listsContainerBox);
-        //Planner.getSchedule().getAttractions();
+        //gui.Planner.getSchedule().getAttractions();
 
 
         return mainBox;

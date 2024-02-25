@@ -1,3 +1,5 @@
+package gui;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,7 +21,7 @@ public class GUI extends Application {
 
         TabPane tabpane = new TabPane();
 
-        Tab plannerTab = new Tab("Planner");
+        Tab plannerTab = new Tab("gui.Planner");
         Label plannerLabel = new Label("planner page");
         plannerTab.setContent(plannerLabel);
 

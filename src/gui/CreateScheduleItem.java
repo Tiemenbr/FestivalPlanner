@@ -1,3 +1,5 @@
+package gui;
+
 import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
