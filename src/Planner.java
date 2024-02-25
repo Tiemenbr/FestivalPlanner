@@ -3,7 +3,7 @@ import Objects.*;
 
 public class Planner {
     public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
-    private static Schedule schedule = new Schedule();
+    static Schedule schedule = new Schedule();
 
     public void init() {
         schedule.addLocation(new Location(1,10, 10, "P1"));

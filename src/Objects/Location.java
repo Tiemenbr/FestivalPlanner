@@ -26,6 +26,14 @@ public class Location implements CRUD, Serializable {
         return name;
     }
 
+    public int getHeight(){
+        return this.height;
+    }
+
+    public int getWidth(){
+        return this.width;
+    }
+
     public ArrayList<Visitor> getVisitors() {
         return visitors;
     }
