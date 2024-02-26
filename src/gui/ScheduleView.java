@@ -25,27 +25,21 @@ public class ScheduleView {
             hours.getChildren().add(label);
         }
 
-
-
-        borderPane.setTop(hours);
-        borderPane.setLeft(scheduleItems);
-
         StackPane stackPane = new StackPane();
-        Canvas background = new Canvas(1000,100);
+        Canvas background = new Canvas(1200, 600);
         GraphicsContext gc = background.getGraphicsContext2D();
         gc.setFill(Color.GRAY);
-        gc.fillRect(0, 0, 100, 100);
-        background.widthProperty().addListener((obs, oldVal, newVal) -> {
+
+        hourLabels[hourLabels.length-1].layoutXProperty().addListener((obs, oldVal, newVal) -> {
             gc.clearRect(0, 0, background.getWidth(), background.getHeight());
             for (int i = 0; i < 12; i++) {
-                gc.fillRect(hourLabels[2].getLayoutX() * i,0, hourLabels[1].getLayoutX(), background.getHeight());
+                gc.fillRect(hourLabels[0].getWidth() * 2 * i,0, hourLabels[0].getWidth(), background.getHeight());
             }
         });
 
         borderPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             for (Label hourLabel : hourLabels) {
                 hourLabel.setPrefWidth(newVal.intValue()/24);
-                System.out.println(hourLabel.getLayoutX());
             }
             background.setWidth(newVal.intValue());
         });
@@ -53,7 +47,7 @@ public class ScheduleView {
         background.heightProperty().addListener((obs, oldVal, newVal) -> {
             gc.clearRect(0, 0, background.getWidth(), background.getHeight());
             for (int i = 0; i < 12; i++) {
-                gc.fillRect(hourLabels[2].getLayoutX() * i,0, hourLabels[1].getLayoutX(), newVal.intValue());
+                gc.fillRect(hourLabels[0].getWidth() * 2 * i,0, hourLabels[0].getWidth(), background.getHeight());
             }
         });
 
@@ -62,7 +56,9 @@ public class ScheduleView {
         });
 
         stackPane.setAlignment(Pos.TOP_LEFT);
-        stackPane.getChildren().addAll(background, borderPane);
-        return stackPane;
+        stackPane.getChildren().addAll(background, hours);
+        borderPane.setCenter(stackPane);
+        borderPane.setLeft(scheduleItems);
+        return borderPane;
     }
 }
