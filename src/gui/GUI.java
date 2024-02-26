@@ -1,17 +1,24 @@
 package gui;
 
+import Objects.Schedule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
+    private static ArrayList<Schedule> SCHEDULES;
     private static Planner planner;
     public static void main(String[] args) {
-        planner = new Planner();
-        planner.init();
+//        planner = new Planner();
+//        planner.init();
+
+        GUI.SCHEDULES = new ArrayList<>();
+        GUI.SCHEDULES.add(new Schedule());
         launch(GUI.class);
     }
 
@@ -26,8 +33,7 @@ public class GUI extends Application {
         plannerTab.setContent(plannerLabel);
 
         Tab scheduleTab = new Tab("Schedule");
-        Label scheduleLabel = new Label("page with visualization of the schedule");
-        scheduleTab.setContent(scheduleLabel);
+        scheduleTab.setContent(ScheduleView.createScheduleView(GUI.SCHEDULES.get(0)));
 
         Tab createScheduleItem = new Tab("Create ScheduleItem");
         createScheduleItem.setContent(CreateScheduleItem.getComponent());

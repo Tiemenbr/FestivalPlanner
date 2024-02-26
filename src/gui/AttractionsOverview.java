@@ -23,7 +23,7 @@ public class AttractionsOverview {
 
         listsContainerBox.getChildren().addAll(collumnNames,collumnPopularity,collumnPrice);
 
-        HashMap<Integer, Attraction> attractions = Planner.getSchedule().getAttractions();
+        HashMap<Integer, Attraction> attractions = Planner.getSCHEDULE().getAttractions();
         for (int i = 0; i < attractions.size(); i++) {
             collumnNames.getItems().add(attractions.get(i+1).getName());
             collumnPopularity.getItems().add(Integer.toString(attractions.get(i+1).getPopularity()));
