@@ -3,17 +3,18 @@ package Objects;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 public class ScheduleItem implements CRUD, Serializable {
-    private int id;
-    private int locationId;  //todo replace with locationId
-    private int attractionId;  //replace with attractionId
+    private UUID id;
+    private UUID locationId;
+    private UUID attractionId;
     public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
     private day day;
     private LocalTime startTime, endTime;
 
-    public ScheduleItem(int id, Location location, Attraction attraction, day day, String startTime, String endTime) {
-        this.id = id; //todo add proper dynamic id assignment
+    public ScheduleItem(Location location, Attraction attraction, day day, String startTime, String endTime) {
+        this.id = UUID.randomUUID();
         this.locationId = location.getId();
         this.attractionId = attraction.getId();
         this.day = day;
@@ -23,7 +24,7 @@ public class ScheduleItem implements CRUD, Serializable {
         this.update();
     }
 
-    public Integer getId() {
+    public UUID getId() {
         return this.id;
     }
 
@@ -61,5 +62,15 @@ public class ScheduleItem implements CRUD, Serializable {
         IOController.delete(this.id, IOController.ObjectType.SCHEDULE_ITEM);
     }
 
-
+    @Override
+    public String toString() {
+        return "ScheduleItem{" +
+                "id=" + id +
+                ", locationId=" + locationId +
+                ", attractionId=" + attractionId +
+                ", day=" + day +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }

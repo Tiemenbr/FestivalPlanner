@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
@@ -20,8 +21,15 @@ public class GUI extends Application {
         TabPane tabpane = new TabPane();
 
         Tab plannerTab = new Tab("Planner");
+        VBox plannerTabBox = new VBox(10);
         Label plannerLabel = new Label("planner page");
-        plannerTab.setContent(plannerLabel);
+        Label tempSeedDataButtonLabel = new Label("TEMPORARY button for test data:");
+        Button tempSeedDataButton = new Button("create test data");
+        tempSeedDataButton.setOnAction(e ->{
+            Planner.seedTestData();
+        });
+        plannerTabBox.getChildren().addAll(plannerLabel,tempSeedDataButtonLabel,tempSeedDataButton);
+        plannerTab.setContent(plannerTabBox);
 
         Tab scheduleTab = new Tab("Schedule");
         Label scheduleLabel = new Label("page with visualization of the schedule");
