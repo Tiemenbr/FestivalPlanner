@@ -23,14 +23,18 @@ public class GUI extends Application {
         Label plannerLabel = new Label("planner page");
         plannerTab.setContent(plannerLabel);
 
-        Tab schedule = new Tab("Schedule");
+        Tab scheduleTab = new Tab("Schedule");
         Label scheduleLabel = new Label("page with visualization of the schedule");
-        schedule.setContent(scheduleLabel);
+        scheduleTab.setContent(scheduleLabel);
 
         Tab createScheduleItem = new Tab("Create ScheduleItem");
-        createScheduleItem.setContent(CreateScheduleItem.getComponent(planner));
+        createScheduleItem.setContent(CreateScheduleItem.getComponent());
 
-        tabpane.getTabs().addAll(plannerTab, schedule, createScheduleItem);
+        Tab attractionRead = new Tab("Attractions");
+        attractionRead.setContent(AttractionsOverview.getComponent());
+
+
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);

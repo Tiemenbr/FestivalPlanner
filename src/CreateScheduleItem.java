@@ -1,5 +1,6 @@
 import Objects.Attraction;
 import Objects.Location;
+import Objects.Schedule;
 import Objects.ScheduleItem;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -11,7 +12,8 @@ import java.util.HashMap;
 
 public class CreateScheduleItem{
 
-    public static VBox getComponent(Planner planner){
+    public static VBox getComponent(){
+        Schedule schedule = Planner.getSchedule();
         VBox mainCreateScheduleItemBox = new VBox(20);
         mainCreateScheduleItemBox.setPadding(new Insets(20));
 
@@ -26,7 +28,7 @@ public class CreateScheduleItem{
         labelColumnBox.getChildren().add(locationInputLabel);
 
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Location> locations = planner.getSchedule().getLocations();
+        HashMap<Integer, Location> locations = schedule.getLocations();
         for (int i = 1; i <= locations.size(); i++) {
             locationOptionsComboBox.getItems().add(locations.get(i));
         }
@@ -50,7 +52,7 @@ public class CreateScheduleItem{
         labelColumnBox.getChildren().add(attractionInputLabel);
 
         ComboBox<Attraction> attractionOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Attraction> attractions = planner.getSchedule().getAttractions();
+        HashMap<Integer, Attraction> attractions = schedule.getAttractions();
         for (int i = 1; i <= attractions.size(); i++) {
             attractionOptionsComboBox.getItems().add(attractions.get(i));
         }
@@ -157,14 +159,14 @@ public class CreateScheduleItem{
         //#region Submit Button
         Button createAttractionButton = new Button("Create Schedule Item");
         createAttractionButton.setOnAction(e ->{
-            int newId = planner.getSchedule().getScheduleItems().size()+1; //todo proper id assignment in scheduleItem Class
+            int newId = schedule.getScheduleItems().size()+1; //todo proper id assignment in scheduleItem Class
 
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
             System.out.println(startTime+" "+endTime);
             System.out.println(locationOptionsComboBox.getValue().getId()+" "+ attractionOptionsComboBox.getValue().getId());
             ScheduleItem newItem = new ScheduleItem(newId,locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(),dayOptionComboBox.getValue(), startTime, endTime);
-            planner.getSchedule().addScheduleItem(newItem);
+            schedule.addScheduleItem(newItem);
             System.out.println("created new scheduleItem: " + newItem);
         });
 
