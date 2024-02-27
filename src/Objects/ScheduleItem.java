@@ -23,6 +23,16 @@ public class ScheduleItem implements CRUD, Serializable {
         this.update();
     }
 
+    public void setAll(Location location, Attraction attraction, day day, String startTime, String endTime){
+        this.locationId = location.getId();
+        this.attractionId = attraction.getId();
+        this.day = day;
+        this.startTime = LocalTime.parse(startTime);
+        this.endTime = LocalTime.parse(endTime);
+
+        this.update();
+    }
+
     public Integer getId() {
         return this.id;
     }
@@ -33,6 +43,10 @@ public class ScheduleItem implements CRUD, Serializable {
 
     public Attraction getAttraction(Schedule schedule) {
         return schedule.getAttraction(this.attractionId);
+    }
+
+    public ScheduleItem.day getDay() {
+        return day;
     }
 
     public LocalTime getStartTime() {
@@ -61,5 +75,15 @@ public class ScheduleItem implements CRUD, Serializable {
         IOController.delete(this.id, IOController.ObjectType.SCHEDULE_ITEM);
     }
 
-
+    @Override
+    public String toString() {
+        return "ScheduleItem{" +
+                "id=" + id +
+                ", locationId=" + locationId +
+                ", attractionId=" + attractionId +
+                ", day=" + day +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }

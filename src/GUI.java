@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
@@ -27,8 +28,10 @@ public class GUI extends Application {
         Label scheduleLabel = new Label("page with visualization of the schedule");
         scheduleTab.setContent(scheduleLabel);
 
-        Tab createScheduleItem = new Tab("Create ScheduleItem");
-        createScheduleItem.setContent(CreateScheduleItem.getComponent());
+        Tab createScheduleItem = new Tab("Schedule Items");
+        HBox scheduleItemBox = new HBox();
+        scheduleItemBox.getChildren().addAll(CreateScheduleItem.getComponent(),UpdateScheduleItem.getComponent());
+        createScheduleItem.setContent(scheduleItemBox);
 
         Tab attractionRead = new Tab("Attractions");
         attractionRead.setContent(AttractionsOverview.getComponent());
