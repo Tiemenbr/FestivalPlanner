@@ -1,4 +1,5 @@
 import Objects.Attraction;
+import Objects.Comparators.ScheduleItemCompareDayLocationTime;
 import Objects.Location;
 import Objects.Schedule;
 import Objects.ScheduleItem;
@@ -13,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 import java.awt.ScrollPane;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -118,24 +121,12 @@ public class UpdateScheduleItem {
         Label dayLabel = new Label("Day: ");
         labelColumnBox.getChildren().add(dayLabel);
 
-        ComboBox<ScheduleItem.day> dayOptionComboBox = new ComboBox<>();
-        for (ScheduleItem.day day : ScheduleItem.day.values()) {
+        ComboBox<DayOfWeek> dayOptionComboBox = new ComboBox<>();
+        for (DayOfWeek day : DayOfWeek.values()) {
             dayOptionComboBox.getItems().add(day);
         }
 
         inputsColumnBox.getChildren().add(dayOptionComboBox);
-        dayOptionComboBox.setConverter(new StringConverter<ScheduleItem.day>() {
-            @Override
-            public String toString(ScheduleItem.day day) {
-                String dayString = day.toString();
-                return dayString.substring(0, 1).toUpperCase() + dayString.substring(1).toLowerCase();
-            }
-
-            @Override
-            public ScheduleItem.day fromString(String string) {
-                return null;
-            }
-        });
 
         //#endregion
         //#region Time Start
@@ -223,8 +214,8 @@ public class UpdateScheduleItem {
         });
 
         //#region update button
-        Button updateAttractionButton = new Button("Update Schedule Item");
-        updateAttractionButton.setOnAction(event -> {
+        Button updateScheduleItemButton = new Button("Update Schedule Item");
+        updateScheduleItemButton.setOnAction(event -> {
             ScheduleItem scheduleItem = scheduleItemOptionsComboBox.getValue();
 
             System.out.println("updating scheduleItem "+scheduleItem.getId()+":");
@@ -233,16 +224,30 @@ public class UpdateScheduleItem {
 
             Location location = locationOptionsComboBox.getValue();
             Attraction attraction = attractionOptionsComboBox.getValue();
-            ScheduleItem.day day = dayOptionComboBox.getValue();
+            DayOfWeek day = dayOptionComboBox.getValue();
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
+
+            if(!LocalTime.parse(startTime).isBefore(LocalTime.parse(endTime))){
+                System.out.println("EndTime must be After StartTime");
+                return;
+            }
+
             scheduleItem.setAll(location,attraction,day,startTime,endTime);
             System.out.println("To:");
-            System.out.println(scheduleItem
-            );
+            System.out.println(scheduleItem);
+
+            //todo doesn't work as it already gets updated......
+            ScheduleItemCompareDayLocationTime scheduleItemComparator = new ScheduleItemCompareDayLocationTime();
+            for (ScheduleItem scheduleItem1 : schedule.getScheduleItems().values()) {
+                if (scheduleItemComparator.compare(scheduleItem, scheduleItem1) > 0) {
+                    System.out.println(String.format("Overlap between %s and %s", scheduleItem1, scheduleItem));
+                    return;
+                }
+            }
             scheduleItemOptionsComboBox.getItems().set(scheduleItemOptionsComboBox.getSelectionModel().getSelectedIndex(),scheduleItem);
         });
-        inputsColumnBox.getChildren().add(updateAttractionButton);
+        inputsColumnBox.getChildren().add(updateScheduleItemButton);
         //#endregion
 
         ScrollPane pane = new ScrollPane();

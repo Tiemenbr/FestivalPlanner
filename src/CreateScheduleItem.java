@@ -1,13 +1,15 @@
-import Objects.Attraction;
-import Objects.Location;
-import Objects.Schedule;
-import Objects.ScheduleItem;
+import Objects.*;
+import Objects.Comparators.ScheduleItemCompareDayLocationTime;
+import Objects.Comparators.ScheduleItemCompareLocation;
+import Objects.Comparators.ScheduleItemCompareTimeOverlap;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.HashMap;
 
 public class CreateScheduleItem{
@@ -79,21 +81,21 @@ public class CreateScheduleItem{
         Label dayLabel = new Label("Day: ");
         labelColumnBox.getChildren().add(dayLabel);
 
-        ComboBox<ScheduleItem.day> dayOptionComboBox = new ComboBox<>();
-        for (ScheduleItem.day day : ScheduleItem.day.values()) {
+        ComboBox<DayOfWeek> dayOptionComboBox = new ComboBox<>();
+        for (DayOfWeek day : DayOfWeek.values()) {
             dayOptionComboBox.getItems().add(day);
         }
 
         inputsColumnBox.getChildren().add(dayOptionComboBox);
-        dayOptionComboBox.setConverter(new StringConverter<ScheduleItem.day>() {
+        dayOptionComboBox.setConverter(new StringConverter<DayOfWeek>() {
             @Override
-            public String toString(ScheduleItem.day day) {
+            public String toString(DayOfWeek day) {
                 String dayString = day.toString();
                 return dayString.substring(0, 1).toUpperCase() + dayString.substring(1).toLowerCase();
             }
 
             @Override
-            public ScheduleItem.day fromString(String string) {
+            public DayOfWeek fromString(String string) {
                 return null;
             }
         });
@@ -167,9 +169,23 @@ public class CreateScheduleItem{
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
             System.out.println(startTime+" "+endTime);
+            if(!LocalTime.parse(startTime).isBefore(LocalTime.parse(endTime))){
+                System.out.println("EndTime must be After StartTime");
+                return;
+            }
             System.out.println(locationOptionsComboBox.getValue().getId()+" "+ attractionOptionsComboBox.getValue().getId());
             ScheduleItem newItem = new ScheduleItem(newId,locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(),dayOptionComboBox.getValue(), startTime, endTime);
-            schedule.addScheduleItem(newItem);
+
+            //todo doesn't work as it already gets created......
+            ScheduleItemCompareDayLocationTime scheduleItemComparator = new ScheduleItemCompareDayLocationTime();
+            for (ScheduleItem scheduleItem : schedule.getScheduleItems().values()) {
+                if (scheduleItemComparator.compare(newItem, scheduleItem) > 0) {
+                    System.out.println(String.format("Overlap between %s and %s", scheduleItem, newItem));
+                    return;
+                }
+            }
+
+            //schedule.addScheduleItem(newItem);
             System.out.println("created new scheduleItem: " + newItem);
         });
 
