@@ -20,6 +20,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class UpdateScheduleItem {
 
@@ -43,9 +44,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(scheduleItemInputLabel);
 
         ComboBox<ScheduleItem> scheduleItemOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, ScheduleItem> scheduleItems = schedule.getScheduleItems();
-        for (int i = 1; i <= scheduleItems.size(); i++) {
-            scheduleItemOptionsComboBox.getItems().add(scheduleItems.get(i));
+        HashMap<UUID, ScheduleItem> scheduleItems = schedule.getScheduleItems();
+        for (UUID key : scheduleItems.keySet()) {
+            scheduleItemOptionsComboBox.getItems().add(scheduleItems.get(key));
         }
         scheduleItemOptionsComboBox.setConverter(new StringConverter<ScheduleItem>() {
             @Override
@@ -75,9 +76,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(locationInputLabel);
 
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Location> locations = schedule.getLocations();
-        for (int i = 1; i <= locations.size(); i++) {
-            locationOptionsComboBox.getItems().add(locations.get(i));
+        HashMap<UUID, Location> locations = schedule.getLocations();
+        for (UUID key : locations.keySet()) {
+            locationOptionsComboBox.getItems().add(locations.get(key));
         }
         locationOptionsComboBox.setConverter(new StringConverter<Location>() {
             @Override
@@ -99,9 +100,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(attractionInputLabel);
 
         ComboBox<Attraction> attractionOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Attraction> attractions = schedule.getAttractions();
-        for (int i = 1; i <= attractions.size(); i++) {
-            attractionOptionsComboBox.getItems().add(attractions.get(i));
+        HashMap<UUID, Attraction> attractions = schedule.getAttractions();
+        for (UUID key : attractions.keySet()) {
+            attractionOptionsComboBox.getItems().add(attractions.get(key));
         }
         attractionOptionsComboBox.setConverter(new StringConverter<Attraction>() {
             @Override
@@ -258,7 +259,7 @@ public class UpdateScheduleItem {
         if (scheduleItems.isEmpty()){name.clear();name.add("empty");}
         else {
             name.clear();
-            for (int key : schedule.getScheduleItems().keySet()){
+            for (UUID key : schedule.getScheduleItems().keySet()){
                 ScheduleItem scheduleItem = Planner.getSCHEDULE().getScheduleItem(key);
                 String scheduleItemString = scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName();
                 name.add(scheduleItemString);

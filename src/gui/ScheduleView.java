@@ -16,16 +16,17 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ScheduleView {
     private static DayOfWeek selectedDay;
     private static ArrayList<DayOfWeek> days = new ArrayList<>(Arrays.asList(DayOfWeek.values()));
-    private static HashMap<Integer, Integer> locationRow = new HashMap<>();
+    private static HashMap<UUID, Integer> locationRow = new HashMap<>();
     public static Node createScheduleView(Schedule schedule) {
         BorderPane mainBox = new BorderPane();
 
-        HashMap<Integer, Location> locations = schedule.getLocations();
-        HashMap<Integer, ScheduleItem> scheduleItems = schedule.getScheduleItems();
+        HashMap<UUID, Location> locations = schedule.getLocations();
+        HashMap<UUID, ScheduleItem> scheduleItems = schedule.getScheduleItems();
 
         int minuteInterval = 5;
 
@@ -67,15 +68,15 @@ public class ScheduleView {
         return mainBox;
     }
 
-    private static void createSchedule(BorderPane pane,HashMap<Integer, ScheduleItem> scheduleItems, HashMap<Integer, Location> locations, Schedule schedule, int minuteInterval){
+    private static void createSchedule(BorderPane pane,HashMap<UUID, ScheduleItem> scheduleItems, HashMap<UUID, Location> locations, Schedule schedule, int minuteInterval){
         GridPane gridPane = createScheduleBase(locations.size(),minuteInterval);
         gridPane = fillScheduleWithLocationData(gridPane, locations);
         gridPane = fillScheduleWithScheduleItems(gridPane, scheduleItems, schedule, minuteInterval);
         gridPane.setAlignment(Pos.CENTER);
         pane.setCenter(gridPane);
     }
-    private static GridPane fillScheduleWithScheduleItems(GridPane gridPane, HashMap<Integer, ScheduleItem> scheduleItems, Schedule schedule, int minuteInterval){
-        for (Integer key : scheduleItems.keySet()) {
+    private static GridPane fillScheduleWithScheduleItems(GridPane gridPane, HashMap<UUID, ScheduleItem> scheduleItems, Schedule schedule, int minuteInterval){
+        for (UUID key : scheduleItems.keySet()) {
 
             ScheduleItem scheduleItem = scheduleItems.get(key);
             if(scheduleItem.getDay() == selectedDay) {
@@ -154,13 +155,13 @@ public class ScheduleView {
 
         return layout;
     }
-    private static GridPane fillScheduleWithLocationData(GridPane gridPane, HashMap<Integer, Location> locations){
+    private static GridPane fillScheduleWithLocationData(GridPane gridPane, HashMap<UUID, Location> locations){
 
         int keyCount = 0;
 
         locationRow = new HashMap<>();
 
-        for (Integer key : locations.keySet()) {
+        for (UUID key : locations.keySet()) {
             Label location = new Label(locations.get(key).getName());
             keyCount++;
             gridPane.add(location,0, keyCount);

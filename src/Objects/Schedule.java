@@ -2,12 +2,13 @@ package Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Schedule {
 
-    private HashMap<Integer, ScheduleItem> scheduleItems;
-    private HashMap<Integer, Attraction> attractions;
-    private HashMap<Integer, Location> locations;
+    private HashMap<UUID, ScheduleItem> scheduleItems = new HashMap<>();
+    private HashMap<UUID, Attraction> attractions = new HashMap<>();
+    private HashMap<UUID, Location> locations = new HashMap<>();
     //todo schedule doesn't need to have the visitors?
     //private ArrayList<Visitor> visitors = new ArrayList<>();
 
@@ -18,27 +19,28 @@ public class Schedule {
         this.locations = new HashMap<>();
     }
 
-    public HashMap<Integer, ScheduleItem> getScheduleItems() {
+    public HashMap<UUID, ScheduleItem> getScheduleItems() {
         return scheduleItems;
     }
 
-    public ScheduleItem getScheduleItem(int id) {
+    public ScheduleItem getScheduleItem(UUID id) {
         return scheduleItems.get(id);
     }
 
     public void addScheduleItem(ScheduleItem scheduleItem) {
+        System.out.println(scheduleItem);
         this.scheduleItems.put(scheduleItem.getId(), scheduleItem);
     }
 
-    public void deleteScheduleItem(int id){
+    public void deleteScheduleItem(UUID id){
         this.scheduleItems.remove(id);
     }
 
-    public HashMap<Integer, Attraction> getAttractions() {
+    public HashMap<UUID, Attraction> getAttractions() {
         return attractions;
     }
 
-    public Attraction getAttraction(int id) {
+    public Attraction getAttraction(UUID id) {
         return attractions.get(id);
     }
 
@@ -46,15 +48,15 @@ public class Schedule {
         this.attractions.put(attraction.getId(), attraction);
     }
 
-    public void deleteAttraction(int id){
+    public void deleteAttraction(UUID id){
         this.attractions.remove(id);
     }
 
-    public HashMap<Integer, Location> getLocations() {
+    public HashMap<UUID, Location> getLocations() {
         return locations;
     }
 
-    public Location getLocation(int id) {
+    public Location getLocation(UUID id) {
         return locations.get(id);
     }
 
@@ -62,7 +64,7 @@ public class Schedule {
         this.locations.put(location.getId(), location);
     }
 
-    public void deleteLocation(int id){
+    public void deleteLocation(UUID id){
         this.locations.remove(id);
     }
 

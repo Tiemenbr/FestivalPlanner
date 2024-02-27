@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class AttractionsOverview {
     public static VBox getComponent(){
@@ -23,11 +24,11 @@ public class AttractionsOverview {
 
         listsContainerBox.getChildren().addAll(collumnNames,collumnPopularity,collumnPrice);
 
-        HashMap<Integer, Attraction> attractions = Planner.getSCHEDULE().getAttractions();
-        for (int i = 0; i < attractions.size(); i++) {
-            collumnNames.getItems().add(attractions.get(i+1).getName());
-            collumnPopularity.getItems().add(Integer.toString(attractions.get(i+1).getPopularity()));
-            collumnPrice.getItems().add(Integer.toString(attractions.get(i+1).getPrice()));
+        HashMap<UUID, Attraction> attractions = Planner.getSCHEDULE().getAttractions();
+        for (UUID key : attractions.keySet()) {
+            collumnNames.getItems().add(attractions.get(key).getName());
+            collumnPopularity.getItems().add(Integer.toString(attractions.get(key).getPopularity()));
+            collumnPrice.getItems().add(Integer.toString(attractions.get(key).getPrice()));
         }
 
         mainBox.getChildren().add(listsContainerBox);
