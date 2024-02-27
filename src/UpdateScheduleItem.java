@@ -2,14 +2,18 @@ import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
 import Objects.ScheduleItem;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
+import java.awt.ScrollPane;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UpdateScheduleItem {
@@ -22,8 +26,9 @@ public class UpdateScheduleItem {
         HBox contentRowBox = new HBox(10);
         VBox labelColumnBox = new VBox(22);
         VBox inputsColumnBox = new VBox(10);
+        VBox layout = new VBox(10);
 
-        contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox);
+        contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox,layout);
 
         //#region ScheduleItem
         Label scheduleItemInputLabel = new Label("Schedule Item: ");
@@ -236,11 +241,31 @@ public class UpdateScheduleItem {
         inputsColumnBox.getChildren().add(updateAttractionButton);
         //#endregion
 
+        ScrollPane pane = new ScrollPane();
+        ArrayList<String> name = new ArrayList<>();
+        name.add(" ");
+        if (scheduleItems.isEmpty()){name.clear();name.add("empty");}
+        else {
+            name.clear();
+            for (int key : schedule.getScheduleItems().keySet()){
+                name.add(UpdateScheduleItem.ToString(schedule.getScheduleItem(key)));
+            }
+        }
+        ObservableList<String> items = FXCollections.observableArrayList(name);
+        ListView<String> listView = new ListView<String>(items);
+        listView.setMaxSize(300, 500);
+
+        layout.setPadding(new Insets(5,5,5,100));
+        layout.getChildren().addAll(listView);
 
 
         mainCreateScheduleItemBox.getChildren().add(contentRowBox);
 
         return mainCreateScheduleItemBox;
+    }
+    public static String ToString(ScheduleItem scheduleItem){
+        Schedule schedule = Planner.getSchedule();
+        return scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName();
     }
 
 
