@@ -1,6 +1,7 @@
 package Objects;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -8,11 +9,10 @@ public class ScheduleItem implements CRUD, Serializable {
     private int id;
     private int locationId;  //todo replace with locationId
     private int attractionId;  //replace with attractionId
-    public enum day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
-    private day day;
+    private DayOfWeek day;
     private LocalTime startTime, endTime;
 
-    public ScheduleItem(int id, Location location, Attraction attraction, day day, String startTime, String endTime) {
+    public ScheduleItem(int id, Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
         this.id = id; //todo add proper dynamic id assignment
         this.locationId = location.getId();
         this.attractionId = attraction.getId();
@@ -44,9 +44,20 @@ public class ScheduleItem implements CRUD, Serializable {
     }
 
 
-    public LocalTime getDurration() {
+    public LocalTime getDuration() {
         LocalTime returnTime = LocalTime.MIDNIGHT;
         return returnTime.plusMinutes(this.startTime.until(this.endTime, ChronoUnit.MINUTES));
+    }
+
+    public DayOfWeek getDay() {
+        return day;
+    }
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public ScheduleItem() {
     }
 
     @Override
