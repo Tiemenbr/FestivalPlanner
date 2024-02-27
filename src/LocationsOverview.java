@@ -111,38 +111,46 @@ public class LocationsOverview{
                         }
                         index++;
                     }
+                    int id = 0;
+                    int key = 0;
+                    Location value = null;
                     for (Map.Entry<Integer, Location> entry : locations.entrySet()){
                         if (String.valueOf(entry.getValue().getName()).equalsIgnoreCase(textLocationName.getText())){
-                            // Delete location from lists and schedule
-                            schedule.deleteLocation(entry.getValue().getId());
-                            locations.remove(entry.getKey(), entry.getValue());
-
-                            // Update list
-                            //collumnIds.getItems().remove(theIndex);
-                            collumnHeights.getItems().remove(theIndex);
-                            collumnWidths.getItems().remove(theIndex);
-                            collumnNames.getItems().remove(theIndex);
-                            collumnVisitors.getItems().remove(theIndex);
-
-                            // Update combobox
-                            locationComboBox.getItems().remove(entry.getValue());
-
-                            // Add location to lists and schedule
-                            Location location = new Location(locations.size()+1, Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
-                            locations.put(locations.size()+1, location);
-                            schedule.addLocation(location);
-                            locationAdded.setText("Location updated!");
-
-                            // Update list
-                            //collumnIds.getItems().add(textLocationId.getText());
-                            collumnHeights.getItems().add(textLocationHeight.getText());
-                            collumnWidths.getItems().add(textLocationWidth.getText());
-                            collumnNames.getItems().add(textLocationName.getText());
-                            collumnVisitors.getItems().add("False");
-
-                            // Update combobox
-                            locationComboBox.getItems().add(location);
+                            id = entry.getValue().getId();
+                            key = entry.getKey();
+                            value = entry.getValue();
                         }
+                    }
+                    if (id != 0 & key != 0 && value != null){
+                        // Delete location from lists and schedule
+                        schedule.deleteLocation(id);
+                        locations.remove(key, value);
+
+                        // Update list
+                        //collumnIds.getItems().remove(theIndex);
+                        collumnHeights.getItems().remove(theIndex);
+                        collumnWidths.getItems().remove(theIndex);
+                        collumnNames.getItems().remove(theIndex);
+                        collumnVisitors.getItems().remove(theIndex);
+
+                        // Update combobox
+                        locationComboBox.getItems().remove(value);
+
+                        // Add location to lists and schedule
+                        Location location = new Location(locations.size()+1, Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
+                        locations.put(locations.size()+1, location);
+                        schedule.addLocation(location);
+                        locationAdded.setText("Location updated!");
+
+                        // Update list
+                        //collumnIds.getItems().add(textLocationId.getText());
+                        collumnHeights.getItems().add(textLocationHeight.getText());
+                        collumnWidths.getItems().add(textLocationWidth.getText());
+                        collumnNames.getItems().add(textLocationName.getText());
+                        collumnVisitors.getItems().add("False");
+
+                        // Update combobox
+                        locationComboBox.getItems().add(location);
                     }
                 }
             } else {
