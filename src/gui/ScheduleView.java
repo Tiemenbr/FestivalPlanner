@@ -3,21 +3,27 @@ package gui;
 import Objects.Schedule;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
+import org.jfree.fx.FXGraphics2D;
+import org.jfree.fx.ResizableCanvas;
+
+import java.awt.*;
 
 public class ScheduleView {
+    private static ResizableCanvas background;
+    private static Label[] hourLabels;
     public static Node createScheduleView(Schedule schedule) {
         BorderPane borderPane = new BorderPane();
         HBox hours = new HBox();
-        VBox scheduleItems = new VBox();
-        Label[] hourLabels = new Label[24];
+        VBox locations = new VBox();
+        String cssLayout = "-fx-border-color: black;\n" +
+                "-fx-border-insets: 5;\n" +
+                "-fx-border-width: 3;\n";
+        locations.setStyle(cssLayout);
+        hours.setStyle(cssLayout);
+        hourLabels = new Label[24];
 
         for (int i = 0; i < 24; i++) {
             Label label = new Label(String.format("%s:00", i));
@@ -26,39 +32,43 @@ public class ScheduleView {
         }
 
         StackPane stackPane = new StackPane();
-        Canvas background = new Canvas(1200, 600);
-        GraphicsContext gc = background.getGraphicsContext2D();
-        gc.setFill(Color.GRAY);
+        background = new ResizableCanvas(g -> drawBackground(g), stackPane);
 
-        hourLabels[hourLabels.length-1].layoutXProperty().addListener((obs, oldVal, newVal) -> {
-            gc.clearRect(0, 0, background.getWidth(), background.getHeight());
-            for (int i = 0; i < 12; i++) {
-                gc.fillRect(hourLabels[0].getWidth() * 2 * i,0, hourLabels[0].getWidth(), background.getHeight());
-            }
+        hourLabels[hourLabels.length-1].widthProperty().addListener((obs, oldVal, newVal) -> {
+            background.resize(background.getWidth(),background.getHeight());
         });
 
         borderPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             for (Label hourLabel : hourLabels) {
                 hourLabel.setPrefWidth(newVal.intValue()/24);
             }
-            background.setWidth(newVal.intValue());
-        });
-
-        background.heightProperty().addListener((obs, oldVal, newVal) -> {
-            gc.clearRect(0, 0, background.getWidth(), background.getHeight());
-            for (int i = 0; i < 12; i++) {
-                gc.fillRect(hourLabels[0].getWidth() * 2 * i,0, hourLabels[0].getWidth(), background.getHeight());
-            }
-        });
-
-        borderPane.heightProperty().addListener((obs, oldVal, newVal) -> {
-            background.setHeight(newVal.intValue());
         });
 
         stackPane.setAlignment(Pos.TOP_LEFT);
-        stackPane.getChildren().addAll(background, hours);
+        VBox scheduleItmes = new VBox(hours);
+        GridPane gridPane = new GridPane();
+        gridPane.add(new Rectangle(100,100),0,0);
+        scheduleItmes.getChildren().add(gridPane);
+        stackPane.getChildren().addAll(background, scheduleItmes);
         borderPane.setCenter(stackPane);
-        borderPane.setLeft(scheduleItems);
+
+        Label test = new Label("location1");
+        locations.getChildren().add(test);
+
+        hourLabels[hourLabels.length-1].heightProperty().addListener((obs, oldVal, newVal) -> {
+            locations.setTranslateY(newVal.doubleValue());
+        });
+        borderPane.setLeft(locations);
         return borderPane;
+    }
+
+    public static void drawScheduleItems(FXGraphics2D graphics2D) {
+    }
+
+    public static void drawBackground(FXGraphics2D graphics) {
+        graphics.setColor(Color.GRAY);
+        for (int i = 0; i < 12; i++) {
+            graphics.fillRect((int)hourLabels[i*2].getLayoutX(),0,(int)hourLabels[i*2].getWidth(),(int)background.getHeight());
+        }
     }
 }
