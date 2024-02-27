@@ -36,8 +36,10 @@ public class GUI extends Application {
         Tab attractionRead = new Tab("Attractions");
         attractionRead.setContent(AttractionsOverview.getComponent());
 
+        Tab locationRead = new Tab("Locations");
+        locationRead.setContent(LocationsOverview.getComponent());
 
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead);
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
