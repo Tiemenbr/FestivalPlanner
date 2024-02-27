@@ -1,3 +1,5 @@
+package gui;
+
 import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
@@ -26,7 +28,7 @@ public class LocationsOverview{
     private static boolean add = true;
     
     public static VBox getComponent(){
-        schedule = Planner.getSchedule();
+        schedule = Planner.getSCHEDULE();
 
         VBox mainBox = new VBox();
 

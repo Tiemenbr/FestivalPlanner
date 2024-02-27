@@ -1,3 +1,5 @@
+package gui;
+
 import Objects.Attraction;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
 import Objects.Location;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 public class UpdateScheduleItem {
 
     public static VBox getComponent(){
-        Schedule schedule = Planner.getSchedule();
+        Schedule schedule = Planner.getSCHEDULE();
         VBox mainUpdateScheduleItemBox = new VBox(20);
         mainUpdateScheduleItemBox.setPadding(new Insets(20));
 
@@ -53,9 +55,9 @@ public class UpdateScheduleItem {
                 scheduleData.append(" ");
                 scheduleData.append(scheduleItem.getStartTime()+"-"+scheduleItem.getEndTime());
                 scheduleData.append(", ");
-                scheduleData.append(scheduleItem.getAttraction(Planner.getSchedule()).getName());
+                scheduleData.append(scheduleItem.getAttraction(Planner.getSCHEDULE()).getName());
                 scheduleData.append(" ");
-                scheduleData.append(scheduleItem.getLocation(Planner.getSchedule()).getName());
+                scheduleData.append(scheduleItem.getLocation(Planner.getSCHEDULE()).getName());
                 return scheduleData.toString();
             }
 
@@ -257,7 +259,7 @@ public class UpdateScheduleItem {
         else {
             name.clear();
             for (int key : schedule.getScheduleItems().keySet()){
-                ScheduleItem scheduleItem = Planner.getSchedule().getScheduleItem(key);
+                ScheduleItem scheduleItem = Planner.getSCHEDULE().getScheduleItem(key);
                 String scheduleItemString = scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName();
                 name.add(scheduleItemString);
             }

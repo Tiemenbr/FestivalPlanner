@@ -1,3 +1,5 @@
+package gui;
+
 import Objects.*;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
 import Objects.Comparators.ScheduleItemCompareLocation;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 public class CreateScheduleItem{
 
     public static VBox getComponent(){
-        Schedule schedule = Planner.getSchedule();
+        Schedule schedule = Planner.getSCHEDULE();
         VBox mainCreateScheduleItemBox = new VBox(20);
         mainCreateScheduleItemBox.setPadding(new Insets(20));
 
