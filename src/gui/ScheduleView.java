@@ -1,74 +1,35 @@
 package gui;
 
 import Objects.Schedule;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
-import org.jfree.fx.FXGraphics2D;
-import org.jfree.fx.ResizableCanvas;
-
-import java.awt.*;
+import javafx.scene.paint.Color;
 
 public class ScheduleView {
-    private static ResizableCanvas background;
-    private static Label[] hourLabels;
     public static Node createScheduleView(Schedule schedule) {
-        BorderPane borderPane = new BorderPane();
-        HBox hours = new HBox();
-        VBox locations = new VBox();
-        String cssLayout = "-fx-border-color: black;\n" +
-                "-fx-border-insets: 5;\n" +
-                "-fx-border-width: 3;\n";
-        locations.setStyle(cssLayout);
-        hours.setStyle(cssLayout);
-        hourLabels = new Label[24];
-
+        GridPane layout = new GridPane();
         for (int i = 0; i < 24; i++) {
             Label label = new Label(String.format("%s:00", i));
-            hourLabels[i] = label;
-            hours.getChildren().add(label);
-        }
-
-        StackPane stackPane = new StackPane();
-        background = new ResizableCanvas(g -> drawBackground(g), stackPane);
-
-        hourLabels[hourLabels.length-1].widthProperty().addListener((obs, oldVal, newVal) -> {
-            background.resize(background.getWidth(),background.getHeight());
-        });
-
-        borderPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            for (Label hourLabel : hourLabels) {
-                hourLabel.setPrefWidth(newVal.intValue()/24);
+            if (i%2==0) {
+                Pane pane = new Pane();
+                pane.setBackground(new Background(
+                        new BackgroundFill(Color.valueOf("#808080"),
+                        new CornerRadii(0),
+                        new Insets(0))));
+                // value 10 rowspan should be replaced with amount of locations
+                layout.add(pane,i+1,0, 1,10);
+                GridPane.setVgrow(pane, Priority.ALWAYS);
             }
-        });
-
-        stackPane.setAlignment(Pos.TOP_LEFT);
-        VBox scheduleItmes = new VBox(hours);
-        GridPane gridPane = new GridPane();
-        gridPane.add(new Rectangle(100,100),0,0);
-        scheduleItmes.getChildren().add(gridPane);
-        stackPane.getChildren().addAll(background, scheduleItmes);
-        borderPane.setCenter(stackPane);
-
-        Label test = new Label("location1");
-        locations.getChildren().add(test);
-
-        hourLabels[hourLabels.length-1].heightProperty().addListener((obs, oldVal, newVal) -> {
-            locations.setTranslateY(newVal.doubleValue());
-        });
-        borderPane.setLeft(locations);
-        return borderPane;
-    }
-
-    public static void drawScheduleItems(FXGraphics2D graphics2D) {
-    }
-
-    public static void drawBackground(FXGraphics2D graphics) {
-        graphics.setColor(Color.GRAY);
-        for (int i = 0; i < 12; i++) {
-            graphics.fillRect((int)hourLabels[i*2].getLayoutX(),0,(int)hourLabels[i*2].getWidth(),(int)background.getHeight());
+            layout.add(label,i+1,0);
+            GridPane.setHgrow(label,Priority.ALWAYS);
         }
+        Label test = new Label("Location 1");
+        layout.add(test,0,1);
+        GridPane.setVgrow(test, Priority.ALWAYS);
+        GridPane.setValignment(test, VPos.TOP);
+        return layout;
     }
 }
