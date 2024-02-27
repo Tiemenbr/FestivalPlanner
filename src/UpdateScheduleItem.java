@@ -232,6 +232,7 @@ public class UpdateScheduleItem {
             System.out.println("To:");
             System.out.println(scheduleItem
             );
+            scheduleItemOptionsComboBox.getItems().set(scheduleItemOptionsComboBox.getSelectionModel().getSelectedIndex(),scheduleItem);
         });
         inputsColumnBox.getChildren().add(updateAttractionButton);
         //#endregion
