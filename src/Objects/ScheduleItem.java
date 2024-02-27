@@ -35,6 +35,9 @@ public class ScheduleItem implements CRUD, Serializable {
         return schedule.getAttraction(this.attractionId);
     }
 
+    public day getDay() {
+        return this.day;
+    }
     public LocalTime getStartTime() {
         return startTime;
     }
