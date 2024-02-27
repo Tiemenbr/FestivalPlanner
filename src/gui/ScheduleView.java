@@ -92,7 +92,13 @@ public class ScheduleView {
                 data2.setStyle("-fx-text-fill: white;");
                 dataRow2.getChildren().add(data2);
 
-                scheduleItemLabel.getChildren().addAll(dataRow1, dataRow2);
+                Button delete = new Button("delete");
+                delete.setOnAction(e ->{
+                    scheduleItem.delete(schedule);
+                    //todo refresh view
+                });
+
+                scheduleItemLabel.getChildren().addAll(dataRow1, dataRow2, delete);
                 scheduleItemLabel.setPrefWidth(Integer.MAX_VALUE);
                 scheduleItemLabel.setPadding(new Insets(5));
                 scheduleItemLabel.setStyle("-fx-background-color: #8d9196; -fx-border-color: black");
