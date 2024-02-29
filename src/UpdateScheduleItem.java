@@ -28,15 +28,18 @@ public class UpdateScheduleItem {
 
     public static VBox getComponent(){
         Schedule schedule = Planner.getSchedule();
-        VBox mainCreateScheduleItemBox = new VBox(20);
-        mainCreateScheduleItemBox.setPadding(new Insets(20));
+        VBox mainUpdateScheduleItemBox = new VBox(20);
+        mainUpdateScheduleItemBox.setPadding(new Insets(20));
 
-        HBox contentRowBox = new HBox(15);
+        Label forumTypeLabel = new Label("Update Schedule Item data:");
+        mainUpdateScheduleItemBox.getChildren().add(forumTypeLabel);
+
+        HBox contentRowBox = new HBox(10);
         VBox labelColumnBox = new VBox(22);
         VBox inputsColumnBox = new VBox(10);
         VBox layout = new VBox(10);
 
-        contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox,layout);
+        contentRowBox.getChildren().addAll(labelColumnBox, inputsColumnBox, layout);
 
         //#region ScheduleItem
         Label scheduleItemInputLabel = new Label("Schedule Item: ");
@@ -257,7 +260,9 @@ public class UpdateScheduleItem {
         else {
             name.clear();
             for (int key : schedule.getScheduleItems().keySet()){
-                name.add(UpdateScheduleItem.ToString(schedule.getScheduleItem(key)));
+                ScheduleItem scheduleItem = Planner.getSchedule().getScheduleItem(key);
+                String scheduleItemString = scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName();
+                name.add(scheduleItemString);
             }
         }
         ObservableList<String> items = FXCollections.observableArrayList(name);
@@ -268,9 +273,9 @@ public class UpdateScheduleItem {
 
 
 
-        mainCreateScheduleItemBox.getChildren().add(contentRowBox);
+        mainUpdateScheduleItemBox.getChildren().add(contentRowBox);
 
-        return mainCreateScheduleItemBox;
+        return mainUpdateScheduleItemBox;
     }
 
     private static ListView<String> getListView(ObservableList<String> items) {

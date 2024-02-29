@@ -17,6 +17,9 @@ public class CreateScheduleItem{
         VBox mainCreateScheduleItemBox = new VBox(20);
         mainCreateScheduleItemBox.setPadding(new Insets(20));
 
+        Label forumTypeLabel = new Label("Create new Schedule Item:");
+        mainCreateScheduleItemBox.getChildren().add(forumTypeLabel);
+
         HBox contentRowBox = new HBox(10);
         VBox labelColumnBox = new VBox(22);
         VBox inputsColumnBox = new VBox(10);
