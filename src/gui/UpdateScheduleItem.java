@@ -1,4 +1,7 @@
+package gui;
+
 import Objects.Attraction;
+import Objects.Comparators.ScheduleItemCompareDayLocationTime;
 import Objects.Location;
 import Objects.Schedule;
 import Objects.ScheduleItem;
@@ -19,15 +22,18 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.awt.ScrollPane;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class UpdateScheduleItem {
 
     public static VBox getComponent(){
-        Schedule schedule = Planner.getSchedule();
+        Schedule schedule = Planner.getSCHEDULE();
         VBox mainUpdateScheduleItemBox = new VBox(20);
         mainUpdateScheduleItemBox.setPadding(new Insets(20));
 
@@ -46,9 +52,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(scheduleItemInputLabel);
 
         ComboBox<ScheduleItem> scheduleItemOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, ScheduleItem> scheduleItems = schedule.getScheduleItems();
-        for (int i = 1; i <= scheduleItems.size(); i++) {
-            scheduleItemOptionsComboBox.getItems().add(scheduleItems.get(i));
+        HashMap<UUID, ScheduleItem> scheduleItems = schedule.getScheduleItems();
+        for (UUID key : scheduleItems.keySet()) {
+            scheduleItemOptionsComboBox.getItems().add(scheduleItems.get(key));
         }
         scheduleItemOptionsComboBox.setConverter(new StringConverter<ScheduleItem>() {
             @Override
@@ -58,9 +64,9 @@ public class UpdateScheduleItem {
                 scheduleData.append(" ");
                 scheduleData.append(scheduleItem.getStartTime()+"-"+scheduleItem.getEndTime());
                 scheduleData.append(", ");
-                scheduleData.append(scheduleItem.getAttraction(Planner.getSchedule()).getName());
+                scheduleData.append(scheduleItem.getAttraction(Planner.getSCHEDULE()).getName());
                 scheduleData.append(" ");
-                scheduleData.append(scheduleItem.getLocation(Planner.getSchedule()).getName());
+                scheduleData.append(scheduleItem.getLocation(Planner.getSCHEDULE()).getName());
                 return scheduleData.toString();
             }
 
@@ -78,9 +84,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(locationInputLabel);
 
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Location> locations = schedule.getLocations();
-        for (int i = 1; i <= locations.size(); i++) {
-            locationOptionsComboBox.getItems().add(locations.get(i));
+        HashMap<UUID, Location> locations = schedule.getLocations();
+        for (UUID key : locations.keySet()) {
+            locationOptionsComboBox.getItems().add(locations.get(key));
         }
         locationOptionsComboBox.setConverter(new StringConverter<Location>() {
             @Override
@@ -102,9 +108,9 @@ public class UpdateScheduleItem {
         labelColumnBox.getChildren().add(attractionInputLabel);
 
         ComboBox<Attraction> attractionOptionsComboBox = new ComboBox<>();
-        HashMap<Integer, Attraction> attractions = schedule.getAttractions();
-        for (int i = 1; i <= attractions.size(); i++) {
-            attractionOptionsComboBox.getItems().add(attractions.get(i));
+        HashMap<UUID, Attraction> attractions = schedule.getAttractions();
+        for (UUID key : attractions.keySet()) {
+            attractionOptionsComboBox.getItems().add(attractions.get(key));
         }
         attractionOptionsComboBox.setConverter(new StringConverter<Attraction>() {
             @Override
@@ -126,24 +132,12 @@ public class UpdateScheduleItem {
         Label dayLabel = new Label("Day: ");
         labelColumnBox.getChildren().add(dayLabel);
 
-        ComboBox<ScheduleItem.day> dayOptionComboBox = new ComboBox<>();
-        for (ScheduleItem.day day : ScheduleItem.day.values()) {
+        ComboBox<DayOfWeek> dayOptionComboBox = new ComboBox<>();
+        for (DayOfWeek day : DayOfWeek.values()) {
             dayOptionComboBox.getItems().add(day);
         }
 
         inputsColumnBox.getChildren().add(dayOptionComboBox);
-        dayOptionComboBox.setConverter(new StringConverter<ScheduleItem.day>() {
-            @Override
-            public String toString(ScheduleItem.day day) {
-                String dayString = day.toString();
-                return dayString.substring(0, 1).toUpperCase() + dayString.substring(1).toLowerCase();
-            }
-
-            @Override
-            public ScheduleItem.day fromString(String string) {
-                return null;
-            }
-        });
 
         //#endregion
         //#region Time Start
@@ -231,8 +225,8 @@ public class UpdateScheduleItem {
         });
 
         //#region update button
-        Button updateAttractionButton = new Button("Update Schedule Item");
-        updateAttractionButton.setOnAction(event -> {
+        Button updateScheduleItemButton = new Button("Update Schedule Item");
+        updateScheduleItemButton.setOnAction(event -> {
             ScheduleItem scheduleItem = scheduleItemOptionsComboBox.getValue();
 
             System.out.println("updating scheduleItem "+scheduleItem.getId()+":");
@@ -241,16 +235,30 @@ public class UpdateScheduleItem {
 
             Location location = locationOptionsComboBox.getValue();
             Attraction attraction = attractionOptionsComboBox.getValue();
-            ScheduleItem.day day = dayOptionComboBox.getValue();
+            DayOfWeek day = dayOptionComboBox.getValue();
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
+
+            if(!LocalTime.parse(startTime).isBefore(LocalTime.parse(endTime))){
+                System.out.println("EndTime must be After StartTime");
+                return;
+            }
+
             scheduleItem.setAll(location,attraction,day,startTime,endTime);
             System.out.println("To:");
-            System.out.println(scheduleItem
-            );
+            System.out.println(scheduleItem);
+
+            //todo doesn't work as it already gets updated......
+            ScheduleItemCompareDayLocationTime scheduleItemComparator = new ScheduleItemCompareDayLocationTime();
+            for (ScheduleItem scheduleItem1 : schedule.getScheduleItems().values()) {
+                if (scheduleItemComparator.compare(scheduleItem, scheduleItem1) > 0) {
+                    System.out.println(String.format("Overlap between %s and %s", scheduleItem1, scheduleItem));
+                    return;
+                }
+            }
             scheduleItemOptionsComboBox.getItems().set(scheduleItemOptionsComboBox.getSelectionModel().getSelectedIndex(),scheduleItem);
         });
-        inputsColumnBox.getChildren().add(updateAttractionButton);
+        inputsColumnBox.getChildren().add(updateScheduleItemButton);
         //#endregion
 
         ScrollPane pane = new ScrollPane();
@@ -259,8 +267,8 @@ public class UpdateScheduleItem {
         if (scheduleItems.isEmpty()){name.clear();name.add("empty");}
         else {
             name.clear();
-            for (int key : schedule.getScheduleItems().keySet()){
-                ScheduleItem scheduleItem = Planner.getSchedule().getScheduleItem(key);
+            for (UUID key : schedule.getScheduleItems().keySet()){
+                ScheduleItem scheduleItem = Planner.getSCHEDULE().getScheduleItem(key);
                 String scheduleItemString = scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName();
                 name.add(scheduleItemString);
             }

@@ -2,15 +2,17 @@ package Objects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.UUID;
 
 public class Location implements CRUD, Serializable {
-    private int id;
+    private UUID id;
     private int height, width;
     private String name;
     private ArrayList<Visitor> visitors = new ArrayList<>();
 
-    public Location(int id, int height, int width, String name) {
-        this.id = id; //todo add proper dynamic id assignment
+    public Location(int height, int width, String name) {
+        this.id = UUID.randomUUID();
         this.height = height;
         this.width = width;
         this.name = name;
@@ -18,12 +20,20 @@ public class Location implements CRUD, Serializable {
         this.update(); //to create file
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getHeight(){
+        return this.height;
+    }
+
+    public int getWidth(){
+        return this.width;
     }
 
     public ArrayList<Visitor> getVisitors() {

@@ -1,6 +1,11 @@
 package Objects;
 
 import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class IOController {
 
@@ -10,6 +15,13 @@ public class IOController {
     private static final String scheduleItemFolderName = "scheduleItems/";
     private static final String baseFolderName = "data/";
 
+
+    public static void init(){
+        new File(baseFolderName).mkdir();
+        new File(baseFolderName+attractionFolderName).mkdir();
+        new File(baseFolderName+locationFolderName).mkdir();
+        new File(baseFolderName+scheduleItemFolderName).mkdir();
+    }
     /**
      * createFilePath
      * returns a String of the full relative filepath using the default baseFolder, the given id and getSubFolder() with objectType as parameter
@@ -18,9 +30,8 @@ public class IOController {
      * @return a String of the full relative filepath
      * @author Joshua Roovers
      */
-    private static String createFilePath(int id, ObjectType objectType){
-        String idString = Integer.toString(id);
-        return baseFolderName+getSubFolder(objectType)+idString;
+    private static String createFilePath(String id, ObjectType objectType){
+        return baseFolderName+getSubFolder(objectType)+id;
     }
 
     /**
@@ -54,8 +65,8 @@ public class IOController {
      * @param objectType ObjectType enum symbolizing the object type that defines what folder path to use
      * @author Joshua Roovers
      */
-    public static void update(int id, Object newVersion, ObjectType objectType){
-        saveObjectToFile(createFilePath(id, objectType), newVersion);
+    public static void update(UUID id, Object newVersion, ObjectType objectType){
+        saveObjectToFile(createFilePath(id.toString(), objectType), newVersion);
     }
 
     /**
@@ -65,8 +76,8 @@ public class IOController {
      * @param objectType ObjectType enum symbolizing the object type that defines what folder path to use
      * @author Joshua Roovers
      */
-    public static void delete(int id, ObjectType objectType){
-        deleteFile(createFilePath(id, objectType));
+    public static void delete(UUID id, ObjectType objectType){
+        deleteFile(createFilePath(id.toString(), objectType));
     }
 
     /**
@@ -91,6 +102,33 @@ public class IOController {
 
     }
 
+
+    /**
+     * getObjectsFromDirectory
+     * looks for the given Directory and loops through all found files within that directory and returns them in an ArrayList of Objects
+     * @param objectType ObjectType enum symbolizing the object type that defines what folder path to use
+     * @return returns an Arraylist of retrieved Objects
+     */
+    public static ArrayList<Object> getObjectsFromDirectory(ObjectType objectType){
+        ArrayList<String> filePaths = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(baseFolderName+getSubFolder(objectType)))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+                    filePaths.add(path.toString());
+                }
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Object> objects = new ArrayList<>();
+        for(String path : filePaths){
+            System.out.println(path);
+            objects.add(getObjectFromFile(path));
+        }
+        return objects;
+    }
+
     /**
      * getObjectFromFile
      * returns an object that was the file of the given filepath
@@ -99,8 +137,6 @@ public class IOController {
      * @author Joshua Roovers
      */
     public static Object getObjectFromFile(String filePath) {
-//        String filename = Integer.toString(fileId);//pref to hash
-//        String filePath = "data/"+dataFolderName+"/"+filename; //todo could probably use a file type but works as is
 
         // Read the object back from the file
         Object recoveredObject = null;

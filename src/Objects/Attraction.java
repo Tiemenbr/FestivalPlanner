@@ -3,23 +3,24 @@ package Objects;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 public class Attraction implements CRUD, Serializable {
-    private int id;
+    private UUID id;
     private String name;
     private int popularity = 1;
     private int price;
 
 
-    public Attraction(int id, String name,int popularity, int price) {
-        this.id = id; //todo add proper dynamic id assignment
+    public Attraction(String name,int popularity, int price) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.popularity = popularity;
 
         this.update();
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.id;
     }
 
