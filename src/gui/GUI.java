@@ -1,15 +1,26 @@
+package gui;
+
+import Objects.Schedule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
+//    private static ArrayList<Schedule> SCHEDULES;
     private static Planner planner;
     public static void main(String[] args) {
         planner = new Planner();
         planner.init();
+
+//        GUI.SCHEDULES = new ArrayList<>();
+//        GUI.SCHEDULES.add(new Schedule());
         launch(GUI.class);
     }
 
@@ -20,15 +31,23 @@ public class GUI extends Application {
         TabPane tabpane = new TabPane();
 
         Tab plannerTab = new Tab("Planner");
+        VBox plannerTabBox = new VBox(10);
         Label plannerLabel = new Label("planner page");
-        plannerTab.setContent(plannerLabel);
+        Label tempSeedDataButtonLabel = new Label("TEMPORARY button for test data:");
+        Button tempSeedDataButton = new Button("create test data");
+        tempSeedDataButton.setOnAction(e ->{
+            Planner.seedTestData();
+        });
+        plannerTabBox.getChildren().addAll(plannerLabel,tempSeedDataButtonLabel,tempSeedDataButton);
+        plannerTab.setContent(plannerTabBox);
 
         Tab scheduleTab = new Tab("Schedule");
-        Label scheduleLabel = new Label("page with visualization of the schedule");
-        scheduleTab.setContent(scheduleLabel);
+        scheduleTab.setContent(ScheduleView.createScheduleView(Planner.getSCHEDULE()));
 
-        Tab createScheduleItem = new Tab("Create ScheduleItem");
-        createScheduleItem.setContent(CreateScheduleItem.getComponent());
+        Tab createScheduleItem = new Tab("Schedule Items");
+        HBox scheduleItemBox = new HBox();
+        scheduleItemBox.getChildren().addAll(CreateScheduleItem.getComponent(),UpdateScheduleItem.getComponent());
+        createScheduleItem.setContent(scheduleItemBox);
 
         Tab attractionRead = new Tab("Attractions");
         attractionRead.setContent(AttractionsOverview.getComponent());

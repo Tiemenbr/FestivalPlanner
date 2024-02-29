@@ -1,3 +1,5 @@
+package gui;
+
 import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
@@ -12,21 +14,22 @@ import javax.swing.*;
 import javax.xml.soap.Text;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class LocationsOverview{
     private static Schedule schedule;
-    private static HashMap<Integer, Location> locations;
+    private static HashMap<UUID, Location> locations;
     private static ComboBox<Location> locationComboBox = new ComboBox();
 
     // Used for generating Location Id's
-    private static int hiddenId;
+//    private static int hiddenId;
     // Location variable to temporarily save the location that is getting updated
     private static Location theLocation;
     // Boolean value is either true: add location, or false: update location
     private static boolean add = true;
     
     public static VBox getComponent(){
-        schedule = Planner.getSchedule();
+        schedule = Planner.getSCHEDULE();
 
         VBox mainBox = new VBox();
 
@@ -68,13 +71,13 @@ public class LocationsOverview{
 
         // Fill list
         locations = schedule.getLocations();
-        hiddenId = locations.size()+1;
+        //hiddenId = locations.size()+1;
         // Walk through all locations
-        for (int i = 0; i < locations.size(); i++) {
-            collumnNames.getItems().add(locations.get(i+1).getName());
-            collumnHeights.getItems().add(String.valueOf(locations.get(i+1).getHeight()));
-            collumnWidths.getItems().add(String.valueOf(locations.get(i+1).getWidth()));
-            if (locations.get(i+1).getVisitors().size() > 1){
+        for (UUID key : locations.keySet()) {
+            collumnNames.getItems().add(locations.get(key).getName());
+            collumnHeights.getItems().add(String.valueOf(locations.get(key).getHeight()));
+            collumnWidths.getItems().add(String.valueOf(locations.get(key).getWidth()));
+            if (locations.get(key).getVisitors().size() > 1){
                 collumnVisitors.getItems().add("True");
             } else {
                 collumnVisitors.getItems().add("False");
@@ -82,11 +85,11 @@ public class LocationsOverview{
             // Add update button
             Button buttonUpdate = new Button("Update");
             buttonUpdate.setPrefHeight(3);
-            int finalI = i+1;
+            //int finalI = key+1;
             buttonUpdate.setOnAction(event -> {
                 refreshLocations();
                 add = false;
-                theLocation = locations.get(finalI);
+                theLocation = locations.get(key);
                 if (theLocation != null){
                     textLocationName.setText(theLocation.getName());
                     textLocationHeight.setText(String.valueOf(theLocation.getHeight()));
@@ -111,7 +114,7 @@ public class LocationsOverview{
                 if (add){
                     try {
                         // Add location to lists and schedule
-                        Location location = new Location(hiddenId++, Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
+                        Location location = new Location(Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
                         refreshLocations();
                         schedule.addLocation(location);
                         locationAdded.setText("Location added!");
@@ -160,7 +163,7 @@ public class LocationsOverview{
                         // Get id
                         int index = 0;
                         int theIndex = 0;
-                        for (Map.Entry<Integer, Location> entry : locations.entrySet()){
+                        for (Map.Entry<UUID, Location> entry : locations.entrySet()){
                             index++;
                             if (entry.getValue() == theLocation){
                                 theIndex = index;
@@ -183,7 +186,7 @@ public class LocationsOverview{
                         locationComboBox.getItems().remove(theLocation);
 
                         // Add location to lists and schedule
-                        Location location = new Location(hiddenId++, Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
+                        Location location = new Location(Integer.valueOf(textLocationHeight.getText()), Integer.valueOf(textLocationWidth.getText()), textLocationName.getText());
                         // Recheck hiddenId value
                         refreshLocations();
                         schedule.addLocation(location);
@@ -257,7 +260,7 @@ public class LocationsOverview{
                     // Get id
                     int index = 0;
                     int theIndex = 0;
-                    for (Map.Entry<Integer, Location> entry : locations.entrySet()){
+                    for (Map.Entry<UUID, Location> entry : locations.entrySet()){
                         index++;
                         if (entry.getValue() == locationComboBox.getValue()){
                             theIndex = index;
@@ -294,12 +297,12 @@ public class LocationsOverview{
 
     public static void refreshLocations(){
         // Update locations list & (re)check id values
-        locations = schedule.getLocations();
-        hiddenId = locations.size()+1;
-        for (Map.Entry<Integer, Location> entry : locations.entrySet()){
-            if (entry.getKey() == hiddenId){
-                hiddenId++;
-            }
-        }
+//        locations = schedule.getLocations();
+//        hiddenId = locations.size()+1;
+//        for (Map.Entry<Integer, Location> entry : locations.entrySet()){
+//            if (entry.getKey() == hiddenId){
+//                hiddenId++;
+//            }
+//        }
     }
 }
