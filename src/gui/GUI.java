@@ -50,7 +50,9 @@ public class GUI extends Application {
         createScheduleItem.setContent(scheduleItemBox);
 
         Tab attractionRead = new Tab("Attractions");
-        attractionRead.setContent(AttractionsOverview.getComponent());
+        HBox AttractionBox = new HBox();
+        AttractionBox.getChildren().addAll(AttractionCreate.getComponent(), AttractionUpdate.getComponent(), AttractionsOverview.getComponent());
+        attractionRead.setContent(AttractionBox);
 
         Tab locationRead = new Tab("Locations");
         locationRead.setContent(LocationsOverview.getComponent());

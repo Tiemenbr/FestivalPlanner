@@ -20,6 +20,12 @@ public class Attraction implements CRUD, Serializable {
         this.update();
     }
 
+    public void setAll(String name, int popularity, int price) {
+        this.name = name;
+        this.popularity = popularity;
+        this.price = price;
+    }
+
     public UUID getId() {
         return this.id;
     }
@@ -69,6 +75,7 @@ public class Attraction implements CRUD, Serializable {
         schedule.deleteAttraction(this.getId());
         IOController.delete(this.id, IOController.ObjectType.ATTRACTION);
     }
+
 
 
 }
