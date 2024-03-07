@@ -1,1 +1,1 @@
-# FestivalPlanner
+# KermisPlanner
