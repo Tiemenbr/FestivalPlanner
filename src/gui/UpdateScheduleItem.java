@@ -348,7 +348,7 @@ public class UpdateScheduleItem {
     }
 
     public static String ToString(ScheduleItem scheduleItem){
-        Schedule schedule = Planner.getSchedule();
+        Schedule schedule = Planner.getSCHEDULE();
         return scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName() + ", " + scheduleItem.getId();
     }
 }
