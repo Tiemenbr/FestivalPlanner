@@ -7,17 +7,25 @@ import Objects.Schedule;
 import Objects.ScheduleItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.awt.ScrollPane;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -266,10 +274,9 @@ public class UpdateScheduleItem {
             }
         }
         ObservableList<String> items = FXCollections.observableArrayList(name);
-        ListView<String> listView = new ListView<String>(items);
-        listView.setMaxSize(300, 500);
+        ListView<String> listView = getListView(items);
 
-        layout.setPadding(new Insets(5,5,5,100));
+        layout.setPadding(new Insets(5,5,5,10));
         layout.getChildren().addAll(listView);
 
 
@@ -279,6 +286,69 @@ public class UpdateScheduleItem {
         return mainUpdateScheduleItemBox;
     }
 
+    private static ListView<String> getListView(ObservableList<String> items) {
+        ListView<String> listView = new ListView<>();
 
 
+        listView.setCellFactory((Callback<ListView<String>, ListCell<String>>) param -> {
+            return new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        // Here we can build the layout we want for each ListCell. Let's use a HBox as our root.
+                        HBox root = new HBox(10);
+                        root.setAlignment(Pos.BASELINE_LEFT);
+                        root.setPadding(new Insets(5, 10, 5, 10));
+
+                        // Within the root, we'll show the username on the left and our two buttons to the right
+                        root.getChildren().add(new Label(item));
+
+                        // I'll add another Region here to expand, pushing the buttons to the right
+                        Region region = new Region();
+                        HBox.setHgrow(region, Priority.ALWAYS);
+                        root.getChildren().add(region);
+
+                        // Now for our buttons
+                        byte[] emojiByteCode = new byte[]{(byte)0xE2, (byte)0x9C, (byte)0x8F};
+                        String emoji = new String(emojiByteCode, StandardCharsets.UTF_8);
+                        Button btnAddFriend = new Button(emoji);
+//                        btnAddFriend.setOnAction(event -> {
+//                            //clear and select the location
+//                            locationOptionsComboBox.getSelectionModel().clearAndSelect(locationOptionsComboBox.getItems().indexOf(selectedScheduleItem.getLocation(schedule)));
+//                            //clear and select the attraction
+//                            attractionOptionsComboBox.getSelectionModel().clearAndSelect(attractionOptionsComboBox.getItems().indexOf(selectedScheduleItem.getAttraction(schedule)));
+//                            //clear and select the day
+//                            dayOptionComboBox.getSelectionModel().clearAndSelect(dayOptionComboBox.getItems().indexOf(selectedScheduleItem.getDay()));
+//                            //clear and select the start time hour
+//                            String startHour = selectedScheduleItem.getStartTime().toString().substring(0,2);
+//                            startHourComboBox.getSelectionModel().clearAndSelect(startHourComboBox.getItems().indexOf(startHour));
+//                            //clear and select the start time minute
+//                            String startMinute = selectedScheduleItem.getStartTime().toString().substring(3);
+//                            startMinuteComboBox.getSelectionModel().clearAndSelect(startMinuteComboBox.getItems().indexOf(startMinute));
+//                            //clear and select the end time hour
+//                            String endHour = selectedScheduleItem.getEndTime().toString().substring(0,2);
+//                            endHourComboBox.getSelectionModel().clearAndSelect(endHourComboBox.getItems().indexOf(endHour));
+//                            //clear and select the end time minute
+//                            String endMinute = selectedScheduleItem.getEndTime().toString().substring(3);
+//                            endMinuteComboBox.getSelectionModel().clearAndSelect(endMinuteComboBox.getItems().indexOf(endMinute));
+//                        });
+                    }
+                }
+            };
+
+        });
+        listView.setItems(items);
+
+        listView.setMaxSize(200, 300);
+        return listView;
+    }
+
+    public static String ToString(ScheduleItem scheduleItem){
+        Schedule schedule = Planner.getSchedule();
+        return scheduleItem.getAttraction(schedule).getName() + ", " + scheduleItem.getStartTime() + "-" + scheduleItem.getEndTime() + ", " + scheduleItem.getLocation(schedule).getName() + ", " + scheduleItem.getId();
+    }
 }
