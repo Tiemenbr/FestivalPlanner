@@ -12,6 +12,7 @@ public class Planner {
     public void init(){
         IOController.init();
 
+        //seedTestData();
 
         if(SCHEDULE.getLocations().isEmpty() && SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()){
             ArrayList<Object> locations = IOController.getObjectsFromDirectory(IOController.ObjectType.LOCATION);

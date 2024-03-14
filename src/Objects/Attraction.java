@@ -3,6 +3,7 @@ package Objects;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Attraction implements CRUD, Serializable {
@@ -24,6 +25,8 @@ public class Attraction implements CRUD, Serializable {
         this.name = name;
         this.popularity = popularity;
         this.price = price;
+
+        this.update();
     }
 
     public UUID getId() {
@@ -72,6 +75,23 @@ public class Attraction implements CRUD, Serializable {
     @Override
     public void delete(Schedule schedule) {
         //todo idk if it's right to pass the schedule... but it needs to access it somewhere I think
+
+        ArrayList<ScheduleItem> toBeDeletedScheduleItems = new ArrayList<>();
+
+        for(UUID key : schedule.getScheduleItems().keySet()){
+            System.out.println(schedule.getScheduleItem(key));
+
+            if(schedule.getScheduleItem(key).getAttraction(schedule).getId() == this.getId()){
+                System.out.println(key+" has the attraction");
+                //schedule.getScheduleItem(key).delete(schedule);
+                toBeDeletedScheduleItems.add(schedule.getScheduleItem(key));
+            }
+        }
+
+        for(ScheduleItem scheduleItem : toBeDeletedScheduleItems){
+            scheduleItem.delete(schedule);
+        }
+
         schedule.deleteAttraction(this.getId());
         IOController.delete(this.id, IOController.ObjectType.ATTRACTION);
     }
