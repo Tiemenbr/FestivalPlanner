@@ -2,10 +2,14 @@ package SimulatorObjects;
 
 import javax.imageio.ImageIO;
 import javax.json.*;
+import javax.json.stream.JsonParser;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MapGenerator{
 
@@ -20,7 +24,14 @@ public class MapGenerator{
 
     public MapGenerator(String fileName, double screenWidth, double screenHeight) {
         JsonReader reader = null;
-        reader = Json.createReader(getClass().getResourceAsStream(fileName));
+        //File file = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(fileName)).getFile());
+        reader = Json.createReader(getClass().getClassLoader().getResourceAsStream(fileName));
+
+
+
+//        JsonObject object = (JsonObject) getClass().getResourceAsStream(fileName);
+//        reader = Json.createReader((java.io.InputStream) object);
+
         JsonObject root = reader.readObject();
 
         try{
@@ -37,7 +48,7 @@ public class MapGenerator{
                 }
             }
             if (!image.equalsIgnoreCase("")){
-                this.tilemap = ImageIO.read(getClass().getResourceAsStream(image));
+                this.tilemap = ImageIO.read(getClass().getClassLoader().getResourceAsStream(image));
             }
 
             // OLD

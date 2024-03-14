@@ -18,7 +18,6 @@ import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 public class GUI extends Application {
 //    private static ArrayList<Schedule> SCHEDULES;
     private static Planner planner;
-    private static Graphics2D g2d;
     public static void main(String[] args) {
         planner = new Planner();
         planner.init();
@@ -62,10 +61,9 @@ public class GUI extends Application {
         locationRead.setContent(LocationsOverview.getComponent());
 
         Tab simulator = new Tab("Simulator");
-        Simulator.draw(g2d);
         simulator.setContent(Simulator.getComponent());
 
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead);
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead, simulator);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
