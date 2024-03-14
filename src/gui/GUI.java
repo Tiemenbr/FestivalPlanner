@@ -4,10 +4,13 @@ import Objects.Schedule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
@@ -15,6 +18,7 @@ import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 public class GUI extends Application {
 //    private static ArrayList<Schedule> SCHEDULES;
     private static Planner planner;
+    private static Graphics2D g2d;
     public static void main(String[] args) {
         planner = new Planner();
         planner.init();
@@ -56,6 +60,10 @@ public class GUI extends Application {
 
         Tab locationRead = new Tab("Locations");
         locationRead.setContent(LocationsOverview.getComponent());
+
+        Tab simulator = new Tab("Simulator");
+        Simulator.draw(g2d);
+        simulator.setContent(Simulator.getComponent());
 
         tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
