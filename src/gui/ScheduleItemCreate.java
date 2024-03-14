@@ -2,8 +2,6 @@ package gui;
 
 import Objects.*;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
-import Objects.Comparators.ScheduleItemCompareLocation;
-import Objects.Comparators.ScheduleItemCompareTimeOverlap;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -15,7 +13,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CreateScheduleItem{
+public class ScheduleItemCreate {
 
     public static VBox getComponent(){
         Schedule schedule = Planner.getSCHEDULE();

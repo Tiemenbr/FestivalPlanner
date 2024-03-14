@@ -1,14 +1,11 @@
 package gui;
 
-import Objects.Schedule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
@@ -46,7 +43,7 @@ public class GUI extends Application {
 
         Tab createScheduleItem = new Tab("Schedule Items");
         HBox scheduleItemBox = new HBox();
-        scheduleItemBox.getChildren().addAll(CreateScheduleItem.getComponent(),UpdateScheduleItem.getComponent());
+        scheduleItemBox.getChildren().addAll(ScheduleItemCreate.getComponent(), ScheduleItemUpdate.getComponent(), ScheduleItemsOverview.getComponent());
         createScheduleItem.setContent(scheduleItemBox);
 
         Tab attractionRead = new Tab("Attractions");

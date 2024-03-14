@@ -57,7 +57,7 @@ public class Planner {
         SCHEDULE.addScheduleItem(new ScheduleItem(location2, attraction2, DayOfWeek.MONDAY, "10:30", "13:00"));
         SCHEDULE.addScheduleItem(new ScheduleItem(location3, attraction2, DayOfWeek.TUESDAY, "13:00", "16:30"));
         SCHEDULE.addScheduleItem(new ScheduleItem(location1, attraction1, DayOfWeek.TUESDAY, "10:10", "18:45"));
-        SCHEDULE.addScheduleItem(new ScheduleItem(location2, attraction2, DayOfWeek.TUESDAY,"07:00", "16:00"));
+        SCHEDULE.addScheduleItem(new ScheduleItem(location2, attraction2, DayOfWeek.TUESDAY,"07:00", "12:00"));
 
         System.out.println("added "+SCHEDULE.getScheduleItems().size()+" scheduleItem objects");
 //            schedule.getVisitors().add(new Visitor());
