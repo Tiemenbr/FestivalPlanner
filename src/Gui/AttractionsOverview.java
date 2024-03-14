@@ -1,17 +1,13 @@
-package gui;
+package Gui;
 
 import Objects.Attraction;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Attr;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class AttractionsOverview {

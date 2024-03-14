@@ -1,9 +1,7 @@
-package gui;
+package Gui;
 
 import Objects.*;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
-import Objects.Comparators.ScheduleItemCompareLocation;
-import Objects.Comparators.ScheduleItemCompareTimeOverlap;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

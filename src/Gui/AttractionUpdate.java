@@ -1,25 +1,15 @@
-package gui;
+package Gui;
 
 import Objects.Attraction;
-import Objects.Comparators.ScheduleItemCompareDayLocationTime;
-import Objects.Location;
 import Objects.Schedule;
-import Objects.ScheduleItem;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-import java.awt.*;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 

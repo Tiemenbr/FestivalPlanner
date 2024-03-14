@@ -1,6 +1,5 @@
-package gui;
+package Gui;
 
-import Objects.Schedule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -9,9 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 

@@ -1,4 +1,4 @@
-package gui;
+package Gui;
 
 import Objects.Attraction;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
@@ -7,8 +7,6 @@ import Objects.Schedule;
 import Objects.ScheduleItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -24,7 +22,6 @@ import javafx.util.StringConverter;
 import java.awt.ScrollPane;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
