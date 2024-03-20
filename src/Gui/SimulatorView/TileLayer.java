@@ -61,13 +61,27 @@ public class TileLayer{
 
                     // Draw image of position on map
                     graphics.drawImage(
-                            tiles.get(map[y][x] - 1),
-                            //tiles.get(map[y][x]-1), // OLD: tiles.get(map[y][x]-359)
+                            tiles.get(map[y][x] - 1), // OLD: tiles.get(map[y][x]-359)
                             AffineTransform.getTranslateInstance(x * tileWidth, y * tileHeight),
                             null);
                 }
             }
         }
         g2d.drawImage(cacheImage, null, null);
+    }
+
+    public boolean hasCacheImage(){
+        if (this.cacheImage != null){
+            return true;
+        }
+        return false;
+    }
+
+    public double getCacheImageWidth(){
+        return this.cacheImage.getWidth();
+    }
+
+    public double getCacheImageHeight(){
+        return this.cacheImage.getHeight();
     }
 }

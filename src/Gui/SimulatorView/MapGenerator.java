@@ -112,4 +112,24 @@ public class MapGenerator{
             layer.draw(g2d);
         }
     }
+
+    public double getCacheImageWidth(){
+        double width = 0;
+        for (TileLayer layer : layers){
+            if (layer.hasCacheImage()){
+                width = layer.getCacheImageWidth();
+            }
+        }
+        return width;
+    }
+
+    public double getCacheImageHeight(){
+        double height = 0;
+        for (TileLayer layer : layers){
+            if (layer.hasCacheImage()){
+                height = layer.getCacheImageHeight();
+            }
+        }
+        return height;
+    }
 }

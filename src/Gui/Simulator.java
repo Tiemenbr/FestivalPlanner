@@ -1,46 +1,32 @@
 package Gui;
 
 import Gui.SimulatorView.MapGenerator;
+import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.paint.Color;
 import org.jfree.fx.FXGraphics2D;
 
-import java.awt.geom.AffineTransform;
-
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import org.jfree.fx.ResizableCanvas;
+
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 public class Simulator{
-
-    private static Camera camera;
+    // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Canvas canvas;
-    private static MapGenerator mapGenerator = new MapGenerator("testDrive.json");
+    private static StackPane stackPane;
+    private static Camera camera;
+    private static final MapGenerator mapGenerator = new MapGenerator("testDrive.json");
 
     public static StackPane getComponent() {
-//        BorderPane mainPane = new BorderPane();
-//        canvas = new ResizableCanvas(g -> draw(g), mainPane);
-//        mainPane.setCenter(canvas);
-//        FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
-//        draw(g2d);
-//        new AnimationTimer() {
-//            long last = -1;
-//            @Override
-//            public void handle(long now) {
-//                if (last == -1)
-//                    last = now;
-//                update();
-//                last = now;
-//            }
-//        }.start();
-//        return mainPane;
-        Canvas canvas = new Canvas(800, 600);
+        stackPane = new StackPane();
+        canvas = new ResizableCanvas(g -> draw(g), stackPane);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         draw(g2d); // Draw your content initially
 
         camera = new Camera(canvas);
-
-        StackPane stackPane = new StackPane(canvas);
+        stackPane.getChildren().add(canvas);
 
         // Handle mouse events for panning
         stackPane.setOnMousePressed(event -> camera.handleMousePressed(event));
@@ -49,6 +35,17 @@ public class Simulator{
         // Handle scroll event for zooming
         stackPane.setOnScroll(event -> camera.handleScroll(event));
 
+        new AnimationTimer() {
+            long last = -1;
+            @Override
+            public void handle(long now) {
+                if (last == -1)
+                    last = now;
+                update();
+                last = now;
+            }
+        }.start();
+
         return stackPane;
     }
     private static void draw(FXGraphics2D g2d){
@@ -56,10 +53,17 @@ public class Simulator{
     }
 
     private static void update(){
+        // Get scale factors based on screen size
+        double cacheImageWidth = mapGenerator.getCacheImageWidth();
+        double cacheImageHeight = mapGenerator.getCacheImageHeight();
+        double scaleFactorWidth = stackPane.getWidth()/cacheImageWidth;
+        double scaleFactorHeight = stackPane.getHeight()/cacheImageHeight;
+
+        // Transform the cacheimage
         AffineTransform tx = new AffineTransform();
-        //tx.translate(canvas.getWidth(), canvas.getHeight()/2);
-        canvas.setTranslateX(tx.getTranslateX());
-        canvas.setTranslateY(tx.getTranslateY());
+        tx.scale(scaleFactorWidth, scaleFactorHeight);
+        canvas.setScaleX(camera.scale + tx.getScaleX());
+        canvas.setScaleY(camera.scale + tx.getScaleY());
     }
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
@@ -94,6 +98,10 @@ public class Simulator{
                 scale -= ZOOM_FACTOR;
             } else {
                 scale += ZOOM_FACTOR;
+            }
+            // Prevent image from going upside-down
+            if (scale < 0){
+                scale = -scale;
             }
             canvas.setScaleX(scale);
             canvas.setScaleY(scale);
