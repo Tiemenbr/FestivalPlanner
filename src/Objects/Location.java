@@ -1,5 +1,7 @@
 package Objects;
 
+import Gui.SimulatorView.Visitor;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;

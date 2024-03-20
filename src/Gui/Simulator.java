@@ -1,6 +1,7 @@
 package Gui;
 
 import Gui.SimulatorView.MapGenerator;
+import Gui.SimulatorView.Visitor;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
 import org.jfree.fx.FXGraphics2D;
@@ -11,6 +12,7 @@ import org.jfree.fx.ResizableCanvas;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
@@ -43,13 +45,36 @@ public class Simulator{
                     last = now;
                 update();
                 last = now;
+                draw(g2d);
             }
         }.start();
+        init();
 
         return stackPane;
     }
+
+    static ArrayList<Visitor> visitors = new ArrayList<>();
+
+    public static void init() {
+
+        while(visitors.size() < 100) {
+            Point2D newPosition = new Point2D.Double(Math.random()*1000, Math.random()*1000);
+            boolean hasCollision = false;
+            for (Visitor visitor : visitors) {
+                if(visitor.getPosition().distance(newPosition) < 64)
+                    hasCollision = true;
+            }
+            if(!hasCollision)
+                visitors.add(new Visitor(newPosition, 0));
+        }
+
+    }
+
     private static void draw(FXGraphics2D g2d){
         mapGenerator.draw(g2d);
+        for (Visitor visitor : visitors) {
+            visitor.draw(g2d);
+        }
     }
 
     private static void update(){
@@ -64,6 +89,9 @@ public class Simulator{
         tx.scale(scaleFactorWidth, scaleFactorHeight);
         canvas.setScaleX(camera.scale + tx.getScaleX());
         canvas.setScaleY(camera.scale + tx.getScaleY());
+        for (Visitor visitor : visitors) {
+            visitor.update(visitors);
+        }
     }
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
@@ -99,7 +127,6 @@ public class Simulator{
             } else {
                 scale += ZOOM_FACTOR;
             }
-            // Prevent image from going upside-down
             if (scale < 0){
                 scale = -scale;
             }
