@@ -1,6 +1,7 @@
 package Gui;
 
 import Gui.SimulatorView.MapGenerator;
+import Gui.SimulatorView.SpriteSheetHelper;
 import Gui.SimulatorView.Visitor;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
@@ -12,6 +13,7 @@ import org.jfree.fx.ResizableCanvas;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Simulator{
@@ -20,6 +22,8 @@ public class Simulator{
     private static StackPane stackPane;
     private static Camera camera;
     private static final MapGenerator mapGenerator = new MapGenerator("testDrive.json");
+    static ArrayList<Visitor> visitors = new ArrayList<>();
+    private static SpriteSheetHelper spriteSheetHelper;
 
     public static StackPane getComponent() {
         stackPane = new StackPane();
@@ -47,7 +51,7 @@ public class Simulator{
             public void handle(long now) {
                 if (last == -1)
                     last = now;
-                update();
+                update((now - last) / 1000000000.0);
                 last = now;
                 draw(g2d);
             }
@@ -58,9 +62,12 @@ public class Simulator{
         return stackPane;
     }
 
-    static ArrayList<Visitor> visitors = new ArrayList<>();
+
 
     public static void init() {
+
+        spriteSheetHelper = new SpriteSheetHelper();
+//        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
         while(visitors.size() < 100) {
             Point2D newPosition = new Point2D.Double(Math.random()*1000, Math.random()*1000);
@@ -82,7 +89,7 @@ public class Simulator{
         }
     }
 
-    private static void update(){
+    private static void update(double deltaTime){
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
@@ -97,7 +104,7 @@ public class Simulator{
         canvas.setScaleX(camera.scale + tx.getScaleX());
         canvas.setScaleY(camera.scale + tx.getScaleY());
         for (Visitor visitor : visitors) {
-            visitor.update(visitors, mapGenerator.getCollisionLayer());
+            visitor.update(visitors, mapGenerator.getCollisionLayer(), deltaTime);
         }
     }
     private static final double DEFAULT_SCALE = 1.0;

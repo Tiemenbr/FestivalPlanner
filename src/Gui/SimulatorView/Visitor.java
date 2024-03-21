@@ -1,43 +1,63 @@
 package Gui.SimulatorView;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class Visitor
-{
-    private final double baseSpeed = 3;
+public class Visitor {
+
+    private final double baseSpeed = 2;
+//    private enum walkDir {NORTH,EAST,SOUTH,WEST};
+
     private Point2D position;
     private double angle;
+
+//    private walkDir walkDirection;
     private double speed;
-    private BufferedImage image;
+    private BufferedImage[] sprites;
+    private BufferedImage currentImage;
+    private double imageIndex;
 
-    private Point2D targetPosition;
-    private double scale = 0.05;
-    private double hitboxSize = 32;
+    private Point2D target;
+    private double scale = 2.0;
+    private double hitboxSize;
 
-    public Visitor(Point2D position, double angle)
-    {
-        this.position = position;
-        this.angle = angle;
+    public Visitor(Point2D pos, double direction) {
+        this.position = pos;
         this.speed = baseSpeed + Math.random()*4;
-        try {
-            image = ImageIO.read(this.getClass().getResourceAsStream("/visitor1.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.angle = Math.toRadians(direction);
 
-        this.targetPosition = new Point2D.Double(Math.random()*1000, Math.random()*1000);
+        this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
+
+        this.imageIndex = 0;
+        SpriteSheetHelper ssh = new SpriteSheetHelper();
+        this.sprites = ssh.createSpriteSheet("/walk template 2.png",4);
+
+        currentImage = sprites[8];
+        this.hitboxSize = sprites[8].getHeight()*scale;
     }
 
-    public void update(ArrayList<Visitor> visitors, TileLayer collision)
+
+    public void draw(Graphics2D g2d)
     {
-        double newAngle = Math.atan2(this.targetPosition.getY() - this.position.getY(), this.targetPosition.getX() - this.position.getX());
+
+        AffineTransform tx = new AffineTransform();
+        tx.translate(position.getX() - currentImage.getWidth()/(2/scale), position.getY()- currentImage.getHeight()/(2/scale));
+        tx.scale(scale,scale);
+//        tx.rotate(angle, currentImage.getWidth()/2, currentImage.getHeight()/2);
+        g2d.drawImage(currentImage, tx, null);
+
+//        g2d.setColor(Color.RED);
+//        g2d.fill(new Ellipse2D.Double(position.getX()-3, position.getY()-3, 6, 6));
+//        g2d.draw(new Ellipse2D.Double(position.getX()-(hitboxSize/2),position.getY()-(hitboxSize/2),hitboxSize,hitboxSize));
+    }
+
+    public void update(ArrayList<Visitor> visitors, TileLayer collision, double time){
+        double newAngle = Math.atan2(this.target.getY() - this.position.getY(), this.target.getX() - this.position.getX());
+
 
         double angleDifference = angle - newAngle;
         while(angleDifference > Math.PI)
@@ -45,12 +65,48 @@ public class Visitor
         while(angleDifference < -Math.PI)
             angleDifference += 2 * Math.PI;
 
-        if(angleDifference < -0.1)
-            angle += 0.1;
-        else if(angleDifference > 0.1)
-            angle -= 0.1;
+
+
+        if(angleDifference < -time)
+            angle += time;
+        else if(angleDifference > time)
+            angle -= time;
         else
             angle = newAngle;
+
+        int imageOffset = 0;
+        double testAngle = Math.toDegrees(angle);
+        //thought the Math.PI version of this handled overflow but I guess not?
+        while(testAngle < -180){
+            testAngle += 360;
+        }
+        while(testAngle > 180){
+            testAngle -= 360;
+        }
+
+
+        if(testAngle > -135 && testAngle < -45){
+//            walkDirection = walkDir.NORTH;
+            imageOffset = 3*4;
+        } else if(testAngle < -135 && testAngle > -180 || testAngle < 180 && testAngle > 135){
+//            walkDirection = walkDir.WEST;
+            imageOffset = 1*4;
+        }else if(testAngle < 135 && testAngle > 45){
+//            walkDirection = walkDir.SOUTH;
+            imageOffset = 2*4;
+        }else if(testAngle > -45 && testAngle < 45){
+//            walkDirection = walkDir.EAST;
+            imageOffset = 0;
+        }
+//        System.out.println(walkDirection);
+
+        imageIndex += time;
+
+        if(imageIndex >= 4){
+            imageIndex = 0;
+        }
+
+        currentImage = sprites[(int)imageIndex+imageOffset];
 
         Point2D newPosition = new Point2D.Double(
                 this.position.getX() + speed * Math.cos(angle),
@@ -61,7 +117,7 @@ public class Visitor
 
         for (Visitor visitor : visitors) {
             if(visitor != this)
-                if(visitor.position.distance(newPosition) <= hitboxSize)
+                if(visitor.getPosition().distance(newPosition) <= hitboxSize)
                     hasCollision = true;
         }
 
@@ -71,24 +127,9 @@ public class Visitor
             this.angle += 0.2;
     }
 
-
-    public void draw(Graphics2D g2d)
-    {
-
-        AffineTransform tx = new AffineTransform();
-        tx.translate(position.getX() - image.getWidth()/(2/scale), position.getY()- image.getHeight()/(2/scale));
-        tx.scale(scale,scale);
-        tx.rotate(angle, image.getWidth()/2, image.getHeight()/2);
-        g2d.drawImage(image, tx, null);
-
-        g2d.setColor(Color.RED);
-        g2d.fill(new Ellipse2D.Double(position.getX()-5, position.getY()-5, 5, 5));
-
-    }
-
     public void setTargetPosition(Point2D targetPosition)
     {
-        this.targetPosition = targetPosition;
+        this.target = targetPosition;
     }
 
     public Point2D getPosition()
