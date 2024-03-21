@@ -36,7 +36,11 @@ public class Simulator{
 
         // Handle scroll event for zooming
         stackPane.setOnScroll(event -> camera.handleScroll(event));
-
+        canvas.setOnMouseMoved(event -> {
+            for (Visitor visitor : visitors) {
+                visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
+            }
+        });
         new AnimationTimer() {
             long last = -1;
             @Override
@@ -49,6 +53,7 @@ public class Simulator{
             }
         }.start();
         init();
+
 
         return stackPane;
     }
@@ -86,11 +91,13 @@ public class Simulator{
 
         // Transform the cacheimage
         AffineTransform tx = new AffineTransform();
-        tx.scale(scaleFactorWidth, scaleFactorHeight);
+//        tx.scale(scaleFactorWidth, scaleFactorHeight);
+        canvas.setHeight(cacheImageHeight);
+        canvas.setWidth(cacheImageWidth);
         canvas.setScaleX(camera.scale + tx.getScaleX());
         canvas.setScaleY(camera.scale + tx.getScaleY());
         for (Visitor visitor : visitors) {
-            visitor.update(visitors);
+            visitor.update(visitors, mapGenerator.getCollisionLayer());
         }
     }
     private static final double DEFAULT_SCALE = 1.0;

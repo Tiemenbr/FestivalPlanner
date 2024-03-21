@@ -11,19 +11,21 @@ import java.util.ArrayList;
 
 public class Visitor
 {
+    private final double baseSpeed = 3;
     private Point2D position;
     private double angle;
     private double speed;
     private BufferedImage image;
 
     private Point2D targetPosition;
-    private double scale = 0.2;
+    private double scale = 0.05;
+    private double hitboxSize = 32;
 
     public Visitor(Point2D position, double angle)
     {
         this.position = position;
         this.angle = angle;
-        this.speed = 5 + Math.random()*4;
+        this.speed = baseSpeed + Math.random()*4;
         try {
             image = ImageIO.read(this.getClass().getResourceAsStream("/visitor1.png"));
         } catch (IOException e) {
@@ -33,7 +35,7 @@ public class Visitor
         this.targetPosition = new Point2D.Double(Math.random()*1000, Math.random()*1000);
     }
 
-    public void update(ArrayList<Visitor> visitors)
+    public void update(ArrayList<Visitor> visitors, TileLayer collision)
     {
         double newAngle = Math.atan2(this.targetPosition.getY() - this.position.getY(), this.targetPosition.getX() - this.position.getX());
 
@@ -59,7 +61,7 @@ public class Visitor
 
         for (Visitor visitor : visitors) {
             if(visitor != this)
-                if(visitor.position.distance(newPosition) <= 64)
+                if(visitor.position.distance(newPosition) <= hitboxSize)
                     hasCollision = true;
         }
 
@@ -80,7 +82,7 @@ public class Visitor
         g2d.drawImage(image, tx, null);
 
         g2d.setColor(Color.RED);
-        g2d.fill(new Ellipse2D.Double(position.getX()-5, position.getY()-5, 10, 10));
+        g2d.fill(new Ellipse2D.Double(position.getX()-5, position.getY()-5, 5, 5));
 
     }
 

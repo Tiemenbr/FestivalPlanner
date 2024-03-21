@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class TileLayer{
 
+    private final String name;
     private String tileType;
     private int width;
     private int height;
@@ -16,7 +17,7 @@ public class TileLayer{
     private int tileHeight;
     private ArrayList<BufferedImage> tiles;
 
-    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, ArrayList<BufferedImage> tiles){
+    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, ArrayList<BufferedImage> tiles,String name){
         this.tileType = tileType;
         this.width = layerWidth;
         this.height = layerHeight;
@@ -24,6 +25,7 @@ public class TileLayer{
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.tiles = tiles;
+        this.name = name;
 
 //        // Scale to nearest 0.25, to prevent lines forming
 //        double roundTo = 0.25;
@@ -49,7 +51,7 @@ public class TileLayer{
 
     private BufferedImage cacheImage = null;
     public void draw(Graphics2D g2d){
-        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer")){
+        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer") && !this.name.equalsIgnoreCase("colisionlayer")){
             cacheImage = new BufferedImage(width*tileWidth, height*tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D graphics = cacheImage.createGraphics();
 
@@ -83,5 +85,9 @@ public class TileLayer{
 
     public double getCacheImageHeight(){
         return this.cacheImage.getHeight();
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
