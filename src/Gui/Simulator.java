@@ -3,6 +3,8 @@ package Gui;
 import Gui.SimulatorView.MapGenerator;
 import Gui.SimulatorView.SpriteSheetHelper;
 import Gui.SimulatorView.Visitor;
+import Objects.Location;
+import Objects.Schedule;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
 import org.jfree.fx.FXGraphics2D;
@@ -13,17 +15,19 @@ import org.jfree.fx.ResizableCanvas;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
+    private static Schedule schedule = Planner.getSCHEDULE();
     private static Canvas canvas;
     private static StackPane stackPane;
     private static Camera camera;
     private static final MapGenerator mapGenerator = new MapGenerator("testDrive.json");
     static ArrayList<Visitor> visitors = new ArrayList<>();
     private static SpriteSheetHelper spriteSheetHelper;
+    private static int visitorAmount = 100;
+    private static ArrayList<Location> locations = new ArrayList<>();
 
     public static StackPane getComponent() {
         stackPane = new StackPane();
@@ -47,45 +51,59 @@ public class Simulator{
         });
         new AnimationTimer() {
             long last = -1;
+            int frameCount = 0;
             @Override
             public void handle(long now) {
                 if (last == -1)
                     last = now;
                 update((now - last) / 1000000000.0);
+                if (frameCount%100 == 1){
+                    addVisitor();
+                }
                 last = now;
                 draw(g2d);
+                frameCount++;
             }
         }.start();
         init();
-
-
         return stackPane;
     }
 
-
-
     public static void init() {
+        // Get all locations
+        locations.addAll(schedule.getLocations().values());
 
         spriteSheetHelper = new SpriteSheetHelper();
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
-        while(visitors.size() < 100) {
-            Point2D newPosition = new Point2D.Double(Math.random()*1000, Math.random()*1000);
+        while(visitors.size() < 3) {
+            addVisitor();
+        }
+    }
+
+    private static void addVisitor(){
+        if (visitors.size() < visitorAmount){
+            Point2D newPosition = new Point2D.Double(canvas.getWidth()/2+Math.random()*100, canvas.getHeight()-Math.random()*100);
             boolean hasCollision = false;
             for (Visitor visitor : visitors) {
-                if(visitor.getPosition().distance(newPosition) < 64)
+                if(visitor.getPosition().distance(newPosition) < visitor.getHitBoxSize())
                     hasCollision = true;
             }
-            if(!hasCollision)
+            if(!hasCollision) {
                 visitors.add(new Visitor(newPosition, 0));
+            } else{
+                addVisitor();
+            }
         }
-
     }
 
     private static void draw(FXGraphics2D g2d){
         mapGenerator.draw(g2d);
         for (Visitor visitor : visitors) {
             visitor.draw(g2d);
+        }
+        for (Location location : locations){
+            location.draw(g2d);
         }
     }
 

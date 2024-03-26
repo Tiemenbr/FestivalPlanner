@@ -1,8 +1,12 @@
 package Gui.SimulatorView;
 
+import Gui.Planner;
+import Objects.Location;
+
 import javax.imageio.ImageIO;
 import javax.json.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +21,7 @@ public class MapGenerator {
     private int tileHeight;
     private int tileWidth;
     private ArrayList<BufferedImage> tiles = new ArrayList<>();
+    private ArrayList<Location> locations = new ArrayList<>();
 
     public MapGenerator(String fileName) {
         JsonReader reader = Json.createReader(getClass().getClassLoader().getResourceAsStream(fileName));
@@ -76,6 +81,25 @@ public class MapGenerator {
                     // Get layer type
                     if (layers.getJsonObject(i).containsKey("type")) {
                         tileType = layers.getJsonObject(i).getString("type");
+
+                        // Get all objects from objectgroup
+                        if (tileType.equalsIgnoreCase("objectgroup")){
+                            int objectAmount = layers.getJsonObject(i).getJsonArray("objects").size();
+                            for (int j = 0; j < objectAmount; j++){
+                                String name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("name");
+                                if (name.equalsIgnoreCase("")){
+                                    name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("type");
+                                }
+                                int height = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("height");
+                                int width = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("width");
+                                int x = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("x");
+                                int y = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("y");
+
+                                locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
+                                Planner planner = new Planner();
+                                planner.getSCHEDULE().getLocations();
+                            }
+                        }
                     }
                     // Get layer width
                     if (layers.getJsonObject(i).containsKey("width")) {
@@ -116,6 +140,10 @@ public class MapGenerator {
         // Draw each individual layer
         for (TileLayer layer : layers) {
             layer.draw(g2d);
+        }
+        // Draw objects
+        for (Location location : locations){
+            location.draw(g2d);
         }
     }
 

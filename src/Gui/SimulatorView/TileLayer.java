@@ -55,6 +55,7 @@ public class TileLayer{
             cacheImage = new BufferedImage(width*tileWidth, height*tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D graphics = cacheImage.createGraphics();
 
+            // Draw layer
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++){
                     // If the number on the map is <=0: Skip this index
@@ -89,5 +90,9 @@ public class TileLayer{
 
     public String getName() {
         return this.name;
+    }
+
+    public String getTileType(){
+        return this.tileType;
     }
 }
