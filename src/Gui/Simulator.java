@@ -96,6 +96,10 @@ public class Simulator{
         double scaleFactorWidth = stackPane.getWidth()/cacheImageWidth;
         double scaleFactorHeight = stackPane.getHeight()/cacheImageHeight;
 
+        for (Visitor visitor : visitors) {
+            visitor.update(visitors,mapGenerator.getCollisionLayer(),deltaTime);
+        }
+
         // Transform the cacheimage
         canvas.setScaleX(camera.scale);
         canvas.setScaleY(camera.scale);
