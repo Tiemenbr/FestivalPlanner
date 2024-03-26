@@ -1,4 +1,4 @@
-package gui;
+package Gui;
 
 import Objects.*;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;

@@ -1,17 +1,12 @@
-package gui;
+package Gui;
 
-import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
-import Objects.Visitor;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-import javax.swing.*;
-import javax.xml.soap.Text;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

@@ -1,8 +1,10 @@
-package gui;
+package Gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -54,7 +56,10 @@ public class GUI extends Application {
         Tab locationRead = new Tab("Locations");
         locationRead.setContent(LocationsOverview.getComponent());
 
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead);
+        Tab simulator = new Tab("Simulator");
+        simulator.setContent(Simulator.getComponent());
+
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead, simulator);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
