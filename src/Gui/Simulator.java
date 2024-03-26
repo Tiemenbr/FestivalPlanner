@@ -60,10 +60,8 @@ public class Simulator{
         double scaleFactorHeight = stackPane.getHeight()/cacheImageHeight;
 
         // Transform the cacheimage
-        AffineTransform tx = new AffineTransform();
-        tx.scale(scaleFactorWidth, scaleFactorHeight);
-        canvas.setScaleX(camera.scale + tx.getScaleX());
-        canvas.setScaleY(camera.scale + tx.getScaleY());
+        canvas.setScaleX(camera.scale);
+        canvas.setScaleY(camera.scale);
     }
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
