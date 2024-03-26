@@ -1,5 +1,6 @@
 package Gui;
 
+import Gui.SimulatorView.MapGenerator;
 import Objects.*;
 
 import java.time.DayOfWeek;
@@ -15,10 +16,11 @@ public class Planner {
         //seedTestData();
 
         if(SCHEDULE.getLocations().isEmpty() && SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()){
-            ArrayList<Object> locations = IOController.getObjectsFromDirectory(IOController.ObjectType.LOCATION);
-            for(Object location : locations){
-                SCHEDULE.addLocation((Location) location);
-            }
+//            ArrayList<Object> locations = IOController.getObjectsFromDirectory(IOController.ObjectType.LOCATION);
+            generateLocations();
+//            for(Object location : locations){
+//                SCHEDULE.addLocation((Location) location);
+//            }
             ArrayList<Object> attractions = IOController.getObjectsFromDirectory(IOController.ObjectType.ATTRACTION);
             for(Object attraction : attractions){
                 SCHEDULE.addAttraction((Attraction) attraction);
@@ -70,4 +72,13 @@ public class Planner {
     public static Schedule getSCHEDULE() {
         return SCHEDULE;
     }
+
+    private void generateLocations(){
+        MapGenerator mapGen = new MapGenerator("testDrive.json");
+        ArrayList<Location> locations = mapGen.getLocations();
+        for (Location location : locations){
+            SCHEDULE.addLocation(location);
+        }
+    }
+
 }

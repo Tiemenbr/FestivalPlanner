@@ -96,8 +96,6 @@ public class MapGenerator {
                                 int y = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("y");
 
                                 locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
-                                Planner planner = new Planner();
-                                planner.getSCHEDULE().getLocations();
                             }
                         }
                     }
@@ -175,4 +173,9 @@ public class MapGenerator {
         }
         return null;
     }
+
+    public ArrayList<Location> getLocations(){
+        return this.locations;
+    }
+
 }

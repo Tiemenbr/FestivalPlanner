@@ -59,7 +59,7 @@ public class GUI extends Application {
         Tab simulator = new Tab("Simulator");
         simulator.setContent(Simulator.getComponent());
 
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator);
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator); //locationRead
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);

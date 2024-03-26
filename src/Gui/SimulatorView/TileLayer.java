@@ -64,7 +64,7 @@ public class TileLayer{
 
                     // Draw image of position on map
                     graphics.drawImage(
-                            tiles.get(map[y][x] - 1), // OLD: tiles.get(map[y][x]-359)
+                            tiles.get(map[y][x] - 1),
                             AffineTransform.getTranslateInstance(x * tileWidth, y * tileHeight),
                             null);
                 }
