@@ -5,41 +5,40 @@ import Gui.SimulatorView.SpriteSheetHelper;
 import Gui.SimulatorView.Visitor;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.VBox;
 import org.jfree.fx.FXGraphics2D;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.StackPane;
-import org.jfree.fx.ResizableCanvas;
 
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Canvas canvas;
-    private static StackPane stackPane;
+    private static VBox vBox;
     private static Camera camera;
     private static final MapGenerator mapGenerator = new MapGenerator("testDrive.json");
     static ArrayList<Visitor> visitors = new ArrayList<>();
     private static SpriteSheetHelper spriteSheetHelper;
 
-    public static StackPane getComponent() {
-        stackPane = new StackPane();
-        canvas = new ResizableCanvas(g -> draw(g), stackPane);
+    public static VBox getComponent() {
+        vBox = new VBox();
+        canvas = new Canvas();
+//        canvas = new ResizableCanvas(g -> draw(g), stackPane);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         draw(g2d); // Draw your content initially
 
         camera = new Camera(canvas);
-        stackPane.getChildren().add(canvas);
+        vBox.getChildren().add(canvas);
+
 
         // Handle mouse events for panning
-        stackPane.setOnMousePressed(event -> camera.handleMousePressed(event));
-        stackPane.setOnMouseDragged(event -> camera.handleMouseDragged(event));
+        vBox.setOnMousePressed(event -> camera.handleMousePressed(event));
+        vBox.setOnMouseDragged(event -> camera.handleMouseDragged(event));
 
         // Handle scroll event for zooming
-        stackPane.setOnScroll(event -> camera.handleScroll(event));
+        vBox.setOnScroll(event -> camera.handleScroll(event));
         canvas.setOnMouseMoved(event -> {
             for (Visitor visitor : visitors) {
                 visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
@@ -59,12 +58,18 @@ public class Simulator{
         init();
 
 
-        return stackPane;
+        return vBox;
     }
 
 
 
     public static void init() {
+
+        double cacheImageWidth = mapGenerator.getCacheImageWidth();
+        double cacheImageHeight = mapGenerator.getCacheImageHeight();
+        canvas.setWidth(cacheImageWidth);
+        canvas.setHeight(cacheImageHeight);
+
 
         spriteSheetHelper = new SpriteSheetHelper();
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
@@ -93,8 +98,6 @@ public class Simulator{
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
-        double scaleFactorWidth = stackPane.getWidth()/cacheImageWidth;
-        double scaleFactorHeight = stackPane.getHeight()/cacheImageHeight;
 
         for (Visitor visitor : visitors) {
             visitor.update(visitors,mapGenerator.getCollisionLayer(),deltaTime);
