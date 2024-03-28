@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Visitor {
 
-    private final double baseSpeed = 2;
+    private final double baseSpeed = 1;
 //    private enum walkDir {NORTH,EAST,SOUTH,WEST};
 
     private Point2D position;
@@ -22,12 +22,12 @@ public class Visitor {
     private double imageIndex;
 
     private Point2D target;
-    private double scale = 2.0;
+    private double scale = 1.0; //2.0
     private double hitboxSize;
 
     public Visitor(Point2D pos, double direction) {
         this.position = pos;
-        this.speed = baseSpeed + Math.random()*4;
+        this.speed = baseSpeed;// + Math.random()*4;
         this.angle = Math.toRadians(direction);
 
         this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
@@ -58,14 +58,11 @@ public class Visitor {
     public void update(ArrayList<Visitor> visitors, TileLayer collision, double time){
         double newAngle = Math.atan2(this.target.getY() - this.position.getY(), this.target.getX() - this.position.getX());
 
-
         double angleDifference = angle - newAngle;
         while(angleDifference > Math.PI)
             angleDifference -= 2 * Math.PI;
         while(angleDifference < -Math.PI)
             angleDifference += 2 * Math.PI;
-
-
 
         if(angleDifference < -time)
             angle += time;
@@ -84,7 +81,6 @@ public class Visitor {
             testAngle -= 360;
         }
 
-
         if(testAngle > -135 && testAngle < -45){
 //            walkDirection = walkDir.NORTH;
             imageOffset = 3*4;
@@ -99,22 +95,17 @@ public class Visitor {
             imageOffset = 0;
         }
 //        System.out.println(walkDirection);
-
         imageIndex += time;
-
         if(imageIndex >= 4){
             imageIndex = 0;
         }
 
         currentImage = sprites[(int)imageIndex+imageOffset];
-
         Point2D newPosition = new Point2D.Double(
                 this.position.getX() + speed * Math.cos(angle),
                 this.position.getY() + speed * Math.sin(angle)
         );
-
         boolean hasCollision = false;
-
         for (Visitor visitor : visitors) {
             if(visitor != this)
                 if(visitor.getPosition().distance(newPosition) <= hitboxSize)
@@ -135,5 +126,8 @@ public class Visitor {
     public Point2D getPosition()
     {
         return this.position;
+    }
+    public double getHitBoxSize(){
+        return this.hitboxSize;
     }
 }

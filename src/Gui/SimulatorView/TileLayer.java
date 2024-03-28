@@ -5,6 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TileLayer{
 
@@ -15,46 +16,26 @@ public class TileLayer{
     private int[][] map;
     private int tileWidth;
     private int tileHeight;
-    private ArrayList<BufferedImage> tiles;
+    private HashMap<String, ArrayList<BufferedImage>> tileSetImages;
 
-    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, ArrayList<BufferedImage> tiles,String name){
+    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, HashMap<String, ArrayList<BufferedImage>> tileSetImages, String name){
         this.tileType = tileType;
         this.width = layerWidth;
         this.height = layerHeight;
         this.map = layerMap;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
-        this.tiles = tiles;
+        this.tileSetImages = tileSetImages;
         this.name = name;
-
-//        // Scale to nearest 0.25, to prevent lines forming
-//        double roundTo = 0.25;
-//        this.scaleFactor = Math.floor(scaleFactor/roundTo)*roundTo;
     }
-
-//    public BufferedImage scaleImage(BufferedImage image){
-//        BufferedImage before = image;
-//        // Change width & height of image
-//        int w = before.getWidth();
-//        int h = before.getHeight();
-//        BufferedImage scaled = new BufferedImage((int) (w*scaleFactor), (int) (h*scaleFactor), BufferedImage.TYPE_INT_ARGB);
-//
-//        // Zoom in on image
-//        AffineTransform at = new AffineTransform();
-//        at.scale(scaleFactor, scaleFactor);
-//        AffineTransformOp scaleOp =
-//                new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-//        scaled = scaleOp.filter(before, scaled);
-//
-//        return scaled;
-//    }
 
     private BufferedImage cacheImage = null;
     public void draw(Graphics2D g2d){
-        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer") && !this.name.equalsIgnoreCase("colisionlayer")){
+        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer") && !this.name.equalsIgnoreCase("collisionlayer")){
             cacheImage = new BufferedImage(width*tileWidth, height*tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D graphics = cacheImage.createGraphics();
 
+            // Draw layer
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++){
                     // If the number on the map is <=0: Skip this index
@@ -62,8 +43,9 @@ public class TileLayer{
                         continue;
 
                     // Draw image of position on map
+                    ArrayList<BufferedImage> tiles = tileSetImages.get(name);
                     graphics.drawImage(
-                            tiles.get(map[y][x] - 1), // OLD: tiles.get(map[y][x]-359)
+                            tiles.get(map[y][x] - 1),
                             AffineTransform.getTranslateInstance(x * tileWidth, y * tileHeight),
                             null);
                 }
@@ -89,5 +71,9 @@ public class TileLayer{
 
     public String getName() {
         return this.name;
+    }
+
+    public String getTileType(){
+        return this.tileType;
     }
 }
