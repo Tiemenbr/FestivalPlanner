@@ -74,7 +74,7 @@ public class Planner {
     }
 
     private void generateLocations(){
-        MapGenerator mapGen = new MapGenerator("testDrive.json");
+        MapGenerator mapGen = new MapGenerator("festivalMap.json");
         ArrayList<Location> locations = mapGen.getLocations();
         for (Location location : locations){
             SCHEDULE.addLocation(location);

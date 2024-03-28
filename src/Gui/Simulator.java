@@ -7,12 +7,9 @@ import Objects.Location;
 import Objects.Schedule;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.VBox;
 import org.jfree.fx.FXGraphics2D;
-
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.StackPane;
-import org.jfree.fx.ResizableCanvas;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -21,29 +18,30 @@ public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Schedule schedule = Planner.getSCHEDULE();
     private static Canvas canvas;
-    private static StackPane stackPane;
+    private static VBox vBox;
     private static Camera camera;
-    private static final MapGenerator mapGenerator = new MapGenerator("testDrive.json");
+    private static final MapGenerator mapGenerator = new MapGenerator("festivalMap.json");
     static ArrayList<Visitor> visitors = new ArrayList<>();
     private static SpriteSheetHelper spriteSheetHelper;
     private static int visitorAmount = 100;
     private static ArrayList<Location> locations = new ArrayList<>();
 
-    public static StackPane getComponent() {
-        stackPane = new StackPane();
-        canvas = new ResizableCanvas(g -> draw(g), stackPane);
+    public static VBox getComponent() {
+        vBox = new VBox();
+        canvas = new Canvas();
+        //canvas = new ResizableCanvas(g -> draw(g), vBox);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         draw(g2d); // Draw your content initially
 
         camera = new Camera(canvas);
-        stackPane.getChildren().add(canvas);
+        vBox.getChildren().add(canvas);
 
         // Handle mouse events for panning
-        stackPane.setOnMousePressed(event -> camera.handleMousePressed(event));
-        stackPane.setOnMouseDragged(event -> camera.handleMouseDragged(event));
+        vBox.setOnMousePressed(event -> camera.handleMousePressed(event));
+        vBox.setOnMouseDragged(event -> camera.handleMouseDragged(event));
 
         // Handle scroll event for zooming
-        stackPane.setOnScroll(event -> camera.handleScroll(event));
+        vBox.setOnScroll(event -> camera.handleScroll(event));
         canvas.setOnMouseMoved(event -> {
             for (Visitor visitor : visitors) {
                 visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
@@ -66,7 +64,7 @@ public class Simulator{
             }
         }.start();
         init();
-        return stackPane;
+        return vBox;
     }
 
     public static void init() {
@@ -76,14 +74,16 @@ public class Simulator{
         spriteSheetHelper = new SpriteSheetHelper();
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
-        while(visitors.size() < 3) {
+        while(visitors.size() < 10) {
             addVisitor();
         }
     }
 
     private static void addVisitor(){
         if (visitors.size() < visitorAmount){
-            Point2D newPosition = new Point2D.Double(canvas.getWidth()/2+Math.random()*100, canvas.getHeight()-Math.random()*100);
+            // Spawn location coordinates
+            Point2D newPosition = new Point2D.Double(390+(Math.random()*182), 900+(Math.random()*53));
+
             boolean hasCollision = false;
             for (Visitor visitor : visitors) {
                 if(visitor.getPosition().distance(newPosition) < visitor.getHitBoxSize())
@@ -111,16 +111,25 @@ public class Simulator{
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
-        double scaleFactorWidth = stackPane.getWidth()/cacheImageWidth;
-        double scaleFactorHeight = stackPane.getHeight()/cacheImageHeight;
 
         // Transform the cacheimage
         AffineTransform tx = new AffineTransform();
-//        tx.scale(scaleFactorWidth, scaleFactorHeight);
         canvas.setHeight(cacheImageHeight);
         canvas.setWidth(cacheImageWidth);
         canvas.setScaleX(camera.scale + tx.getScaleX());
         canvas.setScaleY(camera.scale + tx.getScaleY());
+
+        for (int i = 0; i < visitors.size(); i++){
+            // Despawn location coordinates
+            Point2D exitPointLT = new Point2D.Double(389, 4);
+            Point2D exitPointRB = new Point2D.Double(570, 60);
+
+            if (visitors.get(i).getPosition().getX() > exitPointLT.getX() && visitors.get(i).getPosition().getX() < exitPointRB.getX() &&
+                    visitors.get(i).getPosition().getY() > exitPointLT.getY() && visitors.get(i).getPosition().getY() < exitPointRB.getY()){
+                visitors.remove(visitors.get(i));
+            }
+        }
+
         for (Visitor visitor : visitors) {
             visitor.update(visitors, mapGenerator.getCollisionLayer(), deltaTime);
         }

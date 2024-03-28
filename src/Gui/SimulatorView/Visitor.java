@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Visitor {
 
-    private final double baseSpeed = 2;
+    private final double baseSpeed = 1;
 //    private enum walkDir {NORTH,EAST,SOUTH,WEST};
 
     private Point2D position;

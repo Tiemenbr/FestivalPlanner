@@ -69,7 +69,7 @@ public class Location implements CRUD, Serializable {
     public void draw(Graphics2D g2d){
         g2d.setColor(Color.white);
         if (position != null){
-            g2d.drawString(name, (int) position.getX(), (int) position.getY()-2);
+            g2d.drawString(name, (int) position.getX()+width, (int) position.getY()+(height/2));
             g2d.drawRect((int) position.getX(), (int) position.getY(), width, height);
         }
     }
