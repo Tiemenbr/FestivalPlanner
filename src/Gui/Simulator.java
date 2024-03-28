@@ -82,7 +82,7 @@ public class Simulator{
     private static void addVisitor(){
         if (visitors.size() < visitorAmount){
             // Spawn location coordinates
-            Point2D newPosition = new Point2D.Double(390+(Math.random()*182), 900+(Math.random()*53));
+            Point2D newPosition = new Point2D.Double(386+(Math.random()*188), 866+(Math.random()*60));
 
             boolean hasCollision = false;
             for (Visitor visitor : visitors) {
@@ -108,21 +108,10 @@ public class Simulator{
     }
 
     private static void update(double deltaTime){
-        // Get scale factors based on screen size
-        double cacheImageWidth = mapGenerator.getCacheImageWidth();
-        double cacheImageHeight = mapGenerator.getCacheImageHeight();
-
-        // Transform the cacheimage
-        AffineTransform tx = new AffineTransform();
-        canvas.setHeight(cacheImageHeight);
-        canvas.setWidth(cacheImageWidth);
-        canvas.setScaleX(camera.scale + tx.getScaleX());
-        canvas.setScaleY(camera.scale + tx.getScaleY());
-
         for (int i = 0; i < visitors.size(); i++){
             // Despawn location coordinates
-            Point2D exitPointLT = new Point2D.Double(389, 4);
-            Point2D exitPointRB = new Point2D.Double(570, 60);
+            Point2D exitPointLT = new Point2D.Double(386, 3);
+            Point2D exitPointRB = new Point2D.Double(574, 63);
 
             if (visitors.get(i).getPosition().getX() > exitPointLT.getX() && visitors.get(i).getPosition().getX() < exitPointRB.getX() &&
                     visitors.get(i).getPosition().getY() > exitPointLT.getY() && visitors.get(i).getPosition().getY() < exitPointRB.getY()){
