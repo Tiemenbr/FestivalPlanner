@@ -177,7 +177,13 @@ public class MapGenerator {
     }
 
     public ArrayList<Location> getLocations(){
-        return this.locations;
+        ArrayList<Location> validLocations = new ArrayList<>();
+        for (Location location : locations){
+            if (!location.getName().equalsIgnoreCase("entrance") && !location.getName().equalsIgnoreCase("exit")){
+                validLocations.add(location);
+            }
+        }
+        return validLocations;
     }
 
 }
