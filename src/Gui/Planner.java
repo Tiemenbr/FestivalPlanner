@@ -12,12 +12,10 @@ public class Planner {
 
     public void init(){
         IOController.init();
-
         //seedTestData();
 
-        if(SCHEDULE.getLocations().isEmpty() && SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()){
+        if(/*SCHEDULE.getLocations().isEmpty() &&*/ SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()){
 //            ArrayList<Object> locations = IOController.getObjectsFromDirectory(IOController.ObjectType.LOCATION);
-            generateLocations();
 //            for(Object location : locations){
 //                SCHEDULE.addLocation((Location) location);
 //            }
@@ -71,14 +69,6 @@ public class Planner {
 
     public static Schedule getSCHEDULE() {
         return SCHEDULE;
-    }
-
-    private void generateLocations(){
-        MapGenerator mapGen = new MapGenerator("festivalMap.json");
-        ArrayList<Location> locations = mapGen.getLocations();
-        for (Location location : locations){
-            SCHEDULE.addLocation(location);
-        }
     }
 
 }

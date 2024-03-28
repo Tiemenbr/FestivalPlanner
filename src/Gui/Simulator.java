@@ -69,6 +69,9 @@ public class Simulator{
 
     public static void init() {
         // Get all locations
+        for (Location location : mapGenerator.getLocations()){
+            schedule.addLocation(location);
+        }
         locations.addAll(schedule.getLocations().values());
 
         spriteSheetHelper = new SpriteSheetHelper();
@@ -108,6 +111,14 @@ public class Simulator{
     }
 
     private static void update(double deltaTime){
+        // Get scale factors based on screen size
+        double cacheImageWidth = mapGenerator.getCacheImageWidth();
+        double cacheImageHeight = mapGenerator.getCacheImageHeight();
+
+        // Transform the cacheimage
+        canvas.setHeight(cacheImageHeight);
+        canvas.setWidth(cacheImageWidth);
+
         for (int i = 0; i < visitors.size(); i++){
             // Despawn location coordinates
             Point2D exitPointLT = new Point2D.Double(386, 3);

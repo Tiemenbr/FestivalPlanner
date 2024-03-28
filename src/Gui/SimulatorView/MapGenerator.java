@@ -24,6 +24,7 @@ public class MapGenerator {
     private int tileWidth;
     private HashMap<String, ArrayList<BufferedImage>> tileSetImages = new HashMap<>();
     private ArrayList<Location> locations = new ArrayList<>();
+    private boolean createLocationsOnce = true;
 
     public MapGenerator(String fileName){
         JsonReader reader = Json.createReader(getClass().getClassLoader().getResourceAsStream(fileName));
@@ -81,21 +82,23 @@ public class MapGenerator {
 
                             // Get all objects from objectgroup
                             if (tileType.equalsIgnoreCase("objectgroup")){
-                                // Prevent locations from generating double data
-                                locations.clear();
-                                
-                                int objectAmount = layers.getJsonObject(i).getJsonArray("objects").size();
-                                for (int j = 0; j < objectAmount; j++){
-                                    String name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("name");
-                                    if (name.equalsIgnoreCase("")){
-                                        name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("type");
-                                    }
-                                    int height = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("height");
-                                    int width = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("width");
-                                    int x = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("x");
-                                    int y = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("y");
+                                if (createLocationsOnce){
+                                    int objectAmount = layers.getJsonObject(i).getJsonArray("objects").size();
+                                    for (int j = 0; j < objectAmount; j++){
+                                        String name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("name");
+                                        if (name.equalsIgnoreCase("")){
+                                            name = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getString("type");
+                                        }
+                                        int height = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("height");
+                                        int width = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("width");
+                                        int x = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("x");
+                                        int y = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("y");
 
-                                    locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
+                                        if (!name.equalsIgnoreCase("entrance") && !name.equalsIgnoreCase("exit")){
+                                            locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
+                                        }
+                                    }
+                                    createLocationsOnce = false;
                                 }
                             }
                         }
@@ -177,13 +180,7 @@ public class MapGenerator {
     }
 
     public ArrayList<Location> getLocations(){
-        ArrayList<Location> validLocations = new ArrayList<>();
-        for (Location location : locations){
-            if (!location.getName().equalsIgnoreCase("entrance") && !location.getName().equalsIgnoreCase("exit")){
-                validLocations.add(location);
-            }
-        }
-        return validLocations;
+        return locations;
     }
 
 }

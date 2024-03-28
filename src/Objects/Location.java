@@ -22,7 +22,7 @@ public class Location implements CRUD, Serializable {
         this.name = name;
         this.position = position;
 
-        this.update(); //to create file
+        // this.update(); //to create file
     }
 
     public UUID getId() {
