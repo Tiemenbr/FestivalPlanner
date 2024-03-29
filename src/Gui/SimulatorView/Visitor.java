@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Visitor {
 
-    private final double baseSpeed = 2;
+    private final double baseSpeed = 1;
 //    private enum walkDir {NORTH,EAST,SOUTH,WEST};
 
     private Point2D position;
@@ -27,7 +27,7 @@ public class Visitor {
 
     public Visitor(Point2D pos, double direction) {
         this.position = pos;
-        this.speed = baseSpeed + Math.random()*4;
+        this.speed = baseSpeed + Math.random()/**4*/;
         this.angle = Math.toRadians(direction);
 
         this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
@@ -100,7 +100,7 @@ public class Visitor {
         }
 //        System.out.println(walkDirection);
 
-        imageIndex += time;
+        imageIndex += time*(speed*2);
 
         if(imageIndex >= 4){
             imageIndex = 0;
