@@ -1,6 +1,7 @@
 package Gui.SimulatorView;
 
-import Gui.Planner;
+import Gui.Pathfinding.FrontierQueue;
+import Gui.Pathfinding.Tile;
 import Objects.Location;
 
 import javax.imageio.ImageIO;
@@ -9,7 +10,6 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,6 +22,8 @@ public class MapGenerator {
     private ArrayList<TileLayer> layers = new ArrayList<>();
     private int tileHeight;
     private int tileWidth;
+    private ArrayList<BufferedImage> tiles = new ArrayList<>();
+    private HashMap<String,HashMap<Tile,Integer>> distances = new HashMap<>();
     private HashMap<String, ArrayList<BufferedImage>> tileSetImages = new HashMap<>();
     private ArrayList<Location> locations = new ArrayList<>();
     private boolean createLocationsOnce = true;
@@ -133,10 +135,67 @@ public class MapGenerator {
                     }
                 }
             }
+            TileLayer bottomLayer = this.getBottomLayer();
+            Tile[][] pathfindingTiles = createPathfindingTiles(bottomLayer.getMap()[0].length,bottomLayer.getMap().length);
+            JsonArray locations = root.getJsonArray("layers").getJsonObject(3).getJsonArray("objects");
+            for (int i = 0; i < locations.size(); i++) {
+                FrontierQueue<Tile> frontier = new FrontierQueue<>();
+                JsonObject location = locations.getJsonObject(i);
+                int x = (location.getInt("x")+(location.getInt("width")/2));
+                int y = (location.getInt("y")+(location.getInt("height")/2));
+                frontier.offer(pathfindingTiles[x/32][y/32]);
+                HashMap<Tile, Integer> distance = new HashMap<>();
+                distance.put(frontier.peek(), 0);
+
+                while (!frontier.isEmpty()) {
+                    Tile current = frontier.poll();
+                    for (Tile neighborTile : current.getNeighborTiles()) {
+                        if (distance.get(neighborTile) == null) {
+                            frontier.offer(neighborTile);
+                            distance.put(neighborTile,1 + distance.get(current));
+                        }
+                    }
+                }
+                this.distances.put(locations.getJsonObject(i).getString("name"), distance);
+            }
         } catch(IOException e){
             System.out.println("IOException!");
             e.printStackTrace();
         }
+    }
+
+    private Tile[][] createPathfindingTiles(int borderX, int borderY) {
+        Tile[][] pathfindingTiles = new Tile[borderX][borderY];
+        int[][] collisionTiles = this.getCollisionLayer().getMap();
+        for (int i = 0; i < borderX; i++) {
+            for (int j = 0; j < borderY; j++) {
+                pathfindingTiles[i][j] = new Tile();
+            }
+        }
+
+        for (int i = 0; i < borderX; i++) {
+            for (int j = 0; j < borderY; j++) {
+                if (!(collisionTiles[i][j]>0))
+                    pathfindingTiles[i][j].setTile(i*32,j*32);
+            }
+        }
+        for (int i = 0; i < borderX; i++) {
+            for (int j = 0; j < borderY; j++) {
+                if (pathfindingTiles[i][j] == null)
+                    continue;
+                ArrayList<Tile> neighbors = new ArrayList<>();
+                if (i+1 < borderX && pathfindingTiles[i+1][j].isSet())
+                    neighbors.add(pathfindingTiles[i+1][j]);
+                if (j+1 < borderY && pathfindingTiles[i][j+1].isSet())
+                    neighbors.add(pathfindingTiles[i][j+1]);
+                if (i != 0 && pathfindingTiles[i-1][j].isSet())
+                    neighbors.add(pathfindingTiles[i-1][j]);
+                if (j != 0 && pathfindingTiles[i][j-1].isSet())
+                    neighbors.add(pathfindingTiles[i][j-1]);
+                pathfindingTiles[i][j].setNeighborTiles(neighbors);
+            }
+        }
+        return pathfindingTiles;
     }
 
     public void draw(Graphics2D g2d) {
@@ -168,6 +227,19 @@ public class MapGenerator {
             }
         }
         return height;
+    }
+
+    private TileLayer getBottomLayer() {
+        for (TileLayer layer : layers) {
+            if (layer.getName().equalsIgnoreCase("bottomLayer")) {
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    public HashMap<String,HashMap<Tile,Integer>> getDistanceMaps() {
+        return this.distances;
     }
 
     public TileLayer getCollisionLayer() {
