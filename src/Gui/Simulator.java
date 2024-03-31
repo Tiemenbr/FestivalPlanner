@@ -6,19 +6,28 @@ import Gui.SimulatorView.Visitor;
 import Objects.Location;
 import Objects.Schedule;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import javafx.scene.canvas.Canvas;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+
+import javafx.scene.control.Label;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Schedule schedule = Planner.getSCHEDULE();
     private static Canvas canvas;
-    private static VBox vBox;
+    private static BorderPane mainBox;
     private static Camera camera;
     private static final MapGenerator mapGenerator = new MapGenerator("festivalMap.json");
     static ArrayList<Visitor> visitors = new ArrayList<>();
@@ -26,8 +35,14 @@ public class Simulator{
     private static int visitorAmount = 100;
     private static ArrayList<Location> locations = new ArrayList<>();
 
-    public static VBox getComponent() {
-        vBox = new VBox();
+    private static double time;
+    private static DayOfWeek currentDay;
+
+    public static BorderPane getComponent() {
+        mainBox = new BorderPane();
+        currentDay = DayOfWeek.MONDAY;
+
+        VBox vBox = new VBox();
         canvas = new Canvas();
         //canvas = new ResizableCanvas(g -> draw(g), vBox);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
@@ -35,6 +50,7 @@ public class Simulator{
 
         camera = new Camera(canvas);
         vBox.getChildren().add(canvas);
+        mainBox.setCenter(vBox);
 
 
         // Handle mouse events for panning
@@ -66,7 +82,7 @@ public class Simulator{
         }.start();
         init();
 
-        return vBox;
+        return mainBox;
     }
 
     public static void init() {
@@ -119,6 +135,9 @@ public class Simulator{
     }
 
     private static void update(double deltaTime){
+        //update time var
+        time += deltaTime*100;
+
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
@@ -145,6 +164,8 @@ public class Simulator{
         // Transform the cacheimage
         canvas.setScaleX(camera.scale);
         canvas.setScaleY(camera.scale);
+
+        updateTimeLine();
     }
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
@@ -188,4 +209,51 @@ public class Simulator{
             event.consume();
         }
     }
+
+
+    public static void updateTimeLine(){
+        int timeLineScale = 1000;
+
+        //24*60*60/20  : 24 hours divided into 5 minute segments (just like the planner)
+
+        if(timeLineScale/(24*60*60/20.0)*time > timeLineScale){
+            time = 0;
+            currentDay = currentDay.plus(1);
+        }
+
+        VBox timeLineContainer = new VBox();
+        timeLineContainer.setMaxWidth(timeLineScale);
+        timeLineContainer.setPadding(new Insets(5,0,0,0));
+        timeLineContainer.setStyle("-fx-background-color: lightgray;");
+
+        Label dayLabel = new Label(currentDay.toString());
+        timeLineContainer.getChildren().add(dayLabel);
+        dayLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -50));
+
+        HBox timeLine = new HBox();
+        timeLineContainer.getChildren().add(timeLine);
+//        timeLine.setStyle("-fx-background-color: blue;");
+        timeLine.setPrefHeight(25);
+        timeLine.setPadding(new Insets(5,20,5,20));
+
+
+
+        HBox lineBackdrop = new HBox();
+        timeLine.getChildren().add(lineBackdrop);
+        lineBackdrop.setMaxHeight(10);
+        lineBackdrop.setPrefWidth(timeLineScale);
+        lineBackdrop.setStyle("-fx-background-color: white;");
+
+        HBox line = new HBox();
+        lineBackdrop.getChildren().add(line);
+        lineBackdrop.setMaxHeight(10);
+        line.setPrefWidth((double)timeLineScale/(24*60*60/20.0)*time);
+        line.setStyle("-fx-background-color: darkslateblue;");
+//        System.out.println((double)timeLineScale/(24*60*60/20.0)*time);
+
+
+
+        mainBox.setTop(timeLineContainer);
+    }
+
 }

@@ -27,7 +27,7 @@ public class Visitor {
 
     public Visitor(Point2D pos, double direction) {
         this.position = pos;
-        this.speed = baseSpeed;// + Math.random()*4;
+        this.speed = baseSpeed + Math.random()/**4*/;
         this.angle = Math.toRadians(direction);
 
         this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
@@ -95,7 +95,9 @@ public class Visitor {
             imageOffset = 0;
         }
 //        System.out.println(walkDirection);
-        imageIndex += time;
+
+        imageIndex += time*(speed*2);
+
         if(imageIndex >= 4){
             imageIndex = 0;
         }
