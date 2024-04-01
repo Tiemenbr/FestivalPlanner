@@ -75,9 +75,9 @@ public class Visitor {
             angleDifference += 2 * Math.PI;
 
         if(angleDifference < -time)
-            angle += time;
+            angle += (time*speed);
         else if(angleDifference > time)
-            angle -= time;
+            angle -= (time*speed);
         else
             angle = newAngle;
         //#endregion
@@ -136,11 +136,12 @@ public class Visitor {
         //#endregion
 
         //#region target timer
-        if(!readyForNewTarget && this.position.distance(target) < 500){
+        if(!readyForNewTarget && this.position.distance(target) < 100){ //todo while it has a target and is within 100 of the target
+//            System.out.println("target timer +1! (" + targetTimer);
             targetTimer += time;
         }
 
-        if(targetTimer > 50){
+        if(targetTimer > 10){
             readyForNewTarget = true;
         }
         //#endregion
@@ -148,15 +149,16 @@ public class Visitor {
 
     public void setTargetPosition(ArrayList<ScheduleItem> targetOption, Schedule schedule)
     {
-        if(readyForNewTarget){
-            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
+        if(readyForNewTarget && !targetOption.isEmpty()){
+//            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
             double rand = (Math.random()*targetOption.size());
             System.out.println(rand);
             ScheduleItem item = targetOption.get((int) rand);
             System.out.println((int) rand);
-            System.out.println("new target!: " + item.getAttraction(schedule).getName());
+//            System.out.println("new target!: " + item.getAttraction(schedule).getName());
 
-            this.target = item.getLocation(schedule).getPosition();
+            //set target to center of location
+            this.target = new Point2D.Double(item.getLocation(schedule).getPosition().getX() + (item.getLocation(schedule).getWidth()/2.0), item.getLocation(schedule).getPosition().getY()+ (item.getLocation(schedule).getHeight()/2.0));
             readyForNewTarget = false;
             targetTimer = 0;
         }

@@ -34,7 +34,7 @@ public class Simulator{
     private static BorderPane mainBox;
     private static Camera camera;
     static ArrayList<Visitor> visitors = new ArrayList<>();
-    private static int visitorAmount = 100;
+    private static int visitorAmount = 1;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
 
@@ -90,6 +90,7 @@ public class Simulator{
 
     public static void init() {
         currentDay = DayOfWeek.MONDAY;
+        currentScheduleItems = new ArrayList<>();
         setCurrentScheduleItems(); //todo doesn't get called first??
 
         // Get all locations
@@ -119,17 +120,21 @@ public class Simulator{
     }
 
     private static void setCurrentScheduleItems() {
-        System.out.println("setting current items");
-        ArrayList<ScheduleItem> currentItems = new ArrayList<>();
+//        System.out.println("setting current items");
+        currentScheduleItems.clear();
         for (UUID uuid : schedule.getScheduleItems().keySet()) {
+
+//            System.out.println(schedule.getScheduleItem(uuid));
             int startTimeMinutes = schedule.getScheduleItem(uuid).getStartTime().getHour()*60+schedule.getScheduleItem(uuid).getStartTime().getMinute();
             int endTimeMinutes = schedule.getScheduleItem(uuid).getEndTime().getHour()*60+schedule.getScheduleItem(uuid).getEndTime().getMinute();
+
             if(schedule.getScheduleItem(uuid).getDay() == currentDay && startTimeMinutes/5.0 <= time && endTimeMinutes/5.0 >= time){
-                currentItems.add(schedule.getScheduleItem(uuid));
+                for (int i = 0; i < schedule.getScheduleItem(uuid).getAttraction(schedule).getPopularity(); i++) {
+                    currentScheduleItems.add(schedule.getScheduleItem(uuid));
+                }
             }
         }
-        currentScheduleItems = currentItems;
-        System.out.println(currentItems.size());
+//        System.out.println(currentScheduleItems.size());
     }
 
     private static void addVisitor(){
@@ -165,7 +170,7 @@ public class Simulator{
 
     private static void update(double deltaTime){
         //update time var
-        time += deltaTime*100;
+        time += deltaTime*10;
 
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
@@ -188,20 +193,17 @@ public class Simulator{
 
         for (Visitor visitor : visitors) {
             visitor.update(visitors,mapGenerator.getCollisionLayer(),deltaTime);
+            visitor.setTargetPosition(currentScheduleItems, schedule);
         }
 
         // Transform the cacheimage
         canvas.setScaleX(camera.scale);
         canvas.setScaleY(camera.scale);
 
-
-        DayOfWeek day = currentDay;
-
+        setCurrentScheduleItems();
         updateTimeLine();
 
-        if(day != currentDay){
-            setCurrentScheduleItems();
-        }
+
 
     }
 
@@ -253,9 +255,9 @@ public class Simulator{
     public static void updateTimeLine(){
         int timeLineScale = 1000;
 
-        //24*60*60/20  : 24 hours divided into 5 minute segments (just like the planner)
+        //24*60/5  : 24 hours divided into 5 minute segments (just like the planner)
 
-        if(timeLineScale/(24*60*60/20.0)*time > timeLineScale){
+        if(timeLineScale/(24*60/5.0)*time > timeLineScale){
             time = 0;
 //            currentDay = currentDay.plus(1);
         }
@@ -267,7 +269,11 @@ public class Simulator{
 
         Label dayLabel = new Label(currentDay.toString());
         timeLineContainer.getChildren().add(dayLabel);
-        dayLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -50));
+        dayLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -30));
+
+        Label timeLabel = new Label(String.format("%02d",((int)time)*5/60) +":"+ String.format("%02d",((int)time)*5%60));
+        timeLineContainer.getChildren().add(timeLabel);
+        timeLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -15));
 
         HBox timeLine = new HBox();
         timeLineContainer.getChildren().add(timeLine);
@@ -286,9 +292,9 @@ public class Simulator{
         HBox line = new HBox();
         lineBackdrop.getChildren().add(line);
         lineBackdrop.setMaxHeight(10);
-        line.setPrefWidth((double)timeLineScale/(24*60*60/20.0)*time);
+        line.setPrefWidth((double)timeLineScale/(24*60/5.0)*time);
         line.setStyle("-fx-background-color: darkslateblue;");
-//        System.out.println((double)timeLineScale/(24*60*60/20.0)*time);
+//        System.out.println((double)timeLineScale/(24*60/5.0)*time);
 
 
 
