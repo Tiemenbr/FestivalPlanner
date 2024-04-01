@@ -25,7 +25,7 @@ public class ScheduleView {
     public static Node createScheduleView(Schedule schedule) {
         BorderPane mainBox = new BorderPane();
 
-        HashMap<UUID, Location> locations = schedule.getLocations();
+        HashMap<String, Location> locations = schedule.getLocations();
         HashMap<UUID, ScheduleItem> scheduleItems = schedule.getScheduleItems();
 
         int minuteInterval = 5;
@@ -68,7 +68,7 @@ public class ScheduleView {
         return mainBox;
     }
 
-    private static void createSchedule(BorderPane pane,HashMap<UUID, ScheduleItem> scheduleItems, HashMap<UUID, Location> locations, Schedule schedule, int minuteInterval){
+    private static void createSchedule(BorderPane pane,HashMap<UUID, ScheduleItem> scheduleItems, HashMap<String, Location> locations, Schedule schedule, int minuteInterval){
         GridPane gridPane = createScheduleBase(locations.size(),minuteInterval);
         gridPane = fillScheduleWithLocationData(gridPane, locations);
         gridPane = fillScheduleWithScheduleItems(gridPane, scheduleItems, schedule, minuteInterval);
@@ -155,13 +155,13 @@ public class ScheduleView {
 
         return layout;
     }
-    private static GridPane fillScheduleWithLocationData(GridPane gridPane, HashMap<UUID, Location> locations){
+    private static GridPane fillScheduleWithLocationData(GridPane gridPane, HashMap<String, Location> locations){
 
         int keyCount = 0;
 
         locationRow = new HashMap<>();
 
-        for (UUID key : locations.keySet()) {
+        for (String key : locations.keySet()) {
             Label location = new Label(locations.get(key).getName());
             keyCount++;
             gridPane.add(location,0, keyCount);

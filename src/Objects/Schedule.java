@@ -1,5 +1,6 @@
 package Objects;
 
+import Gui.SimulatorView.MapGenerator;
 import Objects.Observers.AttractionsObserver;
 import Objects.Observers.LocationsObserver;
 import Objects.Observers.ScheduleItemsObserver;
@@ -9,9 +10,10 @@ import java.util.UUID;
 
 public class Schedule {
 
+    private static final MapGenerator mapGenerator = new MapGenerator("festivalMap.json");
     private HashMap<UUID, ScheduleItem> scheduleItems;
     private HashMap<UUID, Attraction> attractions;
-    private HashMap<UUID, Location> locations;
+    private HashMap<String, Location> locations;
     //todo schedule doesn't need to have the visitors?
     //private ArrayList<Visitor> visitors = new ArrayList<>();
     private ScheduleItemsObserver scheduleItemsObserver;
@@ -25,6 +27,11 @@ public class Schedule {
         this.scheduleItemsObserver = new ScheduleItemsObserver(this);
         this.attractionsObserver = new AttractionsObserver(this);
         this.locationsObserver = new LocationsObserver(this);
+
+        // Get all locations
+        for (Location location : mapGenerator.getLocations()){
+            this.addLocation(location);
+        }
     }
 
     public HashMap<UUID, ScheduleItem> getScheduleItems() {
@@ -64,16 +71,16 @@ public class Schedule {
         this.attractionsObserver.update();
     }
 
-    public HashMap<UUID, Location> getLocations() {
+    public HashMap<String, Location> getLocations() {
         return locations;
     }
 
-    public Location getLocation(UUID id) {
-        return locations.get(id);
+    public Location getLocation(String name) {
+        return locations.get(name);
     }
 
     public void addLocation(Location location) {
-        this.locations.put(location.getId(), location);
+        this.locations.put(location.getName(), location);
         this.locationsObserver.update();
     }
 
@@ -92,6 +99,10 @@ public class Schedule {
 
     public void setLocationsObserver(LocationsObserver locationsObserver) {
         this.locationsObserver = locationsObserver;
+    }
+
+    public static MapGenerator getMapGenerator(){
+        return mapGenerator;
     }
 
     //todo schedule doesn't need to have the visitors does it?

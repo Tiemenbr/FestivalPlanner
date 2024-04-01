@@ -3,6 +3,7 @@ package Gui;
 import Gui.SimulatorView.MapGenerator;
 import Gui.SimulatorView.SpriteSheetHelper;
 import Gui.SimulatorView.Visitor;
+import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
 import javafx.animation.AnimationTimer;
@@ -26,14 +27,15 @@ import javafx.scene.control.Label;
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Schedule schedule = Planner.getSCHEDULE();
+    private static final MapGenerator mapGenerator = Schedule.getMapGenerator();
     private static Canvas canvas;
     private static BorderPane mainBox;
     private static Camera camera;
-    private static final MapGenerator mapGenerator = new MapGenerator("festivalMap.json");
     static ArrayList<Visitor> visitors = new ArrayList<>();
     private static SpriteSheetHelper spriteSheetHelper;
     private static int visitorAmount = 100;
     private static ArrayList<Location> locations = new ArrayList<>();
+    private static ArrayList<Attraction> attractions = new ArrayList<>();
 
     private static double time;
     private static DayOfWeek currentDay;
@@ -86,11 +88,14 @@ public class Simulator{
     }
 
     public static void init() {
-        // Get all locations
-        for (Location location : mapGenerator.getLocations()){
-            schedule.addLocation(location);
-        }
+        // Get Locations & Attractions
         locations.addAll(schedule.getLocations().values());
+        attractions.addAll(schedule.getAttractions().values());
+
+        // Debug code:
+        for (Attraction a : attractions){
+            System.out.println(a);
+        }
 
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
@@ -101,6 +106,7 @@ public class Simulator{
         spriteSheetHelper = new SpriteSheetHelper();
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
+        // Starting visitor amount
         while(visitors.size() < 10) {
             addVisitor();
         }
