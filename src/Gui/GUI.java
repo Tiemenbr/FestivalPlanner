@@ -57,7 +57,12 @@ public class GUI extends Application {
         //locationRead.setContent(LocationsOverview.getComponent());
 
         Tab simulator = new Tab("Simulator");
-        simulator.setContent(Simulator.getComponent());
+        if(planner.getSCHEDULE().getScheduleItems().size() > 0){
+            simulator.setContent(Simulator.getComponent());
+        }else{
+            simulator.setContent(new Label("No scheduleItems found for the simulation..."));
+        }
+
 
         tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator); //locationRead
         tabpane.setTabClosingPolicy(UNAVAILABLE);

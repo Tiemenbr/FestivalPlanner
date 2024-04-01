@@ -109,7 +109,7 @@ public class ScheduleItemCreate {
         labelColumnBox.getChildren().add(startTimeLabel);
 
         ComboBox<String> startHourComboBox = new ComboBox<>();
-        for (int i = 1; i <= 24; i++) {
+        for (int i = 0; i <= 23; i++) {
             String j = Integer.toString(i);
             j = String.format("%02d", i);;
             startHourComboBox.getItems().add(j);

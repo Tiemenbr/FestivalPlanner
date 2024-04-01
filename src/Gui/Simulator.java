@@ -6,6 +6,7 @@ import Gui.SimulatorView.Visitor;
 import Objects.Attraction;
 import Objects.Location;
 import Objects.Schedule;
+import Objects.ScheduleItem;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +22,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javafx.scene.control.Label;
 
@@ -32,17 +34,16 @@ public class Simulator{
     private static BorderPane mainBox;
     private static Camera camera;
     static ArrayList<Visitor> visitors = new ArrayList<>();
-    private static SpriteSheetHelper spriteSheetHelper;
     private static int visitorAmount = 100;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
 
     private static double time;
     private static DayOfWeek currentDay;
+    private static ArrayList<ScheduleItem> currentScheduleItems;
 
     public static BorderPane getComponent() {
         mainBox = new BorderPane();
-        currentDay = DayOfWeek.MONDAY;
 
         VBox vBox = new VBox();
         canvas = new Canvas();
@@ -61,11 +62,11 @@ public class Simulator{
 
         // Handle scroll event for zooming
         vBox.setOnScroll(event -> camera.handleScroll(event));
-        canvas.setOnMouseMoved(event -> {
-            for (Visitor visitor : visitors) {
-                visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
-            }
-        });
+//        canvas.setOnMouseMoved(event -> {
+//            for (Visitor visitor : visitors) {
+//                visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
+//            }
+//        });
         new AnimationTimer() {
             long last = -1;
             int frameCount = 0;
@@ -88,6 +89,13 @@ public class Simulator{
     }
 
     public static void init() {
+        currentDay = DayOfWeek.MONDAY;
+        setCurrentScheduleItems(); //todo doesn't get called first??
+
+        // Get all locations
+        for (Location location : mapGenerator.getLocations()){
+            schedule.addLocation(location);
+        }
         // Get Locations & Attractions
         locations.addAll(schedule.getLocations().values());
         attractions.addAll(schedule.getAttractions().values());
@@ -103,13 +111,25 @@ public class Simulator{
         canvas.setHeight(cacheImageHeight);
 
 
-        spriteSheetHelper = new SpriteSheetHelper();
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
-        // Starting visitor amount
-        while(visitors.size() < 10) {
-            addVisitor();
+//        while(visitors.size() < 10) {
+//            addVisitor();
+//        }
+    }
+
+    private static void setCurrentScheduleItems() {
+        System.out.println("setting current items");
+        ArrayList<ScheduleItem> currentItems = new ArrayList<>();
+        for (UUID uuid : schedule.getScheduleItems().keySet()) {
+            int startTimeMinutes = schedule.getScheduleItem(uuid).getStartTime().getHour()*60+schedule.getScheduleItem(uuid).getStartTime().getMinute();
+            int endTimeMinutes = schedule.getScheduleItem(uuid).getEndTime().getHour()*60+schedule.getScheduleItem(uuid).getEndTime().getMinute();
+            if(schedule.getScheduleItem(uuid).getDay() == currentDay && startTimeMinutes/5.0 <= time && endTimeMinutes/5.0 >= time){
+                currentItems.add(schedule.getScheduleItem(uuid));
+            }
         }
+        currentScheduleItems = currentItems;
+        System.out.println(currentItems.size());
     }
 
     private static void addVisitor(){
@@ -123,7 +143,10 @@ public class Simulator{
                     hasCollision = true;
             }
             if(!hasCollision) {
-                visitors.add(new Visitor(newPosition, 0));
+                Visitor newVisitor = new Visitor(newPosition, 0);
+                System.out.println(currentScheduleItems.size());
+                newVisitor.setTargetPosition(currentScheduleItems, schedule);
+                visitors.add(newVisitor);
             } else{
                 addVisitor();
             }
@@ -171,8 +194,18 @@ public class Simulator{
         canvas.setScaleX(camera.scale);
         canvas.setScaleY(camera.scale);
 
+
+        DayOfWeek day = currentDay;
+
         updateTimeLine();
+
+        if(day != currentDay){
+            setCurrentScheduleItems();
+        }
+
     }
+
+
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
 
@@ -224,7 +257,7 @@ public class Simulator{
 
         if(timeLineScale/(24*60*60/20.0)*time > timeLineScale){
             time = 0;
-            currentDay = currentDay.plus(1);
+//            currentDay = currentDay.plus(1);
         }
 
         VBox timeLineContainer = new VBox();
