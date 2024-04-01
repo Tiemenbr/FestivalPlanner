@@ -81,8 +81,8 @@ public class ScheduleItemUpdate {
         labelColumnBox.getChildren().add(locationInputLabel);
 
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
-        HashMap<UUID, Location> locations = schedule.getLocations();
-        for (UUID key : locations.keySet()) {
+        HashMap<String, Location> locations = schedule.getLocations();
+        for (String key : locations.keySet()) {
             locationOptionsComboBox.getItems().add(locations.get(key));
         }
         locationOptionsComboBox.setConverter(new StringConverter<Location>() {
