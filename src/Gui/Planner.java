@@ -15,10 +15,10 @@ public class Planner {
     public static void seedTestData() {
         //todo only call constructors for test data if aren't already stored
 //
-        Attraction attraction1 = new Attraction("draaimolen", 4, 5, "/attractions/merry-go-round.png");
-        Attraction attraction2 = new Attraction("ferriswheel", 5, 7, "/attractions/merry-go-round.png");
-        Attraction attraction3 = new Attraction("haunted house", 4, 5, "/attractions/merry-go-round.png");
-        Attraction attraction4 = new Attraction("rollercoaster", 5, 7, "/attractions/merry-go-round.png");
+        Attraction attraction1 = new Attraction("merry-go-round", 4, 5, "/attractions/merry-go-round-animated.png");
+        Attraction attraction2 = new Attraction("ferriswheel", 5, 7, "/attractions/ferris-wheel-animated.png");
+        Attraction attraction3 = new Attraction("haunted house", 4, 5, "/attractions/spookhuis-animated.png");
+        Attraction attraction4 = new Attraction("rollercoaster", 5, 7, "/attractions/rollercoaster-animated.png");
         SCHEDULE.addAttraction(attraction1);
         SCHEDULE.addAttraction(attraction2);
         SCHEDULE.addAttraction(attraction3);
@@ -27,10 +27,10 @@ public class Planner {
         System.out.println(SCHEDULE.getAttraction(SCHEDULE.getAttractions().keySet().stream().findFirst().get()));
 //
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location1"), attraction1, DayOfWeek.MONDAY, "10:10", "12:30"));
-        SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location2"), attraction2, DayOfWeek.MONDAY, "10:30", "13:00"));
+        SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location2"), attraction4, DayOfWeek.MONDAY, "10:30", "13:00"));
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location3"), attraction2, DayOfWeek.TUESDAY, "13:00", "16:30"));
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location1"), attraction1, DayOfWeek.TUESDAY, "10:10", "18:45"));
-        SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location2"), attraction2, DayOfWeek.TUESDAY, "07:00", "16:00"));
+        SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location2"), attraction3, DayOfWeek.TUESDAY, "07:00", "16:00"));
 
         System.out.println("added " + SCHEDULE.getScheduleItems().size() + " scheduleItem objects");
     }
