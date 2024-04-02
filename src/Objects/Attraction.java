@@ -1,30 +1,36 @@
 package Objects;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class Attraction implements CRUD, Serializable {
+
+
+    private String imagePath;
     private UUID id;
     private String name;
     private int popularity = 1;
     private int price;
 
 
-    public Attraction(String name,int popularity, int price) {
+    public Attraction(String name, int popularity, int price, String filename) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.popularity = popularity;
+        this.imagePath = filename;
+
 
         this.update();
     }
 
-    public void setAll(String name, int popularity, int price) {
+    public void setAll(String name, int popularity, int price, String imagePath) {
         this.name = name;
         this.popularity = popularity;
         this.price = price;
+        this.imagePath = imagePath;
 
         this.update();
     }
@@ -57,6 +63,14 @@ public class Attraction implements CRUD, Serializable {
         this.price = price;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
 
     @Override
     public String toString() {
@@ -78,24 +92,23 @@ public class Attraction implements CRUD, Serializable {
 
         ArrayList<ScheduleItem> toBeDeletedScheduleItems = new ArrayList<>();
 
-        for(UUID key : schedule.getScheduleItems().keySet()){
+        for (UUID key : schedule.getScheduleItems().keySet()) {
             System.out.println(schedule.getScheduleItem(key));
 
-            if(schedule.getScheduleItem(key).getAttraction(schedule).getId() == this.getId()){
-                System.out.println(key+" has the attraction");
+            if (schedule.getScheduleItem(key).getAttraction(schedule).getId() == this.getId()) {
+                System.out.println(key + " has the attraction");
                 //schedule.getScheduleItem(key).delete(schedule);
                 toBeDeletedScheduleItems.add(schedule.getScheduleItem(key));
             }
         }
 
-        for(ScheduleItem scheduleItem : toBeDeletedScheduleItems){
+        for (ScheduleItem scheduleItem : toBeDeletedScheduleItems) {
             scheduleItem.delete(schedule);
         }
 
         schedule.deleteAttraction(this.getId());
         IOController.delete(this.id, IOController.ObjectType.ATTRACTION);
     }
-
 
 
 }
