@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Visitor {
 
@@ -29,6 +30,8 @@ public class Visitor {
     private double targetTimer;
     private boolean readyForNewTarget;
     private Point2D target;
+    private Stack<Tile> targetTiles;
+    private String targetLocationName;
 
     private double scale = 1.0; //2.0
     private double hitboxSize;
@@ -42,6 +45,8 @@ public class Visitor {
 
         this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
         this.readyForNewTarget = true;
+        this.targetTiles = new Stack<>();
+        this.targetLocationName = "";
         this.targetTimer = 0;
 
         this.imageIndex = 0;
@@ -81,9 +86,9 @@ public class Visitor {
             angleDifference += 2 * Math.PI;
 
         if(angleDifference < -time)
-            angle += (time*speed);
+            angle += (time*speed*3);
         else if(angleDifference > time)
-            angle -= (time*speed);
+            angle -= (time*speed*3);
         else
             angle = newAngle;
         //#endregion
@@ -158,24 +163,40 @@ public class Visitor {
 
     public void setTargetPosition(ArrayList<ScheduleItem> targetOption, Schedule schedule)
     {
-        if(readyForNewTarget && !targetOption.isEmpty()){
+        if(readyForNewTarget && !targetOption.isEmpty() && targetTiles.empty()){
 //            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
             double rand = (Math.random()*targetOption.size());
             ScheduleItem item = targetOption.get((int) rand);
+            this.targetLocationName = item.getLocation(schedule).getName();
 //            System.out.println("new target!: " + item.getAttraction(schedule).getName());
 
             //set target to center of location
             int x = (int) ((this.position.getX())/32);
             int y = (int) ((this.position.getY())/32);
-            Tile targetTile = new Tile();
-            for (Tile neighborTile : this.pathfindingTiles[x][y].getNeighborTiles()) {
-                if (this.distanceMaps.get(item.getLocation(schedule).getName()).get(neighborTile) < this.distanceMaps.get(item.getLocation(schedule).getName()).get(this.pathfindingTiles[x][y]))
-                    targetTile = neighborTile;
+            createPath(this.pathfindingTiles[x][y]);
+            if (!this.targetTiles.empty()) {
+                Tile selected = this.targetTiles.pop();
+                this.target = new Point2D.Double(selected.getX(), selected.getY());
             }
-            if (targetTile.isSet())
-                this.target = new Point2D.Double(targetTile.getX(), targetTile.getY());
             readyForNewTarget = false;
             targetTimer = 0;
+        } else if (readyForNewTarget && !targetTiles.empty() && this.position.distance(target) < 8) {
+            Tile selected = this.targetTiles.pop();
+            this.target = new Point2D.Double(selected.getX(), selected.getY());
+            targetTimer = 0;
+            readyForNewTarget = false;
+        }
+    }
+
+    private void createPath(Tile tile) {
+        Tile tileToAdd = new Tile();
+        for (Tile neighborTile : tile.getNeighborTiles()) {
+            if (this.distanceMaps.get(this.targetLocationName).get(neighborTile) < this.distanceMaps.get(this.targetLocationName).get(tile))
+                tileToAdd = neighborTile;
+        }
+        if (tileToAdd.isSet()) {
+            createPath(tileToAdd);
+            this.targetTiles.push(tileToAdd);
         }
     }
 
