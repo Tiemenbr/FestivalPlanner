@@ -23,7 +23,8 @@ public class MapGenerator {
     private int tileHeight;
     private int tileWidth;
     private ArrayList<BufferedImage> tiles = new ArrayList<>();
-    private HashMap<String,HashMap<Tile,Integer>> distances = new HashMap<>();
+    private HashMap<String,HashMap<Tile,Integer>> distanceMaps = new HashMap<>();
+    private Tile[][] pathfindingTiles;
     private HashMap<String, ArrayList<BufferedImage>> tileSetImages = new HashMap<>();
     private ArrayList<Location> locations = new ArrayList<>();
     private boolean createLocationsOnce = true;
@@ -134,7 +135,7 @@ public class MapGenerator {
                 }
             }
             TileLayer bottomLayer = this.getBottomLayer();
-            Tile[][] pathfindingTiles = createPathfindingTiles(bottomLayer.getMap()[0].length,bottomLayer.getMap().length);
+            this.pathfindingTiles = createPathfindingTiles(bottomLayer.getMap()[0].length,bottomLayer.getMap().length);
             JsonArray locations = root.getJsonArray("layers").getJsonObject(3).getJsonArray("objects");
             for (int i = 0; i < locations.size(); i++) {
                 FrontierQueue<Tile> frontier = new FrontierQueue<>();
@@ -154,7 +155,7 @@ public class MapGenerator {
                         }
                     }
                 }
-                this.distances.put(locations.getJsonObject(i).getString("name"), distance);
+                this.distanceMaps.put(locations.getJsonObject(i).getString("name"), distance);
             }
         } catch(IOException e){
             System.out.println("IOException!");
@@ -237,7 +238,11 @@ public class MapGenerator {
     }
 
     public HashMap<String,HashMap<Tile,Integer>> getDistanceMaps() {
-        return this.distances;
+        return this.distanceMaps;
+    }
+
+    public Tile[][] getPathfindingTiles() {
+        return pathfindingTiles;
     }
 
     public TileLayer getCollisionLayer() {

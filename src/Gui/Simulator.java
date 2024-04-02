@@ -148,7 +148,7 @@ public class Simulator{
                     hasCollision = true;
             }
             if(!hasCollision) {
-                Visitor newVisitor = new Visitor(newPosition, 0);
+                Visitor newVisitor = new Visitor(newPosition, 0, mapGenerator.getDistanceMaps(), mapGenerator.getPathfindingTiles());
                 System.out.println(currentScheduleItems.size());
                 newVisitor.setTargetPosition(currentScheduleItems, schedule);
                 visitors.add(newVisitor);

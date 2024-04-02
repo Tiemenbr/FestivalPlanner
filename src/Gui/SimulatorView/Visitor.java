@@ -1,5 +1,6 @@
 package Gui.SimulatorView;
 
+import Gui.Pathfinding.Tile;
 import Objects.Schedule;
 import Objects.ScheduleItem;
 
@@ -9,6 +10,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Visitor {
 
@@ -30,8 +32,10 @@ public class Visitor {
 
     private double scale = 1.0; //2.0
     private double hitboxSize;
+    private HashMap<String, HashMap<Tile,Integer>> distanceMaps;
+    private Tile[][] pathfindingTiles;
 
-    public Visitor(Point2D pos, double direction) {
+    public Visitor(Point2D pos, double direction, HashMap<String,HashMap<Tile,Integer>> distanceMaps, Tile[][] pathfindingTiles) {
         this.position = pos;
         this.speed = baseSpeed + Math.random()/**4*/;
         this.angle = Math.toRadians(direction);
@@ -46,6 +50,8 @@ public class Visitor {
 
         currentImage = sprites[8];
         this.hitboxSize = sprites[8].getHeight()*scale;
+        this.distanceMaps = distanceMaps;
+        this.pathfindingTiles = pathfindingTiles;
     }
 
 
@@ -141,7 +147,7 @@ public class Visitor {
             targetTimer += time;
         }
 
-        if(targetTimer > 10){
+        if(targetTimer > 0){
             readyForNewTarget = true;
         }
         //#endregion
@@ -152,13 +158,19 @@ public class Visitor {
         if(readyForNewTarget && !targetOption.isEmpty()){
 //            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
             double rand = (Math.random()*targetOption.size());
-            System.out.println(rand);
             ScheduleItem item = targetOption.get((int) rand);
-            System.out.println((int) rand);
 //            System.out.println("new target!: " + item.getAttraction(schedule).getName());
 
             //set target to center of location
-            this.target = new Point2D.Double(item.getLocation(schedule).getPosition().getX() + (item.getLocation(schedule).getWidth()/2.0), item.getLocation(schedule).getPosition().getY()+ (item.getLocation(schedule).getHeight()/2.0));
+            int x = (int) ((this.position.getX())/32);
+            int y = (int) ((this.position.getY())/32);
+            Tile targetTile = new Tile();
+            for (Tile neighborTile : this.pathfindingTiles[x][y].getNeighborTiles()) {
+                if (this.distanceMaps.get(item.getLocation(schedule).getName()).get(neighborTile) < this.distanceMaps.get(item.getLocation(schedule).getName()).get(this.pathfindingTiles[x][y]))
+                    targetTile = neighborTile;
+            }
+            if (targetTile.isSet())
+                this.target = new Point2D.Double(targetTile.getX(), targetTile.getY());
             readyForNewTarget = false;
             targetTimer = 0;
         }
