@@ -259,7 +259,7 @@ public class Simulator{
 
         if(timeLineScale/(24*60/5.0)*time > timeLineScale){
             time = 0;
-//            currentDay = currentDay.plus(1);
+            currentDay = currentDay.plus(1);
         }
 
         VBox timeLineContainer = new VBox();
