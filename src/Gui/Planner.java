@@ -12,7 +12,7 @@ public class Planner {
 
     public void init(){
         IOController.init();
-        //seedTestData();
+//        seedTestData();
 
         if(/*SCHEDULE.getLocations().isEmpty() &&*/ SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()){
 //            ArrayList<Object> locations = IOController.getObjectsFromDirectory(IOController.ObjectType.LOCATION);
@@ -30,9 +30,6 @@ public class Planner {
 
         }
 
-//        Location location = new Location(60, 45, "P5");
-//        SCHEDULE.addLocation(location);
-
 
     }
 
@@ -47,12 +44,16 @@ public class Planner {
 //        SCHEDULE.addLocation(location3);
 //        System.out.println("added "+SCHEDULE.getLocations().size()+" location objects");
 //
-//        Attraction attraction1 = new Attraction("draaimolen", 4, 5);
-//        Attraction attraction2 = new Attraction("botsautos", 5, 7);
-//        SCHEDULE.addAttraction(attraction1);
-//        SCHEDULE.addAttraction(attraction2);
-//        System.out.println("added "+SCHEDULE.getAttractions().size()+" attraction objects");
-//        System.out.println(SCHEDULE.getAttraction(SCHEDULE.getAttractions().keySet().stream().findFirst().get()));
+        Attraction attraction1 = new Attraction("draaimolen", 4, 5);
+        Attraction attraction2 = new Attraction("botsautos", 5, 7);
+        Attraction attraction3 = new Attraction("haunted house", 4, 5);
+        Attraction attraction4 = new Attraction("rollercoaster", 5, 7);
+        SCHEDULE.addAttraction(attraction1);
+        SCHEDULE.addAttraction(attraction2);
+        SCHEDULE.addAttraction(attraction3);
+        SCHEDULE.addAttraction(attraction4);
+        System.out.println("added "+SCHEDULE.getAttractions().size()+" attraction objects");
+        System.out.println(SCHEDULE.getAttraction(SCHEDULE.getAttractions().keySet().stream().findFirst().get()));
 //
 //        SCHEDULE.addScheduleItem(new ScheduleItem(location1, attraction1, DayOfWeek.MONDAY,  "10:10", "12:30"));
 //        SCHEDULE.addScheduleItem(new ScheduleItem(location2, attraction2, DayOfWeek.MONDAY, "10:30", "13:00"));
