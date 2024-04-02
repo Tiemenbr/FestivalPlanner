@@ -54,6 +54,10 @@ public class TileLayer{
         g2d.drawImage(cacheImage, null, null);
     }
 
+    public int[][] getMap() {
+        return this.map;
+    }
+
     public boolean hasCacheImage(){
         if (this.cacheImage != null){
             return true;

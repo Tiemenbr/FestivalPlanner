@@ -1,5 +1,6 @@
 package Objects;
 
+import Gui.Pathfinding.Tile;
 import Gui.SimulatorView.MapGenerator;
 import Objects.Observers.AttractionsObserver;
 import Objects.Observers.LocationsObserver;

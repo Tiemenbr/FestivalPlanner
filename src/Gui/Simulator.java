@@ -32,7 +32,7 @@ public class Simulator {
     private static BorderPane mainBox;
     private static Camera camera;
     static ArrayList<Visitor> visitors = new ArrayList<>();
-    private static int visitorAmount = 1;
+    private static int visitorAmount = 50;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
 
@@ -142,8 +142,8 @@ public class Simulator {
                 if (visitor.getPosition().distance(newPosition) < visitor.getHitBoxSize())
                     hasCollision = true;
             }
-            if (!hasCollision) {
-                Visitor newVisitor = new Visitor(newPosition, 0);
+            if(!hasCollision) {
+                Visitor newVisitor = new Visitor(newPosition, 0, mapGenerator.getDistanceMaps(), mapGenerator.getPathfindingTiles());
                 System.out.println(currentScheduleItems.size());
                 newVisitor.setTargetPosition(currentScheduleItems, schedule);
                 visitors.add(newVisitor);
