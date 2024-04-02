@@ -98,6 +98,8 @@ public class AttractionUpdate {
             popularityInput.setText(Integer.toString(selectedAttraction.getPopularity()));
             //fill price
             priceInput.setText(Integer.toString(selectedAttraction.getPrice()));
+            //fill filename
+            fileNameInput.setText(selectedAttraction.getImagePath());
         });
 
 
@@ -113,9 +115,10 @@ public class AttractionUpdate {
             String name = nameInput.getText();
             int popularity = Integer.parseInt(popularityInput.getText());
             int price = Integer.parseInt(priceInput.getText());
+            String imagePath = fileNameInput.getText();
 
 
-            attraction.setAll(name, popularity, price);
+            attraction.setAll(name, popularity, price,imagePath);
 
             System.out.println("To:");
             System.out.println(attraction);

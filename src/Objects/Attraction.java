@@ -26,10 +26,11 @@ public class Attraction implements CRUD, Serializable {
         this.update();
     }
 
-    public void setAll(String name, int popularity, int price) {
+    public void setAll(String name, int popularity, int price, String imagePath) {
         this.name = name;
         this.popularity = popularity;
         this.price = price;
+        this.imagePath = imagePath;
 
         this.update();
     }
