@@ -14,8 +14,6 @@ public class Schedule {
     private HashMap<UUID, ScheduleItem> scheduleItems;
     private HashMap<UUID, Attraction> attractions;
     private HashMap<String, Location> locations;
-    //todo schedule doesn't need to have the visitors?
-    //private ArrayList<Visitor> visitors = new ArrayList<>();
     private ScheduleItemsObserver scheduleItemsObserver;
     private AttractionsObserver attractionsObserver;
     private LocationsObserver locationsObserver;
@@ -29,9 +27,13 @@ public class Schedule {
         this.locationsObserver = new LocationsObserver(this);
 
         // Get all locations
-        for (Location location : mapGenerator.getLocations()){
+        for (Location location : mapGenerator.getLocations()) {
             this.addLocation(location);
         }
+    }
+
+    public static MapGenerator getMapGenerator() {
+        return mapGenerator;
     }
 
     public HashMap<UUID, ScheduleItem> getScheduleItems() {
@@ -48,7 +50,7 @@ public class Schedule {
         this.scheduleItemsObserver.update();
     }
 
-    public void deleteScheduleItem(UUID id){
+    public void deleteScheduleItem(UUID id) {
         this.scheduleItems.remove(id);
         this.scheduleItemsObserver.update();
     }
@@ -66,7 +68,7 @@ public class Schedule {
         this.attractionsObserver.update();
     }
 
-    public void deleteAttraction(UUID id){
+    public void deleteAttraction(UUID id) {
         this.attractions.remove(id);
         this.attractionsObserver.update();
     }
@@ -84,10 +86,10 @@ public class Schedule {
         this.locationsObserver.update();
     }
 
-    public void deleteLocation(UUID id){
-        this.locations.remove(id);
-        this.locationsObserver.update();
-    }
+//    public void deleteLocation(UUID id) {
+//        this.locations.remove(id);
+//        this.locationsObserver.update();
+//    }
 
     public void setScheduleItemsObserver(ScheduleItemsObserver observer) {
         this.scheduleItemsObserver = observer;
@@ -100,19 +102,5 @@ public class Schedule {
     public void setLocationsObserver(LocationsObserver locationsObserver) {
         this.locationsObserver = locationsObserver;
     }
-
-    public static MapGenerator getMapGenerator(){
-        return mapGenerator;
-    }
-
-    //todo schedule doesn't need to have the visitors does it?
-//    public ArrayList<Visitor> getVisitors() {
-//        return visitors;
-//    }
-//
-//    public void setVisitors(ArrayList<Visitor> visitors) {
-//        this.visitors = visitors;
-//    }
-
 
 }

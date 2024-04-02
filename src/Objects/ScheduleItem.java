@@ -24,7 +24,7 @@ public class ScheduleItem implements CRUD, Serializable {
         this.update();
     }
 
-    public void setAll(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime){
+    public void setAll(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
         this.locationId = location.getName();
         this.attractionId = attraction.getId();
         this.day = day;

@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class AttractionUpdate {
 
-    public static VBox getComponent(){
+    public static VBox getComponent() {
         Schedule schedule = Planner.getSCHEDULE();
         VBox mainCreateAttractionBox = new VBox(20);
         mainCreateAttractionBox.setPadding(new Insets(20));
@@ -46,7 +46,9 @@ public class AttractionUpdate {
                 scheduleData.append(", ");
                 scheduleData.append(attraction.getPopularity() + " popularity");
                 scheduleData.append(", ");
-                scheduleData.append("€"+attraction.getPrice());
+                scheduleData.append("€" + attraction.getPrice());
+                scheduleData.append(", ");
+                scheduleData.append("Filename:" + attraction.getImagePath());
                 return scheduleData.toString();
             }
 
@@ -89,7 +91,7 @@ public class AttractionUpdate {
         inputsColumnBox.getChildren().add(fileNameInput);
         //#endregion
 
-        AttractionOptionsComboBox.setOnAction(e ->{
+        AttractionOptionsComboBox.setOnAction(e -> {
             //get the scheduleItem that was selected
             Attraction selectedAttraction = AttractionOptionsComboBox.getValue();
             //fill name
@@ -108,7 +110,7 @@ public class AttractionUpdate {
         updateScheduleItemButton.setOnAction(event -> {
             Attraction attraction = AttractionOptionsComboBox.getValue();
 
-            System.out.println("updating scheduleItem "+attraction.getId()+":");
+            System.out.println("updating scheduleItem " + attraction.getId() + ":");
             System.out.println("from:");
             System.out.println(attraction);
 
@@ -118,13 +120,13 @@ public class AttractionUpdate {
             String imagePath = fileNameInput.getText();
 
 
-            attraction.setAll(name, popularity, price,imagePath);
+            attraction.setAll(name, popularity, price, imagePath);
 
             System.out.println("To:");
             System.out.println(attraction);
 
             //updates the value in the Attraction options Combobox
-            AttractionOptionsComboBox.getItems().set(AttractionOptionsComboBox.getSelectionModel().getSelectedIndex(),attraction);
+            AttractionOptionsComboBox.getItems().set(AttractionOptionsComboBox.getSelectionModel().getSelectedIndex(), attraction);
         });
         inputsColumnBox.getChildren().add(updateScheduleItemButton);
         //#endregion
@@ -134,7 +136,6 @@ public class AttractionUpdate {
 
         return mainCreateAttractionBox;
     }
-
 
 
 }
