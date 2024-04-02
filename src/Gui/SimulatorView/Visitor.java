@@ -1,5 +1,6 @@
 package Gui.SimulatorView;
 
+import Gui.Pathfinding.Tile;
 import Objects.Schedule;
 import Objects.ScheduleItem;
 
@@ -9,6 +10,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
 
 public class Visitor {
 
@@ -22,17 +25,23 @@ public class Visitor {
     private double targetTimer;
     private boolean readyForNewTarget;
     private Point2D target;
-    private double scale = 0.8;
-    private double hitboxSize;
-    private boolean drawHitbox = false;
+    private Stack<Tile> targetTiles;
+    private String targetLocationName;
 
-    public Visitor(Point2D pos, double direction) {
+    private double scale = 1.0; //2.0
+    private double hitboxSize;
+    private HashMap<String, HashMap<Tile,Integer>> distanceMaps;
+    private Tile[][] pathfindingTiles;
+
+    public Visitor(Point2D pos, double direction, HashMap<String,HashMap<Tile,Integer>> distanceMaps, Tile[][] pathfindingTiles) {
         this.position = pos;
         this.speed = baseSpeed + Math.random()/**4*/;
         this.angle = Math.toRadians(direction);
 
         this.target = new Point2D.Double(Math.random() * 1000, Math.random() * 1000);
         this.readyForNewTarget = true;
+        this.targetTiles = new Stack<>();
+        this.targetLocationName = "";
         this.targetTimer = 0;
 
         this.imageIndex = 0;
@@ -40,7 +49,9 @@ public class Visitor {
         this.sprites = ssh.createSpriteSheet("/walk template 2.png", 4);
 
         currentImage = sprites[8];
-        this.hitboxSize = sprites[8].getHeight() * scale;
+        this.hitboxSize = sprites[8].getHeight()*scale;
+        this.distanceMaps = distanceMaps;
+        this.pathfindingTiles = pathfindingTiles;
     }
 
 
@@ -68,10 +79,10 @@ public class Visitor {
         while (angleDifference < -Math.PI)
             angleDifference += 2 * Math.PI;
 
-        if (angleDifference < -time)
-            angle += (time * speed);
-        else if (angleDifference > time)
-            angle -= (time * speed);
+        if(angleDifference < -time)
+            angle += (time*speed*3);
+        else if(angleDifference > time)
+            angle -= (time*speed*3);
         else
             angle = newAngle;
         //#endregion
@@ -122,7 +133,10 @@ public class Visitor {
                     hasCollision = true;
         }
 
-        if (!hasCollision)
+        if (collision.getMap()[(int) newPosition.getY()/32][(int) newPosition.getX()/32] == 50)
+            hasCollision = true;
+        if(!hasCollision)
+
             this.position = newPosition;
         else
             this.angle += 0.2;
@@ -134,27 +148,53 @@ public class Visitor {
             targetTimer += time;
         }
 
-        if (targetTimer > 10) {
+        if(targetTimer > 0){
             readyForNewTarget = true;
         }
         //#endregion
     }
 
-    public void setTargetPosition(ArrayList<ScheduleItem> targetOption, Schedule schedule) {
-        if (readyForNewTarget && !targetOption.isEmpty()) {
+    public void setTargetPosition(ArrayList<ScheduleItem> targetOption, Schedule schedule)
+    {
+        if(readyForNewTarget && !targetOption.isEmpty() && targetTiles.empty()){
 //            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
-            double rand = (Math.random() * targetOption.size());
+            double rand = (Math.random()*targetOption.size());
             ScheduleItem item = targetOption.get((int) rand);
+            this.targetLocationName = item.getLocation(schedule).getName();
 //            System.out.println("new target!: " + item.getAttraction(schedule).getName());
 
             //set target to center of location
-            this.target = new Point2D.Double(item.getLocation(schedule).getPosition().getX() + (item.getLocation(schedule).getWidth() / 2.0), item.getLocation(schedule).getPosition().getY() + (item.getLocation(schedule).getHeight() / 2.0));
+            int x = (int) ((this.position.getX())/32);
+            int y = (int) ((this.position.getY())/32);
+            createPath(this.pathfindingTiles[x][y]);
+            if (!this.targetTiles.empty()) {
+                Tile selected = this.targetTiles.pop();
+                this.target = new Point2D.Double(selected.getX(), selected.getY());
+            }
             readyForNewTarget = false;
             targetTimer = 0;
+        } else if (readyForNewTarget && !targetTiles.empty() && this.position.distance(target) < 8) {
+            Tile selected = this.targetTiles.pop();
+            this.target = new Point2D.Double(selected.getX(), selected.getY());
+            targetTimer = 0;
+            readyForNewTarget = false;
         }
     }
 
-    public Point2D getPosition() {
+    private void createPath(Tile tile) {
+        Tile tileToAdd = new Tile();
+        for (Tile neighborTile : tile.getNeighborTiles()) {
+            if (this.distanceMaps.get(this.targetLocationName).get(neighborTile) < this.distanceMaps.get(this.targetLocationName).get(tile))
+                tileToAdd = neighborTile;
+        }
+        if (tileToAdd.isSet()) {
+            createPath(tileToAdd);
+            this.targetTiles.push(tileToAdd);
+        }
+    }
+
+    public Point2D getPosition()
+    {
         return this.position;
     }
 
