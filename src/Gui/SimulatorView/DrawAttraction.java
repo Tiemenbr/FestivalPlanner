@@ -16,7 +16,7 @@ import java.util.UUID;
 public class DrawAttraction {
     private SpriteSheetHelper spriteSheetHelper;
     private BufferedImage[] attraction;
-    private double scale = 1.0;
+    private double scale = 1.3;
     private double x = 0;
     private double y = 0;
     private ArrayList<ScheduleItem> scheduleItems = new ArrayList<>();
@@ -47,7 +47,7 @@ public class DrawAttraction {
             if (currentAttractionImage == null)
                 return;
             AffineTransform tx = new AffineTransform();
-            tx.translate(x, y - scheduleItem.getLocation(schedule).getHeight()-32);
+            tx.translate(x, y - scheduleItem.getLocation(schedule).getHeight()-80);
             tx.scale(scale, scale);
             g2d.drawImage(currentAttractionImage, tx, null);
         }
