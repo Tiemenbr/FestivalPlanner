@@ -13,8 +13,7 @@ import javafx.scene.layout.VBox;
 import org.jfree.fx.FXGraphics2D;
 import javafx.scene.canvas.Canvas;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
@@ -114,25 +113,22 @@ public class Simulator{
             return;
         }
 
-
-        // TODO: LOPEN OP BASIS VAN POPULARITEIT (met scheduleItems???)
-        // Set new Location to go to
-        HashMap<Integer, Location> popularityPerLocation = new HashMap<>();
-        int highestPopularity = 0;
-        Location theLocation = null;
+        // Add Locations based on popularity
+        List<Location> locationList = new LinkedList<>();
         for (ScheduleItem scheduleItem : schedule.getScheduleItems().values()){
+            // TODO: Checken of elk ScheduleItem geldig is (starttijd & eindtijd) (samenwerking met tijdlijn?)
             Location location = scheduleItem.getLocation(schedule);
             int popularity = scheduleItem.getAttraction(schedule).getPopularity();
-            popularityPerLocation.put(popularity, location);
 
-            if (popularity > highestPopularity){
-                highestPopularity = popularity;
+            for (int i = 0; i < popularity; i++){
+                locationList.add(location);
             }
         }
-        // Get Location with the most popularity
-        theLocation = popularityPerLocation.get(highestPopularity);
+        // Shuffle the list
+        Collections.shuffle(locationList);
 
         // Set new Target Position
+        Location theLocation = locationList.get((int) (Math.random()*(locationList.size()-1)));
         visitor.setTargetPosition(new Point2D.Double(theLocation.getPosition().getX() + Math.random()*theLocation.getWidth(), theLocation.getPosition().getY() + Math.random()*theLocation.getHeight()));
     }
 
