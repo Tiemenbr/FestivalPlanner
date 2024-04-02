@@ -14,11 +14,12 @@ public class DrawAttraction {
     private double x=15;
     private double y=15;
 
-    public void setAttraction(String attractionName){
+    public void setAttraction(String attractionName,Point2D location){
         spriteSheetHelper = new SpriteSheetHelper();
         this.attraction = spriteSheetHelper.createSpriteSheet("/.attractions.png",4);
         this.attractionNumber = nameToNumber(attractionName);
         currentAttraction = attraction[attractionNumber];
+        setCoordinates(location);
     }
     public void draw(Graphics2D g2d){
         AffineTransform tx = new AffineTransform();
@@ -35,7 +36,7 @@ public class DrawAttraction {
             default -> 0;
         };
     }
-    public void setCoördinates(Point2D location){
+    public void setCoordinates(Point2D location){
         setX(location.getX());
         setY(location.getY());
     }
