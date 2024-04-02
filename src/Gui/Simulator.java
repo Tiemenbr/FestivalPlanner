@@ -100,22 +100,18 @@ public class Simulator {
         locations.addAll(schedule.getLocations().values());
         attractions.addAll(schedule.getAttractions().values());
 
+        drawAttraction.init( schedule.getScheduleItems(),schedule);
+
         // Debug code:
-        for (Attraction a : attractions) {
-            System.out.println(a);
-        }
+//        for (Attraction a : attractions) {
+//            System.out.println(a);
+//        }
 
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
         canvas.setWidth(cacheImageWidth);
         canvas.setHeight(cacheImageHeight);
 
-
-//        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
-
-//        while(visitors.size() < 10) {
-//            addVisitor();
-//        }
     }
 
     private static void setCurrentScheduleItems() {
@@ -204,7 +200,7 @@ public class Simulator {
 
         setCurrentScheduleItems();
         updateTimeLine();
-        drawAttraction.setAttractions(currentScheduleItems, schedule);
+        drawAttraction.setScheduleItem(currentScheduleItems, schedule);
 
     }
 
