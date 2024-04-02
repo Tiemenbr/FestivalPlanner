@@ -26,14 +26,14 @@ public class DrawAttraction {
     public void init(HashMap<UUID, ScheduleItem> scheduleItems, Schedule schedule) {
         this.schedule = schedule;
         for (UUID key : scheduleItems.keySet()) {
-        try {
-            attractionImages.put(scheduleItems.get(key).getLocation(schedule), ImageIO.read(getClass().getResource(scheduleItems.get(key).getAttraction(schedule).getImagePath())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            try {
+                attractionImages.put(scheduleItems.get(key).getLocation(schedule), ImageIO.read(getClass().getResource(scheduleItems.get(key).getAttraction(schedule).getImagePath())));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
 
-}
+    }
 
     public void draw(Graphics2D g2d) {
         if (scheduleItems.isEmpty())
@@ -47,7 +47,7 @@ public class DrawAttraction {
             if (currentAttractionImage == null)
                 return;
             AffineTransform tx = new AffineTransform();
-            tx.translate(x + currentAttractionImage.getWidth() / (2 / scale), y + currentAttractionImage.getHeight() / (2 / scale));
+            tx.translate(x, y - scheduleItem.getLocation(schedule).getHeight()-32);
             tx.scale(scale, scale);
             g2d.drawImage(currentAttractionImage, tx, null);
         }

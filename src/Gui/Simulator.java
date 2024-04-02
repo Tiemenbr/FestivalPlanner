@@ -100,7 +100,7 @@ public class Simulator {
         locations.addAll(schedule.getLocations().values());
         attractions.addAll(schedule.getAttractions().values());
 
-        drawAttraction.init( schedule.getScheduleItems(),schedule);
+        drawAttraction.init(schedule.getScheduleItems(), schedule);
 
         // Debug code:
 //        for (Attraction a : attractions) {
