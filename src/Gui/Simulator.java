@@ -201,6 +201,7 @@ public class Simulator {
         setCurrentScheduleItems();
         updateTimeLine();
         drawAttraction.setScheduleItem(currentScheduleItems, schedule);
+        drawAttraction.update(deltaTime);
 
     }
 
