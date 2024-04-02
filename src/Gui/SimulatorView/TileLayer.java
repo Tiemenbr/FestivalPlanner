@@ -2,12 +2,11 @@ package Gui.SimulatorView;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TileLayer{
+public class TileLayer {
 
     private final String name;
     private String tileType;
@@ -17,8 +16,9 @@ public class TileLayer{
     private int tileWidth;
     private int tileHeight;
     private HashMap<String, ArrayList<BufferedImage>> tileSetImages;
+    private BufferedImage cacheImage = null;
 
-    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, HashMap<String, ArrayList<BufferedImage>> tileSetImages, String name){
+    public TileLayer(String tileType, int layerWidth, int layerHeight, int[][] layerMap, int tileWidth, int tileHeight, HashMap<String, ArrayList<BufferedImage>> tileSetImages, String name) {
         this.tileType = tileType;
         this.width = layerWidth;
         this.height = layerHeight;
@@ -29,15 +29,14 @@ public class TileLayer{
         this.name = name;
     }
 
-    private BufferedImage cacheImage = null;
-    public void draw(Graphics2D g2d){
-        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer") && !this.name.equalsIgnoreCase("collisionlayer")){
-            cacheImage = new BufferedImage(width*tileWidth, height*tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
+    public void draw(Graphics2D g2d) {
+        if (cacheImage == null && tileType.equalsIgnoreCase("tilelayer") && !this.name.equalsIgnoreCase("collisionlayer")) {
+            cacheImage = new BufferedImage(width * tileWidth, height * tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D graphics = cacheImage.createGraphics();
 
             // Draw layer
-            for (int y = 0; y < height; y++){
-                for (int x = 0; x < width; x++){
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
                     // If the number on the map is <=0: Skip this index
                     if (map[y][x] <= 0)
                         continue;
@@ -65,11 +64,11 @@ public class TileLayer{
         return false;
     }
 
-    public double getCacheImageWidth(){
+    public double getCacheImageWidth() {
         return this.cacheImage.getWidth();
     }
 
-    public double getCacheImageHeight(){
+    public double getCacheImageHeight() {
         return this.cacheImage.getHeight();
     }
 
@@ -77,7 +76,4 @@ public class TileLayer{
         return this.name;
     }
 
-    public String getTileType(){
-        return this.tileType;
-    }
 }

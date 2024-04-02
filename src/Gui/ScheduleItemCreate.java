@@ -1,9 +1,14 @@
 package Gui;
 
-import Objects.*;
+import Objects.Attraction;
 import Objects.Comparators.ScheduleItemCompareDayLocationTime;
+import Objects.Location;
+import Objects.Schedule;
+import Objects.ScheduleItem;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -15,7 +20,7 @@ import java.util.UUID;
 
 public class ScheduleItemCreate {
 
-    public static VBox getComponent(){
+    public static VBox getComponent() {
         Schedule schedule = Planner.getSCHEDULE();
         VBox mainCreateScheduleItemBox = new VBox(20);
         mainCreateScheduleItemBox.setPadding(new Insets(20));
@@ -111,23 +116,23 @@ public class ScheduleItemCreate {
         ComboBox<String> startHourComboBox = new ComboBox<>();
         for (int i = 0; i <= 23; i++) {
             String j = Integer.toString(i);
-            j = String.format("%02d", i);;
+            j = String.format("%02d", i);
             startHourComboBox.getItems().add(j);
         }
-        //startHourComboBox.getSelectionModel().selectFirst();
+        startHourComboBox.getSelectionModel().selectFirst();
 
         Label inbetweenStartStyling = new Label(":");
 
         // Minute ComboBox
         ComboBox<String> startMinuteComboBox = new ComboBox<>();
-        for (int i = 0; i < 60; i+=5) {
+        for (int i = 0; i < 60; i += 5) {
             String j = Integer.toString(i);
-            j = String.format("%02d", i);;
+            j = String.format("%02d", i);
             startMinuteComboBox.getItems().add(j);
         }
-        //startMinuteComboBox.getSelectionModel().selectFirst();
+        startMinuteComboBox.getSelectionModel().selectFirst();
 
-        durationStartInputBox.getChildren().addAll(startHourComboBox,inbetweenStartStyling, startMinuteComboBox);
+        durationStartInputBox.getChildren().addAll(startHourComboBox, inbetweenStartStyling, startMinuteComboBox);
 
         inputsColumnBox.getChildren().add(durationStartInputBox);
         //#endregion
@@ -138,25 +143,25 @@ public class ScheduleItemCreate {
         labelColumnBox.getChildren().add(endTimeLabel);
 
         ComboBox<String> endHourComboBox = new ComboBox<>();
-        for (int i = 1; i <= 24; i++) {
+        for (int i = 0; i <= 23; i++) {
             String j = Integer.toString(i);
-            j = String.format("%02d", i);;
+            j = String.format("%02d", i);
             endHourComboBox.getItems().add(j);
         }
-        //endHourComboBox.getSelectionModel().selectFirst();
+        endHourComboBox.getSelectionModel().selectFirst();
 
         Label inbetweenEndStyling = new Label(":");
 
         // Minute ComboBox
         ComboBox<String> endMinuteComboBox = new ComboBox<>();
-        for (int i = 0; i < 60; i+=5) {
+        for (int i = 0; i < 60; i += 5) {
             String j = Integer.toString(i);
-            j = String.format("%02d", i);;
+            j = String.format("%02d", i);
             endMinuteComboBox.getItems().add(j);
         }
-        //endMinuteComboBox.getSelectionModel().selectFirst();
+        endMinuteComboBox.getSelectionModel().selectFirst();
 
-        durationEndInputBox.getChildren().addAll(endHourComboBox,inbetweenEndStyling, endMinuteComboBox);
+        durationEndInputBox.getChildren().addAll(endHourComboBox, inbetweenEndStyling, endMinuteComboBox);
 
         inputsColumnBox.getChildren().add(durationEndInputBox);
         //#endregion
@@ -164,18 +169,16 @@ public class ScheduleItemCreate {
 
         //#region Submit Button
         Button createAttractionButton = new Button("Create Schedule Item");
-        createAttractionButton.setOnAction(e ->{
-            int newId = schedule.getScheduleItems().size()+1; //todo proper id assignment in scheduleItem Class
-
+        createAttractionButton.setOnAction(e -> {
             String startTime = startHourComboBox.getValue() + ":" + startMinuteComboBox.getValue();
             String endTime = endHourComboBox.getValue() + ":" + endMinuteComboBox.getValue();
-            System.out.println(startTime+" "+endTime);
-            if(!LocalTime.parse(startTime).isBefore(LocalTime.parse(endTime))){
+            System.out.println(startTime + " " + endTime);
+            if (!LocalTime.parse(startTime).isBefore(LocalTime.parse(endTime))) {
                 System.out.println("EndTime must be After StartTime");
                 return;
             }
-            System.out.println(locationOptionsComboBox.getValue().getId()+" "+ attractionOptionsComboBox.getValue().getId());
-            ScheduleItem newItem = new ScheduleItem(locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(),dayOptionComboBox.getValue(), startTime, endTime);
+            System.out.println(locationOptionsComboBox.getValue().getId() + " " + attractionOptionsComboBox.getValue().getId());
+            ScheduleItem newItem = new ScheduleItem(locationOptionsComboBox.getValue(), attractionOptionsComboBox.getValue(), dayOptionComboBox.getValue(), startTime, endTime);
             schedule.addScheduleItem(newItem);
 
             //todo doesn't work as it already gets created......

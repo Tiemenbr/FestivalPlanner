@@ -1,7 +1,5 @@
 package Objects;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -51,24 +49,13 @@ public class Attraction implements CRUD, Serializable {
         return this.popularity;
     }
 
-    public void setPopularity(int popularity) {
-        this.popularity = popularity;
-    }
-
     public int getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
 
@@ -93,10 +80,10 @@ public class Attraction implements CRUD, Serializable {
         ArrayList<ScheduleItem> toBeDeletedScheduleItems = new ArrayList<>();
 
         for (UUID key : schedule.getScheduleItems().keySet()) {
-            System.out.println(schedule.getScheduleItem(key));
+//            System.out.println(schedule.getScheduleItem(key));
 
             if (schedule.getScheduleItem(key).getAttraction(schedule).getId() == this.getId()) {
-                System.out.println(key + " has the attraction");
+//                System.out.println(key + " has the attraction");
                 //schedule.getScheduleItem(key).delete(schedule);
                 toBeDeletedScheduleItems.add(schedule.getScheduleItem(key));
             }

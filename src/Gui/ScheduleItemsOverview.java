@@ -1,18 +1,19 @@
 package Gui;
 
-import Objects.Attraction;
 import Objects.Schedule;
 import Objects.ScheduleItem;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ScheduleItemsOverview{
-    public static VBox getComponent(){
+public class ScheduleItemsOverview {
+    public static VBox getComponent() {
 
         Schedule schedule = Planner.getSCHEDULE();
 
@@ -22,11 +23,10 @@ public class ScheduleItemsOverview{
         Label label = new Label("Overview of ScheduleItems:");
         mainBox.getChildren().add(label);
 
-        if(schedule.getScheduleItems().isEmpty()){
+        if (schedule.getScheduleItems().isEmpty()) {
             Label labelEmpty = new Label("No ScheduleItems yet");
             mainBox.getChildren().add(labelEmpty);
-        }else {
-
+        } else {
             HBox listsContainerBox = new HBox();
 
             ListView<String> columnAttraction = new ListView<>();
@@ -66,7 +66,6 @@ public class ScheduleItemsOverview{
                 deleteButton.setPadding(new Insets(0));
                 columnDelete.getItems().add(deleteButton);
             }
-
 
             columnAttraction.setPrefWidth(120);
             columnLocation.setPrefWidth(100);

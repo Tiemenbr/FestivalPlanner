@@ -2,9 +2,10 @@ package Gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -12,14 +13,11 @@ import javafx.stage.Stage;
 import static javafx.scene.control.TabPane.TabClosingPolicy.UNAVAILABLE;
 
 public class GUI extends Application {
-//    private static ArrayList<Schedule> SCHEDULES;
     private static Planner planner;
+
     public static void main(String[] args) {
         planner = new Planner();
         planner.init();
-
-//        GUI.SCHEDULES = new ArrayList<>();
-//        GUI.SCHEDULES.add(new Schedule());
         launch(GUI.class);
     }
 
@@ -29,15 +27,15 @@ public class GUI extends Application {
 
         TabPane tabpane = new TabPane();
 
-        Tab plannerTab = new Tab("Planner");
+        Tab plannerTab = new Tab("Dev");
         VBox plannerTabBox = new VBox(10);
         Label plannerLabel = new Label("planner page");
         Label tempSeedDataButtonLabel = new Label("TEMPORARY button for test data:");
         Button tempSeedDataButton = new Button("create test data");
-        tempSeedDataButton.setOnAction(e ->{
+        tempSeedDataButton.setOnAction(e -> {
             Planner.seedTestData();
         });
-        plannerTabBox.getChildren().addAll(plannerLabel,tempSeedDataButtonLabel,tempSeedDataButton);
+        plannerTabBox.getChildren().addAll(plannerLabel, tempSeedDataButtonLabel, tempSeedDataButton);
         plannerTab.setContent(plannerTabBox);
 
         Tab scheduleTab = new Tab("Schedule");
@@ -53,18 +51,14 @@ public class GUI extends Application {
         AttractionBox.getChildren().addAll(AttractionCreate.getComponent(), AttractionUpdate.getComponent(), AttractionsOverview.getComponent());
         attractionRead.setContent(AttractionBox);
 
-        //Tab locationRead = new Tab("Locations");
-        //locationRead.setContent(LocationsOverview.getComponent());
-
         Tab simulator = new Tab("Simulator");
-        if(planner.getSCHEDULE().getScheduleItems().size() > 0){
+        if (planner.getSCHEDULE().getScheduleItems().size() > 0) {
             simulator.setContent(Simulator.getComponent());
-        }else{
+        } else {
             simulator.setContent(new Label("No scheduleItems found for the simulation..."));
         }
 
-
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator); //locationRead
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator);
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
