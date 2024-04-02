@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class AttractionsOverview {
-    public static VBox getComponent(){
+    public static VBox getComponent() {
 
         VBox mainBox = new VBox(20);
         mainBox.setPadding(new Insets(20));
@@ -21,10 +21,10 @@ public class AttractionsOverview {
         mainBox.getChildren().add(label);
 
 
-        if(Planner.getSCHEDULE().getAttractions().isEmpty()){
+        if (Planner.getSCHEDULE().getAttractions().isEmpty()) {
             Label labelEmpty = new Label("No Attractions yet");
             mainBox.getChildren().add(labelEmpty);
-        }else {
+        } else {
             HBox listsContainerBox = new HBox();
 
             ListView<String> collumnNames = new ListView<>();
@@ -36,19 +36,23 @@ public class AttractionsOverview {
             ListView<String> collumnPrice = new ListView<>();
             collumnPrice.getItems().add("Price");
 
+            ListView<String> collumnFileName = new ListView<>();
+            collumnFileName.getItems().add("FileName");
+
             ListView<Button> collumnDelete = new ListView<>();
             Button deleteButtonLabel = new Button("Delete");
             deleteButtonLabel.setPadding(new Insets(0));
             deleteButtonLabel.setStyle("-fx-border: none; -fx-background-color: none;");
             collumnDelete.getItems().add(deleteButtonLabel);
 
-            listsContainerBox.getChildren().addAll(collumnNames, collumnPopularity, collumnPrice, collumnDelete);
+            listsContainerBox.getChildren().addAll(collumnNames, collumnPopularity, collumnPrice, collumnFileName, collumnDelete);
 
             HashMap<UUID, Attraction> attractions = Planner.getSCHEDULE().getAttractions();
             for (UUID key : attractions.keySet()) {
                 collumnNames.getItems().add(attractions.get(key).getName());
                 collumnPopularity.getItems().add(Integer.toString(attractions.get(key).getPopularity()));
                 collumnPrice.getItems().add(Integer.toString(attractions.get(key).getPrice()));
+                collumnFileName.getItems().add(attractions.get(key).getImagePath());
                 Button deleteButton = new Button("Delete");
                 deleteButton.setOnAction(e -> {
                     attractions.get(key).delete(Planner.getSCHEDULE());
