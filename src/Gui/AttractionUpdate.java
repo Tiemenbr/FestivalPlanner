@@ -81,6 +81,12 @@ public class AttractionUpdate {
 
         javafx.scene.control.TextField priceInput = new javafx.scene.control.TextField();
         inputsColumnBox.getChildren().add(priceInput);
+        //#region Filename TextField
+        Label fileNameInputLabel = new Label("Filename: ");
+        labelColumnBox.getChildren().add(fileNameInputLabel);
+
+        javafx.scene.control.TextField fileNameInput = new javafx.scene.control.TextField();
+        inputsColumnBox.getChildren().add(fileNameInput);
         //#endregion
 
         AttractionOptionsComboBox.setOnAction(e ->{

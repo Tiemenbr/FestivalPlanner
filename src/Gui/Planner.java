@@ -44,10 +44,10 @@ public class Planner {
 //        SCHEDULE.addLocation(location3);
 //        System.out.println("added "+SCHEDULE.getLocations().size()+" location objects");
 //
-        Attraction attraction1 = new Attraction("draaimolen", 4, 5);
-        Attraction attraction2 = new Attraction("botsautos", 5, 7);
-        Attraction attraction3 = new Attraction("haunted house", 4, 5);
-        Attraction attraction4 = new Attraction("rollercoaster", 5, 7);
+        Attraction attraction1 = new Attraction("draaimolen", 4, 5,"/attractions/merry-go-round.png");
+        Attraction attraction2 = new Attraction("ferriswheel", 5, 7,"/attractions/merry-go-round.png");
+        Attraction attraction3 = new Attraction("haunted house", 4, 5,"/attractions/merry-go-round.png");
+        Attraction attraction4 = new Attraction("rollercoaster", 5, 7,"/attractions/merry-go-round.png");
         SCHEDULE.addAttraction(attraction1);
         SCHEDULE.addAttraction(attraction2);
         SCHEDULE.addAttraction(attraction3);

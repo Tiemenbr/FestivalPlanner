@@ -47,6 +47,12 @@ public class AttractionCreate {
 
         TextField priceInput = new TextField();
         inputsColumnBox.getChildren().add(priceInput);
+        //#region Price TextField
+        Label fileInputLabel = new Label("FileName: ");
+        labelColumnBox.getChildren().add(fileInputLabel);
+
+        TextField fileInput = new TextField();
+        inputsColumnBox.getChildren().add(fileInput);
         //#endregion
 
 
@@ -57,8 +63,9 @@ public class AttractionCreate {
             String name = nameInput.getText();
             int popularity = Integer.parseInt(popularityInput.getText());
             int price = Integer.parseInt(popularityInput.getText());
+            String fileName = fileInput.getText();
 
-            Attraction newItem = new Attraction(name,popularity,price);
+            Attraction newItem = new Attraction(name,popularity,price,fileName);
             schedule.addAttraction(newItem);
 
             System.out.println("created Attraction: " + newItem);

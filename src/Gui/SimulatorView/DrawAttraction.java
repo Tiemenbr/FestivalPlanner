@@ -1,51 +1,48 @@
 package Gui.SimulatorView;
 
+import Objects.Attraction;
+import Objects.Schedule;
+import Objects.ScheduleItem;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class DrawAttraction {
     private SpriteSheetHelper spriteSheetHelper;
     private BufferedImage[] attraction;
-    private BufferedImage currentAttraction;
-    private int attractionNumber;
+    private Attraction currentAttraction;
     private double scale = 2.0;
-    private double x=15;
-    private double y=15;
+    private double x = 0;
+    private double y = 0;
+    private BufferedImage currentAttractionImage;
 
-    public void setAttraction(String attractionName,Point2D location){
-        spriteSheetHelper = new SpriteSheetHelper();
-        this.attraction = spriteSheetHelper.createSpriteSheet("/.attractions.png",4);
-        this.attractionNumber = nameToNumber(attractionName);
-        currentAttraction = attraction[attractionNumber];
-        setCoordinates(location);
-    }
-    public void draw(Graphics2D g2d){
+    public void draw(Graphics2D g2d) {
+        if(currentAttractionImage == null)
+            return;
         AffineTransform tx = new AffineTransform();
-        tx.translate(x-currentAttraction.getWidth()/(2/scale),y-currentAttraction.getHeight()/(2/scale));
-        tx.scale(scale,scale);
-        g2d.drawImage(currentAttraction,tx,null);
-    }
-    public int nameToNumber(String attractionName){
-        return switch (attractionName) {
-            case "spookhuis" -> 0;
-            case "achtbaan" -> 1;
-            case "carrousel" -> 2;
-            case "reuzenrad" -> 3;
-            default -> 0;
-        };
-    }
-    public void setCoordinates(Point2D location){
-        setX(location.getX());
-        setY(location.getY());
+        tx.translate(x + currentAttractionImage.getWidth() / (2 / scale), y + currentAttractionImage.getHeight() / (2 / scale));
+        tx.scale(scale, scale);
+        g2d.drawImage(currentAttractionImage, tx, null);
     }
 
-    public void setX(double x) {
-        this.x = x;
+
+    public void setAttractions(ArrayList<ScheduleItem> currentScheduleItems, Schedule schedule) {
+        for (ScheduleItem scheduleItem: currentScheduleItems) {
+            currentAttraction = scheduleItem.getAttraction(schedule);
+            this.x = scheduleItem.getLocation(schedule).getPosition().getX();
+            this.y = scheduleItem.getLocation(schedule).getPosition().getY();
+            try {
+                currentAttractionImage = ImageIO.read(getClass().getResource(currentAttraction.getImagePath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void clear() {
     }
 }
