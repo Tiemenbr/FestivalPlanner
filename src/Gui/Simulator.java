@@ -135,7 +135,7 @@ public class Simulator {
     private static void addVisitor() {
         if (visitors.size() < visitorAmount) {
             // Spawn location coordinates
-            Point2D newPosition = new Point2D.Double(386 + (Math.random() * 188), 866 + (Math.random() * 60));
+            Point2D newPosition = new Point2D.Double(384+(Math.random()*192), 864+(Math.random()*64));
 
             boolean hasCollision = false;
             for (Visitor visitor : visitors) {
@@ -180,8 +180,8 @@ public class Simulator {
 
         for (int i = 0; i < visitors.size(); i++) {
             // Despawn location coordinates
-            Point2D exitPointLT = new Point2D.Double(386, 3);
-            Point2D exitPointRB = new Point2D.Double(574, 63);
+            Point2D exitPointLT = new Point2D.Double(384, 0);
+            Point2D exitPointRB = new Point2D.Double(576, 64);
 
             if (visitors.get(i).getPosition().getX() > exitPointLT.getX() && visitors.get(i).getPosition().getX() < exitPointRB.getX() &&
                     visitors.get(i).getPosition().getY() > exitPointLT.getY() && visitors.get(i).getPosition().getY() < exitPointRB.getY()) {
