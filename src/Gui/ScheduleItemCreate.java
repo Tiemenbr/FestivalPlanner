@@ -34,8 +34,8 @@ public class ScheduleItemCreate {
         labelColumnBox.getChildren().add(locationInputLabel);
 
         ComboBox<Location> locationOptionsComboBox = new ComboBox<>();
-        HashMap<UUID, Location> locations = schedule.getLocations();
-        for (UUID key : locations.keySet()) {
+        HashMap<String, Location> locations = schedule.getLocations();
+        for (String key : locations.keySet()) {
             locationOptionsComboBox.getItems().add(locations.get(key));
         }
         locationOptionsComboBox.setConverter(new StringConverter<Location>() {
@@ -109,7 +109,7 @@ public class ScheduleItemCreate {
         labelColumnBox.getChildren().add(startTimeLabel);
 
         ComboBox<String> startHourComboBox = new ComboBox<>();
-        for (int i = 1; i <= 24; i++) {
+        for (int i = 0; i <= 23; i++) {
             String j = Integer.toString(i);
             j = String.format("%02d", i);;
             startHourComboBox.getItems().add(j);

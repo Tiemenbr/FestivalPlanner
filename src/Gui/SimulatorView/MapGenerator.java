@@ -94,9 +94,7 @@ public class MapGenerator {
                                         int x = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("x");
                                         int y = layers.getJsonObject(i).getJsonArray("objects").getJsonObject(j).getInt("y");
 
-                                        if (!name.equalsIgnoreCase("entrance") && !name.equalsIgnoreCase("exit")){
-                                            locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
-                                        }
+                                        locations.add(new Location(height, width, name, new Point2D.Double(x, y)));
                                     }
                                     createLocationsOnce = false;
                                 }
@@ -180,7 +178,13 @@ public class MapGenerator {
     }
 
     public ArrayList<Location> getLocations(){
-        return locations;
+        ArrayList<Location> validLocations = new ArrayList<>();
+        for (Location location : locations){
+            if (!location.getName().equalsIgnoreCase("entrance") && !location.getName().equalsIgnoreCase("exit")){
+                validLocations.add(location);
+            }
+        }
+        return validLocations;
     }
 
 }
