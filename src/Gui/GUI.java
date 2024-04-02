@@ -53,13 +53,18 @@ public class GUI extends Application {
         AttractionBox.getChildren().addAll(AttractionCreate.getComponent(), AttractionUpdate.getComponent(), AttractionsOverview.getComponent());
         attractionRead.setContent(AttractionBox);
 
-        Tab locationRead = new Tab("Locations");
-        locationRead.setContent(LocationsOverview.getComponent());
+        //Tab locationRead = new Tab("Locations");
+        //locationRead.setContent(LocationsOverview.getComponent());
 
         Tab simulator = new Tab("Simulator");
-        simulator.setContent(Simulator.getComponent());
+        if(planner.getSCHEDULE().getScheduleItems().size() > 0){
+            simulator.setContent(Simulator.getComponent());
+        }else{
+            simulator.setContent(new Label("No scheduleItems found for the simulation..."));
+        }
 
-        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, locationRead, simulator);
+
+        tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator); //locationRead
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
