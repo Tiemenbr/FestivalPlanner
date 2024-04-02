@@ -8,28 +8,44 @@ import Objects.Location;
 import Objects.Schedule;
 import Objects.ScheduleItem;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import javafx.scene.canvas.Canvas;
+
+import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import javafx.scene.control.Label;
 
 public class Simulator{
     // TODO: fix zooming bug (not centered in the middle of the screen)
     private static Schedule schedule = Planner.getSCHEDULE();
     private static final MapGenerator mapGenerator = Schedule.getMapGenerator();
     private static Canvas canvas;
-    private static VBox vBox;
+    private static BorderPane mainBox;
     private static Camera camera;
     static ArrayList<Visitor> visitors = new ArrayList<>();
-    private static SpriteSheetHelper spriteSheetHelper;
-    private static int visitorAmount = 100;
+    private static int visitorAmount = 1;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
 
-    public static VBox getComponent() {
-        vBox = new VBox();
+    private static double time;
+    private static DayOfWeek currentDay;
+    private static ArrayList<ScheduleItem> currentScheduleItems;
+
+    public static BorderPane getComponent() {
+        mainBox = new BorderPane();
+
+        VBox vBox = new VBox();
         canvas = new Canvas();
         //canvas = new ResizableCanvas(g -> draw(g), vBox);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
@@ -37,6 +53,8 @@ public class Simulator{
 
         camera = new Camera(canvas);
         vBox.getChildren().add(canvas);
+        mainBox.setCenter(vBox);
+
 
         // Handle mouse events for panning
         vBox.setOnMousePressed(event -> camera.handleMousePressed(event));
@@ -44,6 +62,11 @@ public class Simulator{
 
         // Handle scroll event for zooming
         vBox.setOnScroll(event -> camera.handleScroll(event));
+//        canvas.setOnMouseMoved(event -> {
+//            for (Visitor visitor : visitors) {
+//                visitor.setTargetPosition(new Point2D.Double(event.getX(), event.getY()));
+//            }
+//        });
         new AnimationTimer() {
             long last = -1;
             int frameCount = 0;
@@ -61,26 +84,58 @@ public class Simulator{
             }
         }.start();
         init();
-        return vBox;
+
+        return mainBox;
     }
 
     public static void init() {
+        currentDay = DayOfWeek.MONDAY;
+        currentScheduleItems = new ArrayList<>();
+        setCurrentScheduleItems(); //todo doesn't get called first??
+
+        // Get all locations
+        for (Location location : mapGenerator.getLocations()){
+            schedule.addLocation(location);
+        }
         // Get Locations & Attractions
         locations.addAll(schedule.getLocations().values());
         attractions.addAll(schedule.getAttractions().values());
 
         spriteSheetHelper = new SpriteSheetHelper();
+        // Debug code:
+        for (Attraction a : attractions){
+            System.out.println(a);
+        }
+
+        double cacheImageWidth = mapGenerator.getCacheImageWidth();
+        double cacheImageHeight = mapGenerator.getCacheImageHeight();
+        canvas.setWidth(cacheImageWidth);
+        canvas.setHeight(cacheImageHeight);
+
+
 //        BufferedImage[] vistorSprites1 = spriteSheetHelper.createSpriteSheet("/walk template 2.png", 4);
 
-        // Starting visitor amount
-        while(visitors.size() < 10) {
-            addVisitor();
-        }
+//        while(visitors.size() < 10) {
+//            addVisitor();
+//        }
+    }
 
-        // Set target of each Visitor
-        for (Visitor visitor : visitors){
-            setVisitorTargetLocation(visitor);
+    private static void setCurrentScheduleItems() {
+//        System.out.println("setting current items");
+        currentScheduleItems.clear();
+        for (UUID uuid : schedule.getScheduleItems().keySet()) {
+
+//            System.out.println(schedule.getScheduleItem(uuid));
+            int startTimeMinutes = schedule.getScheduleItem(uuid).getStartTime().getHour()*60+schedule.getScheduleItem(uuid).getStartTime().getMinute();
+            int endTimeMinutes = schedule.getScheduleItem(uuid).getEndTime().getHour()*60+schedule.getScheduleItem(uuid).getEndTime().getMinute();
+
+            if(schedule.getScheduleItem(uuid).getDay() == currentDay && startTimeMinutes/5.0 <= time && endTimeMinutes/5.0 >= time){
+                for (int i = 0; i < schedule.getScheduleItem(uuid).getAttraction(schedule).getPopularity(); i++) {
+                    currentScheduleItems.add(schedule.getScheduleItem(uuid));
+                }
+            }
         }
+//        System.out.println(currentScheduleItems.size());
     }
 
     private static void addVisitor(){
@@ -94,8 +149,10 @@ public class Simulator{
                     hasCollision = true;
             }
             if(!hasCollision) {
-                visitors.add(new Visitor(newPosition, 0));
-                setVisitorTargetLocation(visitors.get(visitors.size()-1));
+                Visitor newVisitor = new Visitor(newPosition, 0);
+                System.out.println(currentScheduleItems.size());
+                newVisitor.setTargetPosition(currentScheduleItems, schedule);
+                visitors.add(newVisitor);
             } else{
                 addVisitor();
             }
@@ -143,6 +200,9 @@ public class Simulator{
     }
 
     private static void update(double deltaTime){
+        //update time var
+        time += deltaTime*10;
+
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
         double cacheImageHeight = mapGenerator.getCacheImageHeight();
@@ -163,9 +223,22 @@ public class Simulator{
         }
 
         for (Visitor visitor : visitors) {
-            visitor.update(visitors, mapGenerator.getCollisionLayer(), deltaTime);
+            visitor.update(visitors,mapGenerator.getCollisionLayer(),deltaTime);
+            visitor.setTargetPosition(currentScheduleItems, schedule);
         }
+
+        // Transform the cacheimage
+        canvas.setScaleX(camera.scale);
+        canvas.setScaleY(camera.scale);
+
+        setCurrentScheduleItems();
+        updateTimeLine();
+
+
+
     }
+
+
     private static final double DEFAULT_SCALE = 1.0;
     private static final double ZOOM_FACTOR = 0.1;
 
@@ -208,4 +281,55 @@ public class Simulator{
             event.consume();
         }
     }
+
+
+    public static void updateTimeLine(){
+        int timeLineScale = 1000;
+
+        //24*60/5  : 24 hours divided into 5 minute segments (just like the planner)
+
+        if(timeLineScale/(24*60/5.0)*time > timeLineScale){
+            time = 0;
+//            currentDay = currentDay.plus(1);
+        }
+
+        VBox timeLineContainer = new VBox();
+        timeLineContainer.setMaxWidth(timeLineScale);
+        timeLineContainer.setPadding(new Insets(5,0,0,0));
+        timeLineContainer.setStyle("-fx-background-color: lightgray;");
+
+        Label dayLabel = new Label(currentDay.toString());
+        timeLineContainer.getChildren().add(dayLabel);
+        dayLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -30));
+
+        Label timeLabel = new Label(String.format("%02d",((int)time)*5/60) +":"+ String.format("%02d",((int)time)*5%60));
+        timeLineContainer.getChildren().add(timeLabel);
+        timeLabel.setPadding(new Insets(0,0,0,(timeLineScale+40)/2.0 -15));
+
+        HBox timeLine = new HBox();
+        timeLineContainer.getChildren().add(timeLine);
+//        timeLine.setStyle("-fx-background-color: blue;");
+        timeLine.setPrefHeight(25);
+        timeLine.setPadding(new Insets(5,20,5,20));
+
+
+
+        HBox lineBackdrop = new HBox();
+        timeLine.getChildren().add(lineBackdrop);
+        lineBackdrop.setMaxHeight(10);
+        lineBackdrop.setPrefWidth(timeLineScale);
+        lineBackdrop.setStyle("-fx-background-color: white;");
+
+        HBox line = new HBox();
+        lineBackdrop.getChildren().add(line);
+        lineBackdrop.setMaxHeight(10);
+        line.setPrefWidth((double)timeLineScale/(24*60/5.0)*time);
+        line.setStyle("-fx-background-color: darkslateblue;");
+//        System.out.println((double)timeLineScale/(24*60/5.0)*time);
+
+
+
+        mainBox.setTop(timeLineContainer);
+    }
+
 }

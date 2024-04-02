@@ -1,5 +1,8 @@
 package Gui.SimulatorView;
 
+import Objects.Schedule;
+import Objects.ScheduleItem;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -21,16 +24,21 @@ public class Visitor {
     private BufferedImage currentImage;
     private double imageIndex;
 
+    private double targetTimer;
+    private boolean readyForNewTarget;
     private Point2D target;
+
     private double scale = 1.0; //2.0
     private double hitboxSize;
 
     public Visitor(Point2D pos, double direction) {
         this.position = pos;
-        this.speed = baseSpeed;// + Math.random()*4;
+        this.speed = baseSpeed + Math.random()/**4*/;
         this.angle = Math.toRadians(direction);
 
         this.target = new Point2D.Double(Math.random()*1000, Math.random()*1000);
+        this.readyForNewTarget = true;
+        this.targetTimer = 0;
 
         this.imageIndex = 0;
         SpriteSheetHelper ssh = new SpriteSheetHelper();
@@ -56,6 +64,8 @@ public class Visitor {
     }
 
     public void update(ArrayList<Visitor> visitors, TileLayer collision, double time){
+
+        //#region rotation
         double newAngle = Math.atan2(this.target.getY() - this.position.getY(), this.target.getX() - this.position.getX());
 
         double angleDifference = angle - newAngle;
@@ -65,12 +75,13 @@ public class Visitor {
             angleDifference += 2 * Math.PI;
 
         if(angleDifference < -time)
-            angle += time;
+            angle += (time*speed);
         else if(angleDifference > time)
-            angle -= time;
+            angle -= (time*speed);
         else
             angle = newAngle;
-
+        //#endregion
+        //#region sprite direction
         int imageOffset = 0;
         double testAngle = Math.toDegrees(angle);
         //thought the Math.PI version of this handled overflow but I guess not?
@@ -95,16 +106,22 @@ public class Visitor {
             imageOffset = 0;
         }
 //        System.out.println(walkDirection);
-        imageIndex += time;
+        //#endregion
+        //#region sprite animation
+        imageIndex += time*(speed*2);
+
         if(imageIndex >= 4){
             imageIndex = 0;
         }
-
+        //#endregion
+        //#region movement
         currentImage = sprites[(int)imageIndex+imageOffset];
         Point2D newPosition = new Point2D.Double(
                 this.position.getX() + speed * Math.cos(angle),
                 this.position.getY() + speed * Math.sin(angle)
         );
+        //#endregion
+        //#region collision
         boolean hasCollision = false;
         for (Visitor visitor : visitors) {
             if(visitor != this)
@@ -116,11 +133,35 @@ public class Visitor {
             this.position = newPosition;
         else
             this.angle += 0.2;
+        //#endregion
+
+        //#region target timer
+        if(!readyForNewTarget && this.position.distance(target) < 100){ //todo while it has a target and is within 100 of the target
+//            System.out.println("target timer +1! (" + targetTimer);
+            targetTimer += time;
+        }
+
+        if(targetTimer > 10){
+            readyForNewTarget = true;
+        }
+        //#endregion
     }
 
-    public void setTargetPosition(Point2D targetPosition)
+    public void setTargetPosition(ArrayList<ScheduleItem> targetOption, Schedule schedule)
     {
-        this.target = targetPosition;
+        if(readyForNewTarget && !targetOption.isEmpty()){
+//            System.out.println("Visitor target options:  0-"+(targetOption.size()-1));
+            double rand = (Math.random()*targetOption.size());
+            System.out.println(rand);
+            ScheduleItem item = targetOption.get((int) rand);
+            System.out.println((int) rand);
+//            System.out.println("new target!: " + item.getAttraction(schedule).getName());
+
+            //set target to center of location
+            this.target = new Point2D.Double(item.getLocation(schedule).getPosition().getX() + (item.getLocation(schedule).getWidth()/2.0), item.getLocation(schedule).getPosition().getY()+ (item.getLocation(schedule).getHeight()/2.0));
+            readyForNewTarget = false;
+            targetTimer = 0;
+        }
     }
 
     public Point2D getPosition()
