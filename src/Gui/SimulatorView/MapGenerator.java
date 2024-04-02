@@ -174,7 +174,7 @@ public class MapGenerator {
 
         for (int i = 0; i < borderX; i++) {
             for (int j = 0; j < borderY; j++) {
-                if (!(collisionTiles[i][j]!=50))
+                if (collisionTiles[j][i]!=50)
                     pathfindingTiles[i][j].setTile(i*32,j*32);
             }
         }

@@ -135,6 +135,9 @@ public class Visitor {
                     hasCollision = true;
         }
 
+        if (collision.getMap()[(int) newPosition.getY()/32][(int) newPosition.getX()/32] == 50)
+            hasCollision = true;
+
         if(!hasCollision)
             this.position = newPosition;
         else

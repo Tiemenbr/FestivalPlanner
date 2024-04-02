@@ -32,7 +32,7 @@ public class Simulator {
     private static BorderPane mainBox;
     private static Camera camera;
     static ArrayList<Visitor> visitors = new ArrayList<>();
-    private static int visitorAmount = 1;
+    private static int visitorAmount = 50;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
 
