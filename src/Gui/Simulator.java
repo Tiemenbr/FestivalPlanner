@@ -34,6 +34,7 @@ public class Simulator {
     private static Camera camera;
     private static int visitorAmount = 60;
     private static int startVisitorAmount = 5;
+    private static double timeModifyer = 3;
     private static ArrayList<Location> locations = new ArrayList<>();
     private static ArrayList<Attraction> attractions = new ArrayList<>();
     private static double time;
@@ -124,7 +125,7 @@ public class Simulator {
                     hasCollision = true;
             }
             if (!hasCollision) {
-                Visitor newVisitor = new Visitor(newPosition, 0);
+                Visitor newVisitor = new Visitor(newPosition, 0, mapGenerator.getDistanceMaps(), mapGenerator.getPathfindingTiles());
                 newVisitor.setTargetPosition(currentScheduleItems, schedule);
                 visitors.add(newVisitor);
             } else {
@@ -146,7 +147,7 @@ public class Simulator {
 
     private static void update(double deltaTime) {
         //update time
-        time += deltaTime * 1;
+        time += deltaTime * timeModifyer;
 
         // Get scale factors based on screen size
         double cacheImageWidth = mapGenerator.getCacheImageWidth();
@@ -168,7 +169,7 @@ public class Simulator {
         }
 
         for (Visitor visitor : visitors) {
-            visitor.update(visitors, deltaTime);
+            visitor.update(visitors, mapGenerator.getCollisionLayer(), deltaTime);
             visitor.setTargetPosition(currentScheduleItems, schedule);
         }
 

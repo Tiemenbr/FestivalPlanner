@@ -32,6 +32,7 @@ public class Visitor {
     private double hitboxSize;
     private HashMap<String, HashMap<Tile,Integer>> distanceMaps;
     private Tile[][] pathfindingTiles;
+    private boolean drawHitbox = false;
 
     public Visitor(Point2D pos, double direction, HashMap<String,HashMap<Tile,Integer>> distanceMaps, Tile[][] pathfindingTiles) {
         this.position = pos;
@@ -69,7 +70,7 @@ public class Visitor {
         }
     }
 
-    public void update(ArrayList<Visitor> visitors, double time) {
+    public void update(ArrayList<Visitor> visitors,TileLayer collision, double time) {
         //#region rotation
         double newAngle = Math.atan2(this.target.getY() - this.position.getY(), this.target.getX() - this.position.getX());
 
