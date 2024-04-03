@@ -8,14 +8,14 @@ import java.util.UUID;
 
 public class ScheduleItem implements CRUD, Serializable {
     private UUID id;
-    private UUID locationId;
+    private String locationId;
     private UUID attractionId;
     private DayOfWeek day;
     private LocalTime startTime, endTime;
 
     public ScheduleItem(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
         this.id = UUID.randomUUID();
-        this.locationId = location.getId();
+        this.locationId = location.getName();
         this.attractionId = attraction.getId();
         this.day = day;
         this.startTime = LocalTime.parse(startTime);
@@ -24,8 +24,8 @@ public class ScheduleItem implements CRUD, Serializable {
         this.update();
     }
 
-    public void setAll(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime){
-        this.locationId = location.getId();
+    public void setAll(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
+        this.locationId = location.getName();
         this.attractionId = attraction.getId();
         this.day = day;
         this.startTime = LocalTime.parse(startTime);
@@ -65,7 +65,7 @@ public class ScheduleItem implements CRUD, Serializable {
     }
 
 
-    public UUID getLocationId() {
+    public String getLocationId() {
         return locationId;
     }
 

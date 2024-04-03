@@ -1,31 +1,21 @@
-package gui;
+package Gui;
 
 import Objects.Attraction;
-import Objects.Comparators.ScheduleItemCompareDayLocationTime;
-import Objects.Location;
 import Objects.Schedule;
-import Objects.ScheduleItem;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-import java.awt.*;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class AttractionUpdate {
 
-    public static VBox getComponent(){
+    public static VBox getComponent() {
         Schedule schedule = Planner.getSCHEDULE();
         VBox mainCreateAttractionBox = new VBox(20);
         mainCreateAttractionBox.setPadding(new Insets(20));
@@ -56,7 +46,9 @@ public class AttractionUpdate {
                 scheduleData.append(", ");
                 scheduleData.append(attraction.getPopularity() + " popularity");
                 scheduleData.append(", ");
-                scheduleData.append("€"+attraction.getPrice());
+                scheduleData.append("€" + attraction.getPrice());
+                scheduleData.append(", ");
+                scheduleData.append("Filename:" + attraction.getImagePath());
                 return scheduleData.toString();
             }
 
@@ -91,9 +83,15 @@ public class AttractionUpdate {
 
         javafx.scene.control.TextField priceInput = new javafx.scene.control.TextField();
         inputsColumnBox.getChildren().add(priceInput);
+        //#region Filename TextField
+        Label fileNameInputLabel = new Label("Filename: ");
+        labelColumnBox.getChildren().add(fileNameInputLabel);
+
+        javafx.scene.control.TextField fileNameInput = new javafx.scene.control.TextField();
+        inputsColumnBox.getChildren().add(fileNameInput);
         //#endregion
 
-        AttractionOptionsComboBox.setOnAction(e ->{
+        AttractionOptionsComboBox.setOnAction(e -> {
             //get the scheduleItem that was selected
             Attraction selectedAttraction = AttractionOptionsComboBox.getValue();
             //fill name
@@ -102,6 +100,8 @@ public class AttractionUpdate {
             popularityInput.setText(Integer.toString(selectedAttraction.getPopularity()));
             //fill price
             priceInput.setText(Integer.toString(selectedAttraction.getPrice()));
+            //fill filename
+            fileNameInput.setText(selectedAttraction.getImagePath());
         });
 
 
@@ -110,22 +110,23 @@ public class AttractionUpdate {
         updateScheduleItemButton.setOnAction(event -> {
             Attraction attraction = AttractionOptionsComboBox.getValue();
 
-            System.out.println("updating scheduleItem "+attraction.getId()+":");
+            System.out.println("updating scheduleItem " + attraction.getId() + ":");
             System.out.println("from:");
             System.out.println(attraction);
 
             String name = nameInput.getText();
             int popularity = Integer.parseInt(popularityInput.getText());
             int price = Integer.parseInt(priceInput.getText());
+            String imagePath = fileNameInput.getText();
 
 
-            attraction.setAll(name, popularity, price);
+            attraction.setAll(name, popularity, price, imagePath);
 
             System.out.println("To:");
             System.out.println(attraction);
 
             //updates the value in the Attraction options Combobox
-            AttractionOptionsComboBox.getItems().set(AttractionOptionsComboBox.getSelectionModel().getSelectedIndex(),attraction);
+            AttractionOptionsComboBox.getItems().set(AttractionOptionsComboBox.getSelectionModel().getSelectedIndex(), attraction);
         });
         inputsColumnBox.getChildren().add(updateScheduleItemButton);
         //#endregion
@@ -135,7 +136,6 @@ public class AttractionUpdate {
 
         return mainCreateAttractionBox;
     }
-
 
 
 }

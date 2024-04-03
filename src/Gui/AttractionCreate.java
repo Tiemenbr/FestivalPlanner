@@ -1,4 +1,4 @@
-package gui;
+package Gui;
 
 import Objects.Attraction;
 import Objects.Schedule;
@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 
 public class AttractionCreate {
 
-    public static VBox getComponent(){
+    public static VBox getComponent() {
         Schedule schedule = Planner.getSCHEDULE();
         VBox mainCreateAttractionBox = new VBox(20);
         mainCreateAttractionBox.setPadding(new Insets(20));
@@ -47,18 +47,25 @@ public class AttractionCreate {
 
         TextField priceInput = new TextField();
         inputsColumnBox.getChildren().add(priceInput);
+        //#region Price TextField
+        Label fileInputLabel = new Label("FileName: ");
+        labelColumnBox.getChildren().add(fileInputLabel);
+
+        TextField fileInput = new TextField();
+        inputsColumnBox.getChildren().add(fileInput);
         //#endregion
 
 
         //#region Submit Button
         Button createAttractionButton = new Button("Create Attraction");
-        createAttractionButton.setOnAction(e ->{
+        createAttractionButton.setOnAction(e -> {
 
             String name = nameInput.getText();
             int popularity = Integer.parseInt(popularityInput.getText());
             int price = Integer.parseInt(popularityInput.getText());
+            String fileName = fileInput.getText();
 
-            Attraction newItem = new Attraction(name,popularity,price);
+            Attraction newItem = new Attraction(name, popularity, price, fileName);
             schedule.addAttraction(newItem);
 
             System.out.println("created Attraction: " + newItem);
