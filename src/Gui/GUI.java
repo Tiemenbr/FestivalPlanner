@@ -27,6 +27,7 @@ public class GUI extends Application {
 
         TabPane tabpane = new TabPane();
 
+        // Tab voor Planner
         Tab plannerTab = new Tab("Dev");
         VBox plannerTabBox = new VBox(10);
         Label plannerLabel = new Label("planner page");
@@ -38,19 +39,23 @@ public class GUI extends Application {
         plannerTabBox.getChildren().addAll(plannerLabel, tempSeedDataButtonLabel, tempSeedDataButton);
         plannerTab.setContent(plannerTabBox);
 
+        // Tab voor Schedule
         Tab scheduleTab = new Tab("Schedule");
         scheduleTab.setContent(ScheduleView.createScheduleView(Planner.getSCHEDULE()));
 
+        // Tab voor Schedule Items
         Tab createScheduleItem = new Tab("Schedule Items");
         HBox scheduleItemBox = new HBox();
         scheduleItemBox.getChildren().addAll(ScheduleItemCreate.getComponent(), ScheduleItemUpdate.getComponent(), ScheduleItemsOverview.getComponent());
         createScheduleItem.setContent(scheduleItemBox);
 
+        // Tab voor Attracties
         Tab attractionRead = new Tab("Attractions");
         HBox AttractionBox = new HBox();
         AttractionBox.getChildren().addAll(AttractionCreate.getComponent(), AttractionUpdate.getComponent(), AttractionsOverview.getComponent());
         attractionRead.setContent(AttractionBox);
 
+        // Tab voor de Simulator
         Tab simulator = new Tab("Simulator");
         if (planner.getSCHEDULE().getScheduleItems().size() > 0) {
             simulator.setContent(Simulator.getComponent());
@@ -58,7 +63,10 @@ public class GUI extends Application {
             simulator.setContent(new Label("No scheduleItems found for the simulation..."));
         }
 
+        // Voeg alle tabs toe aan de TabPane
         tabpane.getTabs().addAll(plannerTab, scheduleTab, createScheduleItem, attractionRead, simulator);
+
+        // Sluit het sluiten van tabs uit
         tabpane.setTabClosingPolicy(UNAVAILABLE);
 
         Scene scene = new Scene(tabpane, 1200, 600);
