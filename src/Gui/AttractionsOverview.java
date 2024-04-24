@@ -20,11 +20,13 @@ public class AttractionsOverview {
         Label label = new Label("Overview of Attractions:");
         mainBox.getChildren().add(label);
 
-
+        // Controleer of er geen attracties zijn, toon dan een melding
         if (Planner.getSCHEDULE().getAttractions().isEmpty()) {
             Label labelEmpty = new Label("No Attractions yet");
             mainBox.getChildren().add(labelEmpty);
-        } else {
+        }
+        else // Als er attracties zijn, maak dan een HBox voor de kolomme
+        {
             HBox listsContainerBox = new HBox();
 
             ListView<String> collumnNames = new ListView<>();
@@ -47,6 +49,7 @@ public class AttractionsOverview {
 
             listsContainerBox.getChildren().addAll(collumnNames, collumnPopularity, collumnPrice, collumnFileName, collumnDelete);
 
+            // Haal alle attracties op uit de Planner en vul de ListView's
             HashMap<UUID, Attraction> attractions = Planner.getSCHEDULE().getAttractions();
             for (UUID key : attractions.keySet()) {
                 collumnNames.getItems().add(attractions.get(key).getName());
@@ -61,7 +64,7 @@ public class AttractionsOverview {
                 collumnDelete.getItems().add(deleteButton);
             }
 
-
+            // Stel de breedte van de ListView's in
             collumnNames.setPrefWidth(100);
             collumnPopularity.setPrefWidth(100);
             collumnPrice.setPrefWidth(100);
@@ -69,7 +72,7 @@ public class AttractionsOverview {
 
             mainBox.getChildren().add(listsContainerBox);
         }
-
+        // return de VBox met alle inhoud
         return mainBox;
     }
 }
