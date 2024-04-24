@@ -11,6 +11,7 @@ public class Location {
     private int height, width;
     private String name;
 
+    // Constructor om een nieuwe locatie te maken met de verschillende parameters.
     public Location(int height, int width, String name, Point2D.Double position) {
         this.id = UUID.randomUUID();
         this.height = height;
@@ -53,10 +54,13 @@ public class Location {
 //        IOController.delete(this.id, IOController.ObjectType.LOCATION);
 //    }
 
+    // Methode om de locatie te tekenen
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.white);
+        g2d.setColor(Color.white); // Stel de kleur in op wit.
         if (position != null) {
+            // Teken de naam van de locatie.
             g2d.drawString(name, (int) position.getX() + width, (int) position.getY() + (height / 2));
+            // Teken een rechthoek op de positie met opgegeven breedte en hoogte.
             g2d.drawRect((int) position.getX(), (int) position.getY(), width, height);
         }
     }
