@@ -13,7 +13,7 @@ public class Attraction implements CRUD, Serializable {
     private int popularity = 1;
     private int price;
 
-
+    // Constructor voor het maken van een nieuwe attractie
     public Attraction(String name, int popularity, int price, String filename) {
         this.id = UUID.randomUUID();
         this.name = name;
@@ -24,6 +24,7 @@ public class Attraction implements CRUD, Serializable {
         this.update();
     }
 
+    // Methode om de eigenschappen van de attractie in te stellen
     public void setAll(String name, int popularity, int price, String imagePath) {
         this.name = name;
         this.popularity = popularity;
@@ -60,7 +61,8 @@ public class Attraction implements CRUD, Serializable {
 
 
     @Override
-    public String toString() {
+    public String toString() // Methode om de attractie te beschrijven
+    {
         return "Attraction{" +
                 "name='" + name + '\'' +
                 ", popularity=" + popularity +
@@ -69,7 +71,8 @@ public class Attraction implements CRUD, Serializable {
     }
 
     @Override
-    public void update() {
+    public void update()
+    {
         IOController.update(this.id, this, IOController.ObjectType.ATTRACTION);
     }
 
@@ -79,6 +82,7 @@ public class Attraction implements CRUD, Serializable {
 
         ArrayList<ScheduleItem> toBeDeletedScheduleItems = new ArrayList<>();
 
+        // Loop door de schedule items
         for (UUID key : schedule.getScheduleItems().keySet()) {
 //            System.out.println(schedule.getScheduleItem(key));
 
@@ -89,11 +93,13 @@ public class Attraction implements CRUD, Serializable {
             }
         }
 
+        // Loop door de lijst met schedule items en verwijder ze
         for (ScheduleItem scheduleItem : toBeDeletedScheduleItems) {
             scheduleItem.delete(schedule);
         }
-
         schedule.deleteAttraction(this.getId());
+
+        // Verwijder de attractie uit het bestand
         IOController.delete(this.id, IOController.ObjectType.ATTRACTION);
     }
 
