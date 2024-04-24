@@ -14,7 +14,8 @@ public class Planner {
     // -------------------------------------------------------------
     public static void seedTestData() {
         //todo only call constructors for test data if aren't already stored
-//
+
+//      Aanmaken van attracties en toevoegen aan de schedule
         Attraction attraction1 = new Attraction("merry-go-round", 4, 5, "/attractions/merry-go-round-animated.png");
         Attraction attraction2 = new Attraction("ferriswheel", 5, 7, "/attractions/ferris-wheel-animated.png");
         Attraction attraction3 = new Attraction("haunted house", 4, 5, "/attractions/spookhuis-animated.png");
@@ -26,6 +27,7 @@ public class Planner {
         System.out.println("added " + SCHEDULE.getAttractions().size() + " attraction objects");
         System.out.println(SCHEDULE.getAttraction(SCHEDULE.getAttractions().keySet().stream().findFirst().get()));
 //
+        // Aanmaken van schedule items en toevoegen aan de schedule
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location1"), attraction1, DayOfWeek.MONDAY, "10:10", "12:30"));
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location2"), attraction4, DayOfWeek.MONDAY, "10:30", "13:00"));
         SCHEDULE.addScheduleItem(new ScheduleItem(SCHEDULE.getLocations().get("location3"), attraction2, DayOfWeek.TUESDAY, "13:00", "16:30"));
@@ -35,12 +37,17 @@ public class Planner {
         System.out.println("added " + SCHEDULE.getScheduleItems().size() + " scheduleItem objects");
     }
 
-    public static Schedule getSCHEDULE() {
+    public static Schedule getSCHEDULE() // De huidige Schedule op te halen
+    {
         return SCHEDULE;
     }
 
     public void init() {
         IOController.init();
+
+        // Als er nog geen attracties of schedule items zijn, haal ze op uit de IOController
+        // en voeg ze toe aan de Schedule.
+
         if (SCHEDULE.getAttractions().isEmpty() && SCHEDULE.getScheduleItems().isEmpty()) {
             ArrayList<Object> attractions = IOController.getObjectsFromDirectory(IOController.ObjectType.ATTRACTION);
             for (Object attraction : attractions) {
