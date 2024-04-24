@@ -13,6 +13,7 @@ public class ScheduleItem implements CRUD, Serializable {
     private DayOfWeek day;
     private LocalTime startTime, endTime;
 
+    // Constructor voor het maken van een ScheduleItem met de verchillende parameters
     public ScheduleItem(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
         this.id = UUID.randomUUID();
         this.locationId = location.getName();
@@ -24,6 +25,7 @@ public class ScheduleItem implements CRUD, Serializable {
         this.update();
     }
 
+    // Methode om alle velden van het ScheduleItem in één keer te updaten
     public void setAll(Location location, Attraction attraction, DayOfWeek day, String startTime, String endTime) {
         this.locationId = location.getName();
         this.attractionId = attraction.getId();
@@ -72,6 +74,7 @@ public class ScheduleItem implements CRUD, Serializable {
 
     @Override
     public void update() {
+        // Roep de IOController aan om dit ScheduleItem te updaten in de database
         IOController.update(this.id, this, IOController.ObjectType.SCHEDULE_ITEM);
     }
 
@@ -79,11 +82,13 @@ public class ScheduleItem implements CRUD, Serializable {
     public void delete(Schedule schedule) {
         //todo idk if it's right to pass the schedule... but it needs to access it somewhere I think
         schedule.deleteScheduleItem(this.getId());
+        // Verwijder dit ScheduleItem uit de database via de IOController
         IOController.delete(this.id, IOController.ObjectType.SCHEDULE_ITEM);
     }
 
     @Override
-    public String toString() {
+    public String toString() // Methode voor het printen van informatie over dit ScheduleItem
+    {
         return "ScheduleItem{" +
                 "id=" + id +
                 ", locationId=" + locationId +
